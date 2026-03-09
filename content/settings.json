@@ -1,0 +1,20 @@
+{
+  "campaignPhase": "rediscover",
+  "streamUrl": "https://kteq-proxy.kteq.workers.dev",
+  "streamFallbackUrl": "http://kteq-streamer.sdsmt.edu:8000/kteq_high",
+  "stationName": "KTEQ-FM 91.3",
+  "stationTagline": "Black Hills Alternative Radio",
+  "stationDescription": "Established in 1971, KTEQ is South Dakota Mines' student-run alternative radio station. The only rule: no Top 40.",
+  "requestLine": "(605) 394-6667",
+  "email": "kteq@mines.sdsmt.edu",
+  "donateUrl": "https://www.sdsmt.edu/giving",
+  "socialLinks": {
+    "facebook": "https://facebook.com/kteqfm",
+    "instagram": "https://instagram.com/kteq_fm",
+    "tunein": "https://tunein.com/radio/KTEQ-FM-913-s144657/"
+  },
+  "bannerText": "",
+  "bannerUrl": "",
+  "bannerDismissible": true,
+  "reopeningDate": "2026-09-25T18:00:00-06:00"
+}

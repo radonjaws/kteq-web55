@@ -1,0 +1,120 @@
+{
+  "lastUpdated": "2026-03-09T12:00:00Z",
+  "entries": [
+    {
+      "id": "1969-terc",
+      "year": 1969,
+      "title": "The Tech Educational Radio Council",
+      "description": "With the help of announcer Greg Carey, Geo McGibbney gained Student Association support to form the Tech Educational Radio Council (TERC), laying the groundwork for a campus radio station at South Dakota School of Mines and Technology.",
+      "image": "",
+      "mediaUrl": "",
+      "category": "milestone",
+      "sources": ""
+    },
+    {
+      "id": "1971-first-broadcast",
+      "year": 1971,
+      "month": 8,
+      "title": "KTEQ Touches the Airwaves",
+      "description": "On August 7, 1971, KTEQ began broadcasting at 88.1 FM from the Surbeck Center, breaking nearly two decades of radio silence on the Mines campus. The station opened with 'Also Sprach Zarathustra.'",
+      "image": "",
+      "mediaUrl": "",
+      "category": "milestone",
+      "sources": ""
+    },
+    {
+      "id": "1972-mcgovern",
+      "year": 1972,
+      "title": "McGovern Interview & First Statewide Broadcast",
+      "description": "KTEQ originated the first all-state college radio broadcast — a panel discussion on prison reform, patched through CENTREX lines to other college stations. George McGovern was also interviewed on air for the '72 election.",
+      "image": "",
+      "mediaUrl": "",
+      "category": "milestone",
+      "sources": ""
+    },
+    {
+      "id": "1982-frequency-change",
+      "year": 1982,
+      "title": "Frequency Change: 88.1 → 91.3 MHz",
+      "description": "After a power increase caused KTEQ's signal to bleed into cable TV subscribers' programs near the broadcast tower, the cable provider funded KTEQ's move from 88.1 to 91.3 MHz, farther from the TV frequency spectrum.",
+      "image": "",
+      "mediaUrl": "",
+      "category": "technical",
+      "sources": ""
+    },
+    {
+      "id": "1985-silence",
+      "year": 1985,
+      "title": "KTEQ Goes Silent",
+      "description": "KTEQ radio broadcasts fell silent during the mid-1980s, going off the air for an extended period.",
+      "image": "",
+      "mediaUrl": "",
+      "category": "milestone",
+      "sources": ""
+    },
+    {
+      "id": "1987-return",
+      "year": 1987,
+      "title": "Back on the Air",
+      "description": "KTEQ resumed broadcasts in the spring of 1987, returning to 24/7 programming. The station later removed the 3 AM to 6 AM time slots from its schedule.",
+      "image": "",
+      "mediaUrl": "",
+      "category": "milestone",
+      "sources": ""
+    },
+    {
+      "id": "2014-new-license",
+      "year": 2014,
+      "month": 2,
+      "title": "New License & Studio",
+      "description": "After many delays, construction of the new KTEQ studio in the Surbeck Center was completed. The FCC issued a new Non-Commercial Educational Radio Broadcast License on February 28, 2014.",
+      "image": "",
+      "mediaUrl": "",
+      "category": "technical",
+      "sources": ""
+    },
+    {
+      "id": "2014-return-to-air",
+      "year": 2014,
+      "month": 3,
+      "title": "Return to FM",
+      "description": "At noon on March 8, KTEQ returned to air, once again opening with 'Also Sprach Zarathustra.'",
+      "image": "",
+      "mediaUrl": "",
+      "category": "milestone",
+      "sources": ""
+    },
+    {
+      "id": "2025-hof",
+      "year": 2025,
+      "month": 10,
+      "title": "South Dakota Rock & Roll Hall of Fame Induction",
+      "description": "KTEQ was inducted into the South Dakota Rock and Roll Hall of Fame during the ceremony at The District in Sioux Falls. Greg Carey, Gary Brown, Bruce Kraft, Station Manager Caleigh Copenhaver, and Advisor Jason Ward accepted the honor.",
+      "image": "",
+      "mediaUrl": "",
+      "category": "milestone",
+      "sources": ""
+    },
+    {
+      "id": "2025-fm-return",
+      "year": 2025,
+      "month": 5,
+      "title": "FM Signal Returns",
+      "description": "After being off the FM dial since November due to transmitter issues, KTEQ returned to full 500-watt FM service at 91.3 FM on May 16 at 9 AM, thanks to the efforts of students and local volunteers.",
+      "image": "",
+      "mediaUrl": "",
+      "category": "technical",
+      "sources": ""
+    },
+    {
+      "id": "2026-55th",
+      "year": 2026,
+      "title": "55th Anniversary: (Re)Discover KTEQ",
+      "description": "KTEQ launches the (Re)Discover KTEQ campaign celebrating 55 years of freeform radio in the Black Hills, culminating in a grand reopening during M-Week.",
+      "image": "",
+      "mediaUrl": "",
+      "category": "milestone",
+      "sources": ""
+    }
+  ]
+}
