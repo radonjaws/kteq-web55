@@ -396,39 +396,58 @@ Add a new entry to the `"entries"` array:
 
 Most websites are static — they look the same whether the station is in the middle of a fundraising push or just doing regular programming. KTEQ's website uses a **campaign system** that lets you change the entire tone and focus of the site by editing a single setting.
 
-Think of it like seasonal programming for the website. When the station's priorities shift — from reconnecting with alumni, to counting down to a reopening, to settling into regular operations — the website shifts with it. The homepage hero changes, calls-to-action update, and the overall emphasis moves without anyone touching code.
+Think of it like seasonal programming for the website. When the station's priorities shift — from reconnecting with alumni, to welcoming students back, to settling into regular operations — the website shifts with it. The homepage hero changes, calls-to-action update, and the overall emphasis moves without anyone touching code.
 
-This is useful because a radio station's website needs to do different jobs at different times. During a fundraising campaign, the site should emphasize the donate button and tell a compelling story. During normal operations, it should get out of the way and let people listen. The campaign phase system handles this.
+This is useful because a radio station's website needs to do different jobs at different times. During an alumni outreach effort, the site should invite people to reconnect and share memories. During a grand reopening, it should build excitement and get people listening. During normal operations, it should get out of the way and let the programming speak. The campaign phase system handles all of this with a single setting change.
 
 ### How the (Re)Discover KTEQ campaign works
 
-The current campaign — **(Re)Discover KTEQ** — celebrates KTEQ's 55th anniversary and builds toward the grand reopening in September 2026. It has three phases:
+**(Re)Discover KTEQ** is the internal name for the station's 2026 campaign effort — the umbrella that covers the 55th anniversary, the studio renovation, fundraising, alumni outreach, and the grand reopening. But the *public-facing* messaging on the website is different at each stage, because the site's job changes as the campaign progresses.
 
-**Phase 1: `"rediscover"` — (Re)Discover KTEQ / 55th Anniversary**
+Meanwhile, social media carries the chronological anniversary storytelling — working through yearly milestones, alumni engagement, music history from 1971 to present. The website and social media complement each other, but they don't say the same things.
 
-This is the main campaign phase and where the site spends most of 2026. The focus is on rediscovering KTEQ through its history — reconnecting with alumni who may not know the station is still on the air, celebrating 55 years of freeform radio, and building momentum toward the grand reopening. The 55th anniversary timeline is the centerpiece.
+There are three phases:
 
-- Homepage headline: "(Re)Discover KTEQ"
-- Primary CTA: "Explore Our History" → links to the timeline
-- Secondary CTA: "Listen Now" → starts the stream
+**Phase 1: `"rediscover"` — "Still Here. Still Weird."**
+
+This is where the site starts and where it stays through summer 2026. Social media is doing the heavy lifting of chronological 55th anniversary storytelling. The website's job during this phase is simpler and warmer: *establish that KTEQ exists, has 55 years of history, and invite people to connect.*
+
+The primary call-to-action is **"Share Your Memories"** — a mailto link that opens an email to the station. The idea is to collect alumni stories, photos, and memories that will become timeline content and anniversary material. This builds the relationship before asking for donations.
+
+- Homepage headline: "Still Here. Still Weird."
+- Subhead: "55 years of alternative radio in the Black Hills"
+- Primary CTA: "Share Your Memories" → opens email to station
+- Secondary CTA: "Listen Now" → navigates to the player page
 - Countdown to September 25 reopening is visible
 
-**Phase 2: `"kteqlive"` — KTEQ Live (Grand Reopening)**
+**Phase 2: `"kteqlive"` — "Welcome Back!"**
 
-The culmination of the (Re)Discover campaign. This is a short-duration, high-energy phase centered on the September 25, 2026 reopening during M-Week and the anniversary concert. Switch to this phase a week or two before the event.
+Switch to this phase in late August, a couple weeks before the reopening. It does double duty:
 
-- Homepage headline: "KTEQ Is Back"
+- **Welcomes students** returning to campus for the fall semester
+- **Previews the return** to live broadcasts from the renovated studio
+- **Welcomes homecoming visitors** and returning alumni
+
+The grand reopening on September 25 (M-Week) is the centerpiece event — the culmination of the (Re)Discover campaign. This is a short, high-energy phase.
+
+- Homepage headline: "Welcome Back!"
+- Subhead: "Live from the Black Hills — KTEQ returns to the studio"
 - Primary CTA: "Listen Live" → starts the stream
 - Secondary CTA: "Our History" → links to the timeline
 - Prominent countdown to reopening date
 
-**Phase 3: `"kteq2071"` — KTEQ 2071 (Standard Operations)**
+**Phase 3: `"kteq100"` — KTEQ 100 (Standard Operations)**
 
-The post-campaign steady state. Once the reopening excitement settles, the site shifts to supporting daily operations: consistent programming, underwriting, regular fundraising intervals, and ongoing alumni engagement. The name "2071" represents KTEQ's 100th anniversary — the long-term horizon the station is building toward.
+The post-campaign steady state. By this point, the summer's collected history content — alumni photos, stories, timeline entries — has been built out, so "Explore Our History" becomes a meaningful CTA backed by real content.
+
+The name "KTEQ 100" represents the station's 100th anniversary in 2071 — the long-term horizon. This phase is about consistent programming, underwriting support, regular fundraising intervals, and sustainable alumni engagement.
+
+The next campaign evolution from here would be inviting new students — now familiar with the station's history and context from the (Re)Discover effort — to contribute as DJs, programmers, and station staff.
 
 - Homepage headline: "Black Hills Alternative Radio"
-- Primary CTA: "Listen Now" → starts the stream
-- Secondary CTA: "View Schedule" → links to the schedule
+- Subhead: "KTEQ-FM 91.3 — Rapid City, South Dakota"
+- Primary CTA: "Explore Our History" → links to the timeline
+- Secondary CTA: "Listen Now" → navigates to the player page
 - No countdown displayed
 
 ### Changing the campaign phase
@@ -441,13 +460,13 @@ Find the `campaignPhase` field and change it to one of the three values:
 "campaignPhase": "rediscover"
 ```
 
-Valid values: `"rediscover"`, `"kteqlive"`, `"kteq2071"`
+Valid values: `"rediscover"`, `"kteqlive"`, `"kteq100"`
 
 Commit the change and the homepage updates within about 60 seconds. That's it — one edit changes the entire feel of the site.
 
 ### Future campaigns
 
-The phase system isn't limited to (Re)Discover KTEQ. Future station campaigns — a spring fundraising push, a special event, a new programming launch — could add their own phases with custom messaging. The pattern is always the same: define a phase value, set it in settings, and the site adapts.
+The phase system isn't limited to (Re)Discover KTEQ. Future station campaigns — a new student recruitment drive, a spring fundraising push, a special event — can add their own phases with custom messaging and CTAs. The pattern is always the same: define a phase value in the composable code, set it in settings, and the site adapts.
 
 ---
 
@@ -487,7 +506,7 @@ Only change this if the stream source changes. If the stream goes down, the play
 | `email` | Contact email |
 | `donateUrl` | Where the Donate button links to (CARA page) |
 | `socialLinks` | Facebook, Instagram, TuneIn URLs |
-| `reopeningDate` | Used by the countdown timer during the `kteqlive` phase |
+| `reopeningDate` | Used by the countdown timer during `rediscover` and `kteqlive` phases |
 
 ---
 

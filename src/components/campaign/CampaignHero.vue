@@ -2,14 +2,14 @@
 import { useCampaignPhase } from '@/composables/useCampaignPhase'
 import { usePlayerStore } from '@/stores/player'
 
-const { heroConfig, phase, daysUntilReopening, showCountdown } = useCampaignPhase()
+const { heroConfig, daysUntilReopening, showCountdown, memoriesMailto } = useCampaignPhase()
 const player = usePlayerStore()
 </script>
 
 <template>
   <section class="noise relative overflow-hidden bg-kteq-void">
     <!-- Background texture / gradient -->
-    <div class="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,oklch(0.85_0.18_90_/_0.08),transparent)]" />
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,oklch(0.92_0.18_100_/_0.06),transparent)]" />
 
     <div class="relative z-10 mx-auto max-w-4xl px-4 py-24 text-center sm:py-32 lg:py-40">
       <!-- Frequency marker -->
@@ -36,9 +36,10 @@ const player = usePlayerStore()
 
       <!-- CTA buttons -->
       <div class="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-        <!-- Primary CTA: Listen -->
+
+        <!-- Primary CTA: Play stream -->
         <button
-          v-if="heroConfig.cta.route === '/listen'"
+          v-if="heroConfig.cta.action === 'play'"
           @click="player.toggle()"
           class="glow-yellow inline-flex items-center gap-2 rounded-full bg-kteq-yellow px-8 py-3 font-display text-base font-semibold text-kteq-black transition-all hover:bg-kteq-yellow-bright"
         >
@@ -48,9 +49,22 @@ const player = usePlayerStore()
           {{ player.isPlaying ? 'Now Playing' : heroConfig.cta.text }}
         </button>
 
-        <!-- Primary CTA: Link -->
+        <!-- Primary CTA: Mailto (bot-proofed, assembled at runtime) -->
+        <a
+          v-else-if="heroConfig.cta.action === 'mailto'"
+          :href="memoriesMailto"
+          class="glow-yellow inline-flex items-center gap-2 rounded-full bg-kteq-yellow px-8 py-3 font-display text-base font-semibold text-kteq-black transition-all hover:bg-kteq-yellow-bright"
+        >
+          {{ heroConfig.cta.text }}
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4">
+            <path d="M3 4a2 2 0 00-2 2v1.161l8.441 4.221a1.25 1.25 0 001.118 0L19 7.162V6a2 2 0 00-2-2H3z" />
+            <path d="M19 8.839l-7.77 3.885a2.75 2.75 0 01-2.46 0L1 8.839V14a2 2 0 002 2h14a2 2 0 002-2V8.839z" />
+          </svg>
+        </a>
+
+        <!-- Primary CTA: Internal route -->
         <RouterLink
-          v-else
+          v-else-if="heroConfig.cta.route"
           :to="heroConfig.cta.route"
           class="glow-yellow inline-flex items-center gap-2 rounded-full bg-kteq-yellow px-8 py-3 font-display text-base font-semibold text-kteq-black transition-all hover:bg-kteq-yellow-bright"
         >

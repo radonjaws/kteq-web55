@@ -24,7 +24,13 @@ All content lives in `content/*.json`. The Vue admin panel at `/#/admin` reads a
 The player lives in `App.vue` outside `<RouterView>` so the audio stream survives navigation. The `Audio` element is a singleton managed by the `player` Pinia store — never re-instantiated. Stream URL: `https://kteq-proxy.kteq.workers.dev` (Cloudflare Worker proxying HTTPS to the university Icecast server).
 
 ### Campaign phase system
-A `campaignPhase` value in `content/settings.json` drives conditional rendering across the site. Three phases: `"rediscover"` (55th anniversary, current), `"kteqlive"` (grand reopening countdown), `"kteq2071"` (standard operations). See `src/composables/useCampaignPhase.ts` for the full implementation and documentation.
+A `campaignPhase` value in `content/settings.json` drives conditional rendering across the site. "(Re)Discover KTEQ" is the internal campaign name; the public-facing messaging differs per phase:
+
+- `"rediscover"` (current) — "Still Here. Still Weird." Summer 2026. Social media handles chronological anniversary storytelling; the website invites alumni to share memories. Primary CTA is a bot-proofed mailto link.
+- `"kteqlive"` — "Welcome Back!" Late August through homecoming. Welcomes students back to campus, previews return to live broadcasts, countdown to Sept 25 reopening.
+- `"kteq100"` — "Black Hills Alternative Radio." Post-campaign standard ops. By now, collected history content is built out so "Explore Our History" is a real CTA. Named for KTEQ's 100th anniversary (2071) as the long-term horizon.
+
+The CTA system supports three action types: `'play'` (starts the stream), `'mailto'` (opens email), and route-based links. See `src/composables/useCampaignPhase.ts` for the full implementation, documentation, and the bot-proofed mailto assembly.
 
 ### No Aiir API integration yet
 The station uses Aiir/PlayoutONE Pro for automation and scheduling, but the website currently does NOT connect to Aiir's APIs. Schedule and show data is maintained manually in JSON. This may change in the future when the Aiir Platform CMS subscription question is resolved. The "now on air" display is schedule-based (looks up current show from schedule.json by day/time).
