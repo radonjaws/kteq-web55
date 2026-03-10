@@ -124,7 +124,7 @@ const phaseOptions = [
           <button
             @click="handleSave"
             :disabled="saving || loading"
-            class="inline-flex items-center gap-2 rounded-md bg-kteq-yellow px-4 py-2 font-display text-sm font-semibold text-kteq-black transition-all hover:bg-kteq-yellow-bright disabled:opacity-50 disabled:cursor-not-allowed"
+            class="inline-flex items-center gap-2 rounded-md bg-kteq-yellow px-4 py-2 font-display text-sm font-semibold text-kteq-black transition-all hover:bg-kteq-yellow-bright disabled:cursor-not-allowed disabled:opacity-50"
           >
             <svg v-if="saving" class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
@@ -198,7 +198,9 @@ const phaseOptions = [
             </div>
 
             <div>
-              <label class="mb-1.5 block font-display text-sm font-medium text-kteq-light">Banner Link URL <span class="text-kteq-muted font-normal">(optional)</span></label>
+              <label class="mb-1.5 block font-display text-sm font-medium text-kteq-light">
+                Banner Link URL <span class="font-normal text-kteq-muted">(optional)</span>
+              </label>
               <input
                 type="url"
                 v-model="form.bannerUrl"
@@ -248,7 +250,7 @@ const phaseOptions = [
               <textarea
                 v-model="form.stationDescription"
                 rows="3"
-                class="w-full rounded-md border border-kteq-gray/50 bg-kteq-void px-3 py-2 font-body text-sm text-kteq-white focus:border-kteq-yellow/50 focus:outline-none focus:ring-1 focus:ring-kteq-yellow/50 transition-colors resize-none"
+                class="w-full resize-none rounded-md border border-kteq-gray/50 bg-kteq-void px-3 py-2 font-body text-sm text-kteq-white focus:border-kteq-yellow/50 focus:outline-none focus:ring-1 focus:ring-kteq-yellow/50 transition-colors"
               />
               <p class="mt-1.5 text-xs text-kteq-muted">Used in the footer and meta description.</p>
             </div>
@@ -357,7 +359,7 @@ const phaseOptions = [
           <button
             type="submit"
             :disabled="saving || loading"
-            class="inline-flex items-center gap-2 rounded-md bg-kteq-yellow px-4 py-2 font-display text-sm font-semibold text-kteq-black transition-all hover:bg-kteq-yellow-bright disabled:opacity-50 disabled:cursor-not-allowed"
+            class="inline-flex items-center gap-2 rounded-md bg-kteq-yellow px-4 py-2 font-display text-sm font-semibold text-kteq-black transition-all hover:bg-kteq-yellow-bright disabled:cursor-not-allowed disabled:opacity-50"
           >
             <svg v-if="saving" class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>

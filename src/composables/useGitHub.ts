@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 
-const OWNER = 'kteq'
+const OWNER = 'radonjaws'
 const REPO = 'kteq-web55'
 const BRANCH = 'main'
 
@@ -170,5 +170,34 @@ export function useGitHub() {
     }
   }
 
-  return { saving, error, lastSaved, save, getContent, putContent, createContent, deleteContent, listContent }
+  async function create(path: string, content: any, message: string): Promise<string | null> {
+    saving.value = true
+    error.value = null
+    try {
+      const newSha = await createContent(path, content, message)
+      lastSaved.value = new Date()
+      return newSha
+    } catch (e: any) {
+      error.value = e.message
+      return null
+    } finally {
+      saving.value = false
+    }
+  }
+
+  async function destroy(path: string, sha: string, message: string): Promise<boolean> {
+    saving.value = true
+    error.value = null
+    try {
+      await deleteContent(path, sha, message)
+      return true
+    } catch (e: any) {
+      error.value = e.message
+      return false
+    } finally {
+      saving.value = false
+    }
+  }
+
+  return { saving, error, lastSaved, save, create, destroy, getContent, putContent, createContent, deleteContent, listContent }
 }

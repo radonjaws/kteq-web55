@@ -1,42 +1,228 @@
 # KTEQ Website Admin Manual
 
-**For station staff managing content on kteq.org**
+**For everyone who manages content on kteq.org**
 
-Welcome to the KTEQ website content management guide. This manual explains how to update the schedule, add shows, write blog posts, manage the 55th anniversary timeline, and handle images — all without needing to know how to code.
+---
+
+## Who Are You?
+
+This manual covers three levels of access. Find yourself below and focus on the sections that matter to you.
+
+### 🎧 DJ / Admin Panel User
+
+You have a login token for the admin panel at `kteq.org/#/admin`. You can update the schedule, edit shows, write blog posts, and manage the timeline using simple forms.
+
+**Read:** Sections 1, 2, and 3
+
+### 🔧 Programming Director / GitHub Editor
+
+You have a GitHub account with access to the `kteq/kteq-web55` repository. You can do everything an admin panel user can do, plus edit content files directly, upload images, and manage content that the admin panel doesn't cover yet.
+
+**Read:** Sections 1–6
+
+### 🛠️ Station Advisor / Station Leadership
+
+You manage who has access, set up tokens, understand the campaign system, and can make strategic changes to the website's messaging and behavior.
+
+**Read:** Everything, especially Sections 7 and 8
 
 ---
 
 ## Table of Contents
 
+**For Everyone**
 1. [How the Website Works](#1-how-the-website-works)
-2. [Getting Access](#2-getting-access)
-3. [Editing Content on GitHub](#3-editing-content-on-github)
-4. [Managing the Schedule](#4-managing-the-schedule)
-5. [Managing Shows](#5-managing-shows)
-6. [Managing DJ Profiles](#6-managing-dj-profiles)
-7. [Writing Blog Posts](#7-writing-blog-posts)
-8. [Managing the Timeline](#8-managing-the-timeline)
-9. [Campaigns & Site Settings](#9-campaigns--site-settings)
-10. [Adding Images](#10-adding-images)
-11. [Formatting with Markdown](#11-formatting-with-markdown)
-12. [Troubleshooting](#12-troubleshooting)
+2. [Using the Admin Panel](#2-using-the-admin-panel)
+3. [Content Editing Guide](#3-content-editing-guide)
+
+**For GitHub Editors**
+4. [Editing Content on GitHub](#4-editing-content-on-github)
+5. [Adding Images](#5-adding-images)
+6. [Content File Reference](#6-content-file-reference)
+
+**For Station Leadership**
+7. [Managing Access](#7-managing-access)
+8. [Campaigns](#8-campaigns)
+
+**Reference**
+9. [Formatting with Markdown](#9-formatting-with-markdown)
+10. [Troubleshooting](#10-troubleshooting)
+11. [Quick Reference](#11-quick-reference)
 
 ---
 
+# For Everyone
+
 ## 1. How the Website Works
 
-The KTEQ website doesn't use a traditional database or content management system. Instead, **all content lives as files in the GitHub repository**. When you edit a file and save it, GitHub automatically rebuilds the website. Your changes go live in about 60 seconds.
+The KTEQ website stores all of its content — the schedule, show listings, blog posts, the 55th anniversary timeline — as files in a GitHub repository. There's no traditional database or CMS.
 
-This means:
+When content changes, the website automatically rebuilds and goes live in about 60 seconds.
 
-- Every change is tracked with version history (so nothing is ever permanently lost)
-- You can see who changed what and when
-- If something breaks, it can be rolled back to a previous version
-- No separate login or CMS to manage — it's all in GitHub
+There are two ways to make changes:
+
+- **The Admin Panel** at `kteq.org/#/admin` — a set of simple forms built into the website. This is the primary way most students will manage content.
+- **GitHub's Web Editor** — for things the admin panel doesn't cover yet, or for users who are comfortable editing structured text files directly.
+
+Both methods end up doing the same thing: updating files in the repository, which triggers a rebuild.
+
+---
+
+## 2. Using the Admin Panel
+
+### Logging in
+
+1. Go to `kteq.org/#/admin` (or click any admin link)
+2. You'll see a login screen asking for a **GitHub token**
+3. Enter the station's admin token (get this from the programming director or station advisor)
+4. Click **Sign In**
+
+The token is stored in your browser. You won't need to enter it again on the same device unless you clear your browser data or the token expires.
+
+If you see "Invalid token," the token may have expired. Ask the station advisor for a new one.
+
+### The Dashboard
+
+After logging in, you'll see the admin dashboard with links to each content area:
+
+- **Schedule** — edit the weekly programming grid
+- **Shows** — manage show listings and descriptions
+- **DJs** — manage DJ profiles
+- **Timeline** — add entries to the 55th anniversary timeline
+- **Blog Posts** — write and publish news and updates
+- **Settings** — campaign phase, stream URL, announcement banner, social links
+
+Click into any section to start editing. Each section loads the current content from the repository, lets you make changes in a form, and saves your changes back with a single click.
+
+### Saving changes
+
+When you click **Save** in any admin editor:
+
+1. Your changes are committed to the repository (like saving a file)
+2. The website automatically rebuilds (takes ~60 seconds)
+3. Your changes are live on kteq.org
+
+Every save includes a description of what changed, and everything is tracked in version history. If something goes wrong, changes can be reverted.
+
+### A note on editors still being built
+
+The admin panel is being built out in phases. If a section shows "coming soon," that content area can be managed through GitHub's web editor instead (see Section 4). As each editor is completed, it replaces the need to edit files directly.
+
+---
+
+## 3. Content Editing Guide
+
+This section explains what each type of content is and what the fields mean, regardless of whether you're editing through the admin panel or GitHub.
+
+### Schedule
+
+The schedule is a weekly grid of time slots. Each slot has:
+
+| Field | What it means |
+|-------|--------------|
+| **Time** | Start and end time in 24-hour format (e.g., 14:00 for 2 PM) |
+| **Show** | Which show airs in this slot (selected from the show list) |
+| **Automation** | Whether this is automated/voice-tracked or a live show |
+| **Notes** | Optional text, e.g., "Special guest week" |
+
+Time slots should cover all 24 hours for each day with no gaps.
+
+### Shows
+
+Each show has:
+
+| Field | What it means |
+|-------|--------------|
+| **Name** | The display name of the show |
+| **Slug** | URL-friendly ID (lowercase, hyphens, no spaces). Becomes the web address |
+| **Tagline** | Short one-liner shown under the name |
+| **Description** | Longer text on the show's dedicated page. Supports Markdown formatting |
+| **Genre** | Genre label, e.g., "Punk / Hardcore" |
+| **DJs** | Which DJs host this show |
+| **Image** | Path to the show's artwork (see Section 5) |
+| **Active** | Whether the show is currently airing. Inactive shows are hidden but not deleted |
+
+### DJ Profiles
+
+| Field | What it means |
+|-------|--------------|
+| **Name** | Display name (can be a DJ name or real name) |
+| **Slug** | URL-friendly ID |
+| **Bio** | About the DJ. Supports Markdown |
+| **Shows** | Which shows they host (should match the show's DJ list) |
+| **Year Joined** | When they started at KTEQ |
+| **Image** | Path to their photo |
+| **Active** | Set to inactive when they graduate or leave (don't delete) |
+
+When adding a DJ to a show, the link needs to be set in both places — the show's DJ list and the DJ's show list.
+
+### Blog Posts
+
+| Field | What it means |
+|-------|--------------|
+| **Title** | Headline of the post |
+| **Slug** | URL-friendly ID. Becomes the web address |
+| **Body** | Full content. Supports Markdown (see Section 9) |
+| **Excerpt** | Short summary shown in the blog listing. 1-2 sentences |
+| **Author** | Who wrote it |
+| **Status** | "published" or "draft" — drafts don't appear on the site |
+| **Published Date** | When the post goes live |
+| **Tags** | Category labels shown on the post |
+| **Featured Image** | Optional image path |
+
+### Timeline Entries
+
+The 55th anniversary timeline is a collection of historical moments:
+
+| Field | What it means |
+|-------|--------------|
+| **Year** | When it happened |
+| **Month** | Optional, for sorting within a year |
+| **Title** | Short headline |
+| **Description** | The story. 2-4 sentences. Supports Markdown |
+| **Category** | `milestone`, `music`, `people`, or `technical` |
+| **Image** | Path to a historical photo (optional but encouraged) |
+| **Media URL** | Link to audio or video (optional) |
+| **Sources** | Where the information came from (good practice for historical claims) |
+
+**Category guide:**
+
+- **milestone** — founding, license changes, reopenings, awards, major events
+- **music** — concerts, notable bands, genre moments
+- **people** — DJs, managers, advisors, community figures
+- **technical** — frequency changes, equipment upgrades, studio moves
+
+### Site Settings
+
+Settings are managed by the programming director or station advisor. Most students won't need to change these. The key settings:
+
+| Setting | What it does |
+|---------|-------------|
+| **Campaign Phase** | Changes the entire homepage. See Section 8 |
+| **Stream URL** | Where the player connects. Don't change unless the stream moves |
+| **Banner Text** | Shows an announcement across the top of every page. Empty = hidden |
+| **Donate URL** | Where the Donate button links (CARA page) |
+| **Social Links** | Facebook, Instagram, TuneIn URLs |
+
+---
+
+# For GitHub Editors
+
+These sections are for students with direct access to the GitHub repository. If you only use the admin panel, you can skip ahead to Section 9.
+
+## 4. Editing Content on GitHub
+
+### Getting started
+
+1. Go to [github.com/kteq/kteq-web55](https://github.com/kteq/kteq-web55)
+2. Navigate to the file you want to edit in the `content/` folder
+3. Click the pencil icon (edit button) in the top-right of the file view
+4. Make your changes
+5. Scroll down, type a brief description of what you changed, and click **Commit changes**
+
+The site rebuilds automatically. Your changes are live in about 60 seconds.
 
 ### Where content lives
-
-All editable content is in the `content/` folder:
 
 | File | What it controls |
 |------|-----------------|
@@ -49,41 +235,9 @@ All editable content is in the `content/` folder:
 
 Images go in `public/images/` and are organized in subfolders.
 
----
+### JSON basics
 
-## 2. Getting Access
-
-You need a GitHub account that has access to the `kteq/kteq-web55` repository. Ask the station advisor or programming director to add you as a collaborator.
-
-Once you have access, there are two ways to make changes:
-
-### Option A: GitHub's Web Editor (Recommended for most tasks)
-
-1. Go to [github.com/kteq/kteq-web55](https://github.com/kteq/kteq-web55)
-2. Navigate to the file you want to edit in the `content/` folder
-3. Click the pencil icon (edit button) in the top right of the file view
-4. Make your changes
-5. Scroll down, type a brief description of what you changed, and click **Commit changes**
-
-That's it. The site rebuilds automatically.
-
-### Option B: The Admin Panel (at kteq.org/#/admin)
-
-The website includes a built-in admin panel with forms for editing content. To use it:
-
-1. Go to `kteq.org/#/admin`
-2. Enter the station's GitHub Personal Access Token (get this from the station advisor)
-3. Use the forms to edit content — saving commits directly to the repo
-
-The admin panel is being built in phases. If a section shows "coming soon," use the GitHub web editor instead.
-
----
-
-## 3. Editing Content on GitHub
-
-All content files use **JSON format**. JSON is structured text with a specific syntax. Here are the rules:
-
-### JSON Basics
+Content files use JSON format. Here are the rules:
 
 ```json
 {
@@ -94,39 +248,97 @@ All content files use **JSON format**. JSON is structured text with a specific s
 }
 ```
 
-**Rules to follow:**
+- Text must be in double quotes: `"like this"`
+- `true`/`false` and numbers don't get quotes
+- Separate items with commas, but **no comma after the last item**
+- For quotes inside text, use `\"`. For line breaks, use `\n`
 
-- Every piece of text must be wrapped in double quotes: `"like this"`
-- Use `true` or `false` (no quotes) for yes/no values
-- Use plain numbers (no quotes) for numeric values
-- Separate items with commas, but **no comma after the last item** in a list
-- Be careful with special characters in text. If you need a double quote inside text, use `\"`. If you need a line break, use `\n`
+**The #1 thing that will break the site** is a missing or extra comma. GitHub's editor shows a red dot on lines with syntax errors. If you're stuck, paste your JSON into [jsonlint.com](https://jsonlint.com/) to find the error.
 
-### Most common mistake
+### Creating a new blog post
 
-The number one thing that will break the site is a missing or extra comma:
+Blog posts are individual files in `content/posts/`. To create one:
+
+1. Navigate to `content/posts/`
+2. Click **Add file** → **Create new file**
+3. Name it `YYYY-MM-slug.json` (e.g., `2026-04-spring-schedule.json`)
+4. Paste this template and fill it in:
 
 ```json
 {
-  "name": "Good",
-  "genre": "Rock",     ← comma here is correct
-  "isActive": true     ← NO comma on the last item
+  "slug": "spring-schedule",
+  "title": "Spring 2026 Schedule Is Here",
+  "body": "Your post content here. Use \\n for line breaks.\n\n## Markdown headers work\n\nAnd **bold** and *italic* and [links](https://example.com).",
+  "excerpt": "A short summary for the blog listing.",
+  "featuredImage": "",
+  "author": "Your Name",
+  "status": "published",
+  "publishedAt": "2026-04-01T09:00:00-06:00",
+  "tags": ["schedule", "spring-2026"],
+  "createdAt": "2026-04-01T09:00:00-06:00",
+  "updatedAt": "2026-04-01T09:00:00-06:00"
 }
 ```
 
-If the site doesn't rebuild after your edit, this is almost certainly the issue. GitHub's editor will show a red dot on lines with syntax errors.
+Set `"status": "draft"` to save without publishing.
+
+### Deactivating content (don't delete)
+
+When a show ends or a DJ leaves, **don't delete their entry**. Set `"isActive": false` instead. This keeps the content in the archive, prevents broken links, and preserves history.
 
 ---
 
-## 4. Managing the Schedule
+## 5. Adding Images
 
-**File:** `content/schedule.json`
+Images live in `public/images/`, organized by type:
 
-The schedule is organized by day of the week. Each day contains a list of time slots.
+| Folder | What goes here |
+|--------|---------------|
+| `public/images/shows/` | Show artwork |
+| `public/images/djs/` | DJ headshots |
+| `public/images/timeline/` | Historical photos |
+| `public/images/posts/` | Blog post images |
+| `public/images/brand/` | Station logos and branding |
 
-### Adding or changing a time slot
+### Uploading
 
-Find the day you want to edit and add or modify a slot. Each slot looks like this:
+1. Navigate to the appropriate folder in GitHub
+2. Click **Add file** → **Upload files**
+3. Drag and drop your images
+4. Write a commit message and click **Commit changes**
+
+### Naming
+
+Use lowercase, hyphens, no spaces:
+
+- ✅ `deep-cut-cover.jpg`
+- ❌ `Deep Cut Cover.jpg`
+
+### Size guidelines
+
+- **Format:** JPG for photos, PNG for logos/graphics
+- **Max size:** Under 500 KB. Resize large photos before uploading — 1200px wide is plenty
+- **Resize tool:** [Squoosh](https://squoosh.app/) (free, web-based, no install)
+
+### Referencing in content
+
+After uploading, use the path starting with `/images/`:
+
+```json
+"image": "/images/timeline/1993-green-day.jpg"
+```
+
+Note: the path starts with `/images/`, not `public/images/`.
+
+---
+
+## 6. Content File Reference
+
+Detailed schemas for each content file. Refer to this when editing JSON directly.
+
+### schedule.json
+
+Each day contains an array of time slots:
 
 ```json
 {
@@ -139,445 +351,223 @@ Find the day you want to edit and add or modify a slot. Each slot looks like thi
 }
 ```
 
-**Fields explained:**
+- `id`: unique, use the pattern `day-time` (e.g., `"fri-1400"`)
+- Times use 24-hour format. Midnight = `"00:00"`. Don't use `"24:00"`
+- `showSlug` must exactly match a slug in `shows.json`
+- Update `lastUpdated` and `updatedBy` at the top of the file
 
-| Field | What it means | Example |
-|-------|--------------|---------|
-| `id` | A unique identifier. Use the pattern `day-time` | `"mon-1000"`, `"fri-1400"` |
-| `startTime` | When the slot starts (24-hour format) | `"14:00"` for 2 PM |
-| `endTime` | When the slot ends (24-hour format) | `"16:00"` for 4 PM, `"00:00"` for midnight |
-| `showSlug` | Links to a show in shows.json (see below) | `"the-deep-cut"` |
-| `isAutomation` | Is this automated/voice-tracked? | `true` or `false` |
-| `notes` | Optional text shown on the schedule | `"Special guest week"` |
-
-**Important:**
-
-- Times use 24-hour format: 1 PM = `"13:00"`, midnight = `"00:00"`
-- Use `"00:00"` for midnight as an end time (not `"24:00"`)
-- The `showSlug` must match a slug in `content/shows.json` exactly
-- Time slots should cover the full 24 hours for each day with no gaps or overlaps
-- Update the `lastUpdated` field at the top of the file with today's date
-- Update `updatedBy` with your name
-
-### Example: Adding a new show on Monday evenings
-
-1. Open `content/schedule.json`
-2. Find the `"monday"` section
-3. Adjust existing slots so there's room (for example, shorten the automation slot that currently covers the evening)
-4. Add your new slot in the right time position:
-
-```json
-{
-  "id": "mon-1800",
-  "startTime": "18:00",
-  "endTime": "20:00",
-  "showSlug": "noise-floor",
-  "isAutomation": false,
-  "notes": ""
-}
-```
-
-5. Make sure the show `"noise-floor"` exists in `content/shows.json` (see next section)
-
----
-
-## 5. Managing Shows
-
-**File:** `content/shows.json`
-
-Shows are listed in the `"shows"` array. Each show looks like this:
+### shows.json
 
 ```json
 {
   "slug": "the-deep-cut",
   "name": "The Deep Cut",
   "tagline": "Digging deeper than the algorithm ever will",
-  "description": "A two-hour journey through overlooked albums, B-sides, and deep cuts from across genres.",
+  "description": "Longer description, supports Markdown.",
   "djSlugs": ["alex-r"],
   "image": "/images/shows/deep-cut.jpg",
   "genre": "Eclectic / Indie",
   "isActive": true,
   "isAutomation": false,
-  "socialLinks": {
-    "instagram": "",
-    "playlist": ""
-  }
+  "socialLinks": { "instagram": "", "playlist": "" }
 }
 ```
 
-**Fields explained:**
+- `slug` must be unique and is used in schedule.json and in URLs
+- `djSlugs` must match slugs in djs.json
+- `isAutomation` is only `true` for the main KTEQ Automation entry
 
-| Field | What it means | Notes |
-|-------|--------------|-------|
-| `slug` | URL-friendly ID, used in the schedule and in the web address | Lowercase, hyphens instead of spaces: `"the-deep-cut"` |
-| `name` | Display name of the show | `"The Deep Cut"` |
-| `tagline` | Short one-liner shown under the name | Keep it to one sentence |
-| `description` | Longer description shown on the show's page | Can use Markdown (see Section 11) |
-| `djSlugs` | List of DJs who host this show | Must match slugs in `djs.json`. Use `[]` if none listed yet |
-| `image` | Path to the show's image | See Section 10 for how to add images |
-| `genre` | Genre label shown on cards | `"Punk / Hardcore"`, `"Electronic"`, etc. |
-| `isActive` | Is this show currently airing? | `false` hides it from the main listing but keeps it in the system |
-| `isAutomation` | Is this the automation entry? | Only `true` for the main KTEQ Automation show |
-| `socialLinks` | Optional links | Instagram, Spotify/Apple playlist, etc. |
-
-### Adding a new show
-
-1. Open `content/shows.json`
-2. Add a new entry at the end of the `"shows"` array (before the closing `]`)
-3. Remember to add a comma after the previous show's closing `}`
-4. Choose a unique slug (check that no other show uses the same one)
-5. Add the slug to a schedule slot in `content/schedule.json`
-
-### Removing a show
-
-Don't delete the show entry — instead, set `"isActive": false`. This keeps the show in the archive and prevents broken links. Then remove or update any schedule slots that reference it.
-
----
-
-## 6. Managing DJ Profiles
-
-**File:** `content/djs.json`
-
-DJ profiles work the same way as shows. Each DJ looks like this:
+### djs.json
 
 ```json
 {
   "slug": "alex-r",
   "name": "Alex R.",
-  "bio": "Junior in ME. Has been at KTEQ since freshman year. Plays a mix of indie rock, shoegaze, and post-punk.",
+  "bio": "Bio text, supports Markdown.",
   "image": "/images/djs/alex-r.jpg",
   "showSlugs": ["the-deep-cut"],
   "yearJoined": 2024,
   "isActive": true,
-  "socialLinks": {
-    "instagram": ""
-  }
+  "socialLinks": { "instagram": "" }
 }
 ```
 
-**Key points:**
+- `showSlugs` must match slugs in shows.json (two-way link)
 
-- The `slug` must be unique and match what's referenced in the show's `djSlugs` list
-- `showSlugs` should list all shows this DJ hosts (must match slugs in `shows.json`)
-- `yearJoined` is the year they started at KTEQ
-- Set `"isActive": false` when a DJ graduates or leaves (don't delete them)
-- `bio` can use Markdown formatting (see Section 11)
-
-### Connecting shows and DJs
-
-Shows and DJs cross-reference each other. When you add a new DJ to a show:
-
-1. Add the DJ to `content/djs.json` with their slug
-2. Add the DJ's slug to the show's `"djSlugs"` list in `content/shows.json`
-3. Add the show's slug to the DJ's `"showSlugs"` list in `content/djs.json`
-
-Both references need to be in place for the links to work on the website.
-
----
-
-## 7. Writing Blog Posts
-
-**Location:** `content/posts/` (one file per post)
-
-Blog posts are individual JSON files. The filename should follow the pattern: `YYYY-MM-slug.json`
-
-### Creating a new post
-
-1. In GitHub, navigate to `content/posts/`
-2. Click **Add file** → **Create new file**
-3. Name it something like `2026-04-spring-schedule.json`
-4. Paste this template and fill it in:
+### timeline.json
 
 ```json
 {
-  "slug": "spring-schedule",
-  "title": "Spring 2026 Schedule Is Here",
-  "body": "Your blog post content goes here.\n\nUse \\n for line breaks.\n\n## You can use Markdown headers\n\nAnd **bold text** and *italic text* and [links](https://example.com).",
-  "excerpt": "A short summary shown in the blog listing.",
-  "featuredImage": "",
-  "author": "Your Name",
+  "id": "1971-first-broadcast",
+  "year": 1971,
+  "month": 8,
+  "title": "KTEQ Touches the Airwaves",
+  "description": "Description text, supports Markdown.",
+  "image": "/images/timeline/1971-founding.jpg",
+  "mediaUrl": "",
+  "category": "milestone",
+  "sources": "The Aldrich Report"
+}
+```
+
+- `id`: unique, use `year-short-description`
+- `month` is optional (1-12), helps sort within a year
+- `category` must be: `"milestone"`, `"music"`, `"people"`, or `"technical"`
+
+### Blog post files (content/posts/*.json)
+
+```json
+{
+  "slug": "welcome-back",
+  "title": "Post Title",
+  "body": "Full content in Markdown. Use \\n for line breaks.",
+  "excerpt": "Short summary for listing page.",
+  "featuredImage": "/images/posts/photo.jpg",
+  "author": "Name",
   "status": "published",
   "publishedAt": "2026-04-01T09:00:00-06:00",
-  "tags": ["schedule", "spring-2026"],
+  "tags": ["tag1", "tag2"],
   "createdAt": "2026-04-01T09:00:00-06:00",
   "updatedAt": "2026-04-01T09:00:00-06:00"
 }
 ```
 
-**Fields explained:**
-
-| Field | What it means | Notes |
-|-------|--------------|-------|
-| `slug` | URL-friendly ID | Becomes the web address: `kteq.org/#/blog/spring-schedule` |
-| `title` | Headline of the post | |
-| `body` | Full content of the post | Uses Markdown (see Section 11). Use `\n` for line breaks in JSON |
-| `excerpt` | Short summary for the blog listing page | 1-2 sentences |
-| `featuredImage` | Path to an image | Optional. See Section 10 |
-| `author` | Who wrote it | |
-| `status` | `"published"` or `"draft"` | Drafts won't appear on the site |
-| `publishedAt` | Publication date | Format: `"2026-04-01T09:00:00-06:00"` (the `-06:00` is Mountain Time) |
-| `tags` | Category labels | Show up on the post page |
-
-### Writing long-form content in the body field
-
-Since blog post content lives inside a JSON string, line breaks need to be written as `\n` and double quotes as `\"`. Here's an example:
-
-```json
-"body": "# Welcome Back\n\nWe're excited to announce the spring schedule.\n\n## What's New\n\nWe have **three new shows** this semester:\n\n- Noise Floor (Monday evenings)\n- The Vinyl Countdown (Wednesday afternoons)\n- Late Night Frequencies (Friday 10 PM)\n\nTune in and let us know what you think."
-```
-
-This renders on the website as a properly formatted article with headers, bold text, and a bulleted list.
-
-### Saving a post as a draft
-
-Set `"status": "draft"` and it won't appear on the site. When it's ready, change it to `"published"` and update `publishedAt` to the current date.
+- Filename pattern: `YYYY-MM-slug.json`
+- `status`: `"published"` or `"draft"` (drafts are hidden from the site)
+- `publishedAt` format: `"2026-04-01T09:00:00-06:00"` (the `-06:00` is Mountain Time)
 
 ---
 
-## 8. Managing the Timeline
+# For Station Leadership
 
-**File:** `content/timeline.json`
+## 7. Managing Access
 
-The 55th anniversary timeline is the centerpiece of the history section. Each entry represents a significant moment in KTEQ's history.
+There are two types of access to manage: GitHub repository access (for direct file editing) and admin panel tokens (for the web-based editors).
 
-### Adding a timeline entry
+### GitHub repository access
 
-Add a new entry to the `"entries"` array:
+Students who need to edit content files directly, upload images, or manage the repository need a GitHub account added as a collaborator.
 
-```json
-{
-  "id": "1993-green-day",
-  "year": 1993,
-  "month": 4,
-  "title": "Green Day Plays the Rushmore Plaza",
-  "description": "KTEQ co-sponsored a Green Day show at the Rushmore Plaza Civic Center, one of many live events the station helped bring to the Black Hills.",
-  "image": "/images/timeline/1993-green-day.jpg",
-  "mediaUrl": "",
-  "category": "music",
-  "sources": "Black Hills Monthly, April 1993"
-}
-```
+**To add a collaborator:**
 
-**Fields explained:**
+1. Go to [github.com/kteq/kteq-web55](https://github.com/kteq/kteq-web55) → **Settings** → **Collaborators**
+2. Click **Add people**
+3. Search for their GitHub username
+4. Select **Write** role (they need to be able to commit changes)
 
-| Field | What it means | Notes |
-|-------|--------------|-------|
-| `id` | Unique identifier | Use the pattern `year-short-description` |
-| `year` | The year this happened | Used for sorting and display |
-| `month` | Optional month (1-12) | Helps sort within a year. Leave it out if unsure |
-| `title` | Headline for the entry | Keep it concise |
-| `description` | The story of what happened | Can be a few sentences. Can use Markdown |
-| `image` | Path to a photo | Optional. See Section 10 |
-| `mediaUrl` | Link to audio or video | Optional. Could be a YouTube or SoundCloud embed URL |
-| `category` | Type of entry | Must be one of: `"milestone"`, `"music"`, `"people"`, `"technical"` |
-| `sources` | Where the information came from | Optional. Good practice for historical accuracy |
+**When someone leaves the station:** Remove them from the collaborators list. Their past contributions remain in the commit history.
 
-**Categories:**
+GitHub editors are typically the programming director, station manager, and any students comfortable working with structured text files. Most DJs won't need this level of access.
 
-- **milestone** — Founding, license changes, reopenings, awards, major events
-- **music** — Concerts, notable bands, genre moments, significant shows
-- **people** — DJs, managers, advisors, community figures
-- **technical** — Frequency changes, equipment upgrades, studio moves, transmitter work
+### Admin panel tokens
 
-### Tips for good timeline entries
+The admin panel at `kteq.org/#/admin` uses a GitHub Personal Access Token (PAT) to authenticate. This is a single shared token for the station — anyone who has it can use the admin panel.
 
-- Write in past tense
-- Include specific dates when possible (use the `month` field)
-- Keep descriptions to 2-4 sentences
-- Add images whenever available — they make the timeline much more engaging
-- Include source attribution for historical claims
-- Ask alumni for stories and photos!
+**To create or regenerate a token:**
+
+1. Go to [github.com/settings/personal-access-tokens/new](https://github.com/settings/personal-access-tokens/new)
+   (You must be logged into an account that has access to the repository)
+2. **Token name:** `KTEQ Admin Panel` (or similar)
+3. **Expiration:** 90 days is a reasonable balance of security and convenience. You'll need to regenerate when it expires
+4. **Repository access:** Select **Only select repositories** → choose `kteq/kteq-web55`
+5. **Permissions → Repository permissions → Contents:** Set to **Read and write** (this is the only permission needed)
+6. Click **Generate token**
+7. Copy the `github_pat_...` string — this is the admin panel login
+
+**Distributing the token:** Share it with students who need admin panel access. They enter it once at `kteq.org/#/admin/login` and it's stored in their browser.
+
+**When a student leaves on bad terms:** Regenerate the token. This instantly revokes access for anyone using the old token. Distribute the new token to remaining staff.
+
+**When a token expires:** Regenerate it following the same steps and distribute the new one.
+
+### Who gets what access
+
+| Role | Admin Panel | GitHub Repo | What they can do |
+|------|:-----------:|:-----------:|-----------------|
+| DJs | ✅ | — | Update schedule, edit their show/profile, write blog posts |
+| Programming Director | ✅ | ✅ | Everything above, plus upload images, edit JSON directly, manage content the admin panel doesn't cover |
+| Station Manager | ✅ | ✅ | Same as Programming Director |
+| Station Advisor | ✅ | ✅ | Everything above, plus manage collaborators, regenerate tokens, change campaign phases, make code changes via Claude Code |
 
 ---
 
-## 9. Campaigns & Site Settings
+## 8. Campaigns
 
-### What are campaigns?
+### What campaigns are
 
-Most websites are static — they look the same whether the station is in the middle of a fundraising push or just doing regular programming. KTEQ's website uses a **campaign system** that lets you change the entire tone and focus of the site by editing a single setting.
+The KTEQ website has a **campaign system** that changes the homepage messaging, calls-to-action, and overall tone by editing a single setting. Think of it like seasonal programming for the website.
 
-Think of it like seasonal programming for the website. When the station's priorities shift — from reconnecting with alumni, to welcoming students back, to settling into regular operations — the website shifts with it. The homepage hero changes, calls-to-action update, and the overall emphasis moves without anyone touching code.
+This matters because the website needs to do different jobs at different times. During an alumni outreach effort, the site should invite people to reconnect. During a grand reopening, it should build excitement. During normal operations, it should get out of the way and let people listen. The campaign system handles all of this without code changes.
 
-This is useful because a radio station's website needs to do different jobs at different times. During an alumni outreach effort, the site should invite people to reconnect and share memories. During a grand reopening, it should build excitement and get people listening. During normal operations, it should get out of the way and let the programming speak. The campaign phase system handles all of this with a single setting change.
+### What students see vs. what leadership controls
 
-### How the (Re)Discover KTEQ campaign works
+**Admin panel users** (DJs, most students) can see which campaign phase is active in the Settings editor and could technically change it, but they shouldn't — phase changes are strategic decisions that affect the entire site.
 
-**(Re)Discover KTEQ** is the internal name for the station's 2026 campaign effort — the umbrella that covers the 55th anniversary, the studio renovation, fundraising, alumni outreach, and the grand reopening. But the *public-facing* messaging on the website is different at each stage, because the site's job changes as the campaign progresses.
+**Campaign messaging** — the actual headlines, subheads, and CTA text — is defined in code (`src/composables/useCampaignPhase.ts`), not in the admin panel. This is intentional: "Still Here. Still Weird." isn't something that should be casually edited. Leadership defines the messaging; the admin panel just selects which phase is active.
 
-Meanwhile, social media carries the chronological anniversary storytelling — working through yearly milestones, alumni engagement, music history from 1971 to present. The website and social media complement each other, but they don't say the same things.
+To change campaign messaging, use Claude Code with the project context in `CLAUDE.md`. The composable is well-documented and Code can add or modify phases in a few minutes.
 
-There are three phases:
+### The (Re)Discover KTEQ campaign
+
+**(Re)Discover KTEQ** is the internal name for the station's 2026 campaign — the umbrella covering the 55th anniversary, studio renovation, fundraising, alumni outreach, and grand reopening. The public-facing messaging is different at each stage because the website's job changes as the campaign progresses.
+
+Meanwhile, social media carries the chronological anniversary storytelling — yearly milestones, alumni engagement, music history. The website and social media complement each other but don't say the same things.
 
 **Phase 1: `"rediscover"` — "Still Here. Still Weird."**
 
-This is where the site starts and where it stays through summer 2026. Social media is doing the heavy lifting of chronological 55th anniversary storytelling. The website's job during this phase is simpler and warmer: *establish that KTEQ exists, has 55 years of history, and invite people to connect.*
+The opening phase, running through summer 2026. Social media does the heavy lifting of anniversary storytelling. The website's job is warmer and simpler: establish that KTEQ exists, has 55 years of history, and invite people to connect.
 
-The primary call-to-action is **"Share Your Memories"** — a mailto link that opens an email to the station. The idea is to collect alumni stories, photos, and memories that will become timeline content and anniversary material. This builds the relationship before asking for donations.
+The primary CTA is **"Share Your Memories"** — a mailto link to the station. The goal is to collect alumni stories and photos that become timeline content and anniversary material. Build the relationship before asking for donations.
 
-- Homepage headline: "Still Here. Still Weird."
+- Headline: "Still Here. Still Weird."
 - Subhead: "55 years of alternative radio in the Black Hills"
-- Primary CTA: "Share Your Memories" → opens email to station
-- Secondary CTA: "Listen Now" → navigates to the player page
-- Countdown to September 25 reopening is visible
+- Primary CTA: "Share Your Memories" → email to station
+- Secondary CTA: "Listen Now" → player page
+- Countdown to September 25 visible
 
 **Phase 2: `"kteqlive"` — "Welcome Back!"**
 
-Switch to this phase in late August, a couple weeks before the reopening. It does double duty:
+Switch to this in late August, a couple weeks before the reopening. Does double duty: welcomes students returning to campus, previews the return to live broadcasts from the renovated studio, and welcomes homecoming visitors. The September 25 M-Week reopening is the centerpiece. Short, high-energy phase.
 
-- **Welcomes students** returning to campus for the fall semester
-- **Previews the return** to live broadcasts from the renovated studio
-- **Welcomes homecoming visitors** and returning alumni
-
-The grand reopening on September 25 (M-Week) is the centerpiece event — the culmination of the (Re)Discover campaign. This is a short, high-energy phase.
-
-- Homepage headline: "Welcome Back!"
+- Headline: "Welcome Back!"
 - Subhead: "Live from the Black Hills — KTEQ returns to the studio"
-- Primary CTA: "Listen Live" → starts the stream
-- Secondary CTA: "Our History" → links to the timeline
-- Prominent countdown to reopening date
+- Primary CTA: "Listen Live" → starts stream
+- Secondary CTA: "Our History" → timeline
+- Prominent countdown
 
-**Phase 3: `"kteq100"` — KTEQ 100 (Standard Operations)**
+**Phase 3: `"kteq100"` — Standard Operations**
 
-The post-campaign steady state. By this point, the summer's collected history content — alumni photos, stories, timeline entries — has been built out, so "Explore Our History" becomes a meaningful CTA backed by real content.
+Post-campaign steady state. By now, the summer's collected history content is built out, so "Explore Our History" is backed by real content. Consistent programming, underwriting, regular fundraising intervals, alumni engagement — focused on long-term sustainability. "KTEQ 100" represents the station's 100th anniversary (2071) as the planning horizon.
 
-The name "KTEQ 100" represents the station's 100th anniversary in 2071 — the long-term horizon. This phase is about consistent programming, underwriting support, regular fundraising intervals, and sustainable alumni engagement.
+The next campaign evolution from here: inviting new students — now familiar with the station's history and context — to contribute as DJs, programmers, and staff.
 
-The next campaign evolution from here would be inviting new students — now familiar with the station's history and context from the (Re)Discover effort — to contribute as DJs, programmers, and station staff.
-
-- Homepage headline: "Black Hills Alternative Radio"
+- Headline: "Black Hills Alternative Radio"
 - Subhead: "KTEQ-FM 91.3 — Rapid City, South Dakota"
-- Primary CTA: "Explore Our History" → links to the timeline
-- Secondary CTA: "Listen Now" → navigates to the player page
-- No countdown displayed
+- Primary CTA: "Explore Our History" → timeline
+- Secondary CTA: "Listen Now" → player page
+- No countdown
 
-### Changing the campaign phase
+### Changing the phase
 
-**File:** `content/settings.json`
+In `content/settings.json`, change `campaignPhase` to one of: `"rediscover"`, `"kteqlive"`, `"kteq100"`
 
-Find the `campaignPhase` field and change it to one of the three values:
-
-```json
-"campaignPhase": "rediscover"
-```
-
-Valid values: `"rediscover"`, `"kteqlive"`, `"kteq100"`
-
-Commit the change and the homepage updates within about 60 seconds. That's it — one edit changes the entire feel of the site.
-
-### Future campaigns
-
-The phase system isn't limited to (Re)Discover KTEQ. Future station campaigns — a new student recruitment drive, a spring fundraising push, a special event — can add their own phases with custom messaging and CTAs. The pattern is always the same: define a phase value in the composable code, set it in settings, and the site adapts.
+Or use the Settings editor in the admin panel.
 
 ---
 
-### Other site settings
+# Reference
 
-**File:** `content/settings.json`
+## 9. Formatting with Markdown
 
-**Be careful editing this file** — incorrect values can affect the entire site.
-
-### Announcement banner
-
-To show a banner across the top of every page:
-
-```json
-"bannerText": "KTEQ returns to FM on May 16!",
-"bannerUrl": "https://kteq.org/#/blog/fm-return",
-"bannerDismissible": true
-```
-
-To hide the banner, set `bannerText` to an empty string: `"bannerText": ""`
-
-### Stream URL
-
-```json
-"streamUrl": "https://kteq-proxy.kteq.workers.dev"
-```
-
-Only change this if the stream source changes. If the stream goes down, the player will show an error message automatically — you don't need to change this setting.
-
-### Other settings
-
-| Setting | What it does |
-|---------|-------------|
-| `stationName` | Displayed in the header and footer |
-| `stationTagline` | Shown under the station name |
-| `requestLine` | Phone number displayed on the site |
-| `email` | Contact email |
-| `donateUrl` | Where the Donate button links to (CARA page) |
-| `socialLinks` | Facebook, Instagram, TuneIn URLs |
-| `reopeningDate` | Used by the countdown timer during `rediscover` and `kteqlive` phases |
-
----
-
-## 10. Adding Images
-
-Images live in the `public/images/` folder, organized by type:
-
-| Folder | What goes here |
-|--------|---------------|
-| `public/images/shows/` | Show artwork and logos |
-| `public/images/djs/` | DJ headshots or profile photos |
-| `public/images/timeline/` | Historical photos for timeline entries |
-| `public/images/posts/` | Images for blog posts |
-| `public/images/brand/` | Station logos and branding assets |
-
-### How to upload an image
-
-1. Go to the repository on GitHub
-2. Navigate to the appropriate folder (e.g., `public/images/timeline/`)
-3. Click **Add file** → **Upload files**
-4. Drag and drop your image(s) or click to browse
-5. Write a commit message (e.g., "Add 1993 Green Day show photo")
-6. Click **Commit changes**
-
-### Naming conventions
-
-Use lowercase filenames with hyphens, no spaces:
-
-- `deep-cut-cover.jpg` (not `Deep Cut Cover.jpg`)
-- `alex-r.jpg` (not `Alex R..jpg`)
-- `1993-green-day.jpg` (not `1993 Green Day.JPG`)
-
-### Image guidelines
-
-- **Format:** JPG for photos, PNG for logos or graphics with transparency
-- **Size:** Aim for under 500 KB per image. Resize large photos before uploading — 1200px wide is plenty for the website
-- **Aspect ratio:** No strict requirement, but 16:9 or 3:2 works well for show/post images. Square works for DJ profile photos
-- Free tools to resize: [Squoosh](https://squoosh.app/) (web-based, no install needed) or Preview on Mac
-
-### Referencing images in content files
-
-After uploading, reference the image by its path from the `public/` folder:
-
-```json
-"image": "/images/timeline/1993-green-day.jpg"
-```
-
-The path always starts with `/images/` (not `public/images/`).
-
-### Images to avoid uploading
-
-- Anything over 2 MB (will slow the site down and bloat the repo)
-- Copyrighted press photos you don't have permission to use
-- Raw camera files (.RAW, .CR2, .NEF) — convert to JPG first
-
----
-
-## 11. Formatting with Markdown
-
-Several content fields support **Markdown**, a simple formatting language. This includes show descriptions, DJ bios, blog post bodies, and timeline descriptions.
-
-### Common formatting
+Several content fields support **Markdown** — a simple way to add formatting. This works in show descriptions, DJ bios, blog post bodies, and timeline descriptions.
 
 | What you type | What it looks like |
 |---------------|-------------------|
 | `**bold text**` | **bold text** |
 | `*italic text*` | *italic text* |
-| `[link text](https://url.com)` | link text (as a clickable link) |
+| `[link text](https://url.com)` | a clickable link |
 | `# Big Heading` | A large heading |
 | `## Smaller Heading` | A medium heading |
-| `### Even Smaller` | A small heading |
 
 ### Lists
 
@@ -589,101 +579,84 @@ Several content fields support **Markdown**, a simple formatting language. This 
 
 ### Line breaks in JSON
 
-Since content is stored in JSON strings, you can't just press Enter for a new line. Instead, use `\n`:
+In JSON strings, use `\n` for line breaks:
 
 ```json
-"description": "First paragraph goes here.\n\nSecond paragraph goes here."
+"description": "First paragraph.\n\nSecond paragraph."
 ```
 
-Two `\n\n` creates a paragraph break. One `\n` creates a line break.
-
-### Full example
-
-```json
-"body": "# Spring Schedule Announcement\n\nWe're thrilled to share the spring 2026 lineup.\n\n## New Shows\n\nThis semester brings **three new programs** to the KTEQ airwaves:\n\n- **Noise Floor** — ambient and experimental electronic\n- **The Vinyl Countdown** — classic rock deep cuts on actual vinyl\n- **Late Night Frequencies** — freeform after dark\n\n## Returning Favorites\n\nAll of last semester's shows are back in their usual slots.\n\nCheck the [full schedule](/schedule) for times and details."
-```
+Two `\n\n` = paragraph break. One `\n` = line break.
 
 ---
 
-## 12. Troubleshooting
+## 10. Troubleshooting
 
 ### The site didn't update after my edit
 
-- Changes take about 60 seconds to go live. Wait a minute and refresh.
-- Check if the GitHub Actions build succeeded: go to the repository → **Actions** tab. If the latest run has a red X, the build failed.
-- If the build failed, the most common cause is a JSON syntax error. Check for missing commas, extra commas, or unclosed quotes.
+- Changes take ~60 seconds. Wait and refresh.
+- Check the GitHub Actions tab in the repository. A red X means the build failed, usually due to a JSON syntax error.
 
-### I see a JSON syntax error but can't find it
+### JSON syntax error
 
-- GitHub's web editor highlights syntax errors with a red dot in the margin
-- Try pasting your JSON into [jsonlint.com](https://jsonlint.com/) — it will point to the exact line with the error
-- Common culprits: comma after the last item in a list, missing closing bracket, or unescaped quote in text
+- GitHub's editor highlights errors with a red dot
+- Paste your JSON into [jsonlint.com](https://jsonlint.com/) to find the exact line
+- Most common: extra comma after the last item in a list, or an unclosed quote
 
 ### A show doesn't appear on the schedule
 
-- Check that the show's `slug` in `shows.json` exactly matches the `showSlug` in `schedule.json`
-- Check that `"isActive": true` is set on the show
-- Slugs are case-sensitive: `"the-deep-cut"` and `"The-Deep-Cut"` are different
+- Check the slug in `shows.json` exactly matches the `showSlug` in `schedule.json` (case-sensitive)
+- Check that `"isActive": true` is set
 
 ### An image doesn't show up
 
-- Check the path starts with `/images/` (not `public/images/`)
-- Check the filename matches exactly, including extension and case
-- Make sure the image was committed to the correct folder
+- Path should start with `/images/`, not `public/images/`
+- Filename must match exactly, including case and extension
 
 ### The player says "Stream unavailable"
 
-- This usually means the Icecast stream or the Cloudflare proxy is down — it's not a website issue
-- Check if you can hear the stream directly: try the TuneIn link or the raw stream URL
-- If the stream itself is working, the proxy URL may need attention — contact the station advisor
+- The stream or proxy is probably down — not a website issue
+- Try the TuneIn link to verify
+- Contact the station advisor if the stream itself is working
 
-### I committed something bad and need to undo it
+### Admin panel says "Invalid token"
 
-- Go to the repository → click on the **commits** link near the top
-- Find the bad commit
-- Click the commit to view it, then click the **"..."** menu → **Revert changes**
-- This creates a new commit that undoes the change
+- The token may have expired — ask the station advisor to regenerate it
+- Make sure the token was generated with **Contents: Read and write** permission for the correct repository
+
+### I need to undo a change
+
+- In the repository, click **commits** near the top
+- Find the bad commit → click it → **"..."** menu → **Revert changes**
 
 ### I need help
 
-If you're stuck or something seems broken, reach out to:
-
-- **Station advisor** (Jason) for website and technical questions
-- **Programming director** for schedule and show content questions
+- **Station advisor** — website and technical questions
+- **Programming director** — schedule and show content questions
 
 ---
 
-## Quick Reference
+## 11. Quick Reference
 
 ### Date format
-
-Dates in the content files use ISO 8601 format with Mountain Time:
 
 ```
 2026-04-15T14:00:00-06:00
 ```
 
-That's: April 15, 2026 at 2:00 PM Mountain Time (MDT is -06:00).
+April 15, 2026 at 2:00 PM Mountain Time. The `-06:00` is the MDT timezone offset.
 
 ### Slug format
 
-Slugs are URL-safe identifiers. Rules:
-
-- All lowercase
-- Hyphens instead of spaces
-- No special characters
-- Keep them short but descriptive
+URL-safe identifiers: all lowercase, hyphens instead of spaces, no special characters.
 
 Examples: `the-deep-cut`, `alex-r`, `spring-schedule-2026`, `1971-first-broadcast`
 
 ### Content file quick links
-
-Once the repo is set up, bookmark these for fast editing:
 
 - [Schedule](https://github.com/kteq/kteq-web55/blob/main/content/schedule.json)
 - [Shows](https://github.com/kteq/kteq-web55/blob/main/content/shows.json)
 - [DJs](https://github.com/kteq/kteq-web55/blob/main/content/djs.json)
 - [Timeline](https://github.com/kteq/kteq-web55/blob/main/content/timeline.json)
 - [Settings](https://github.com/kteq/kteq-web55/blob/main/content/settings.json)
-- [Blog posts folder](https://github.com/kteq/kteq-web55/tree/main/content/posts)
-- [Images folder](https://github.com/kteq/kteq-web55/tree/main/public/images)
+- [Blog posts](https://github.com/kteq/kteq-web55/tree/main/content/posts)
+- [Images](https://github.com/kteq/kteq-web55/tree/main/public/images)
