@@ -2,7 +2,7 @@
 import { useCampaignPhase } from '@/composables/useCampaignPhase'
 import { usePlayerStore } from '@/stores/player'
 
-const { heroConfig, phase, daysUntilReopening, isKteqLive } = useCampaignPhase()
+const { heroConfig, phase, daysUntilReopening, showCountdown } = useCampaignPhase()
 const player = usePlayerStore()
 </script>
 
@@ -28,8 +28,8 @@ const player = usePlayerStore()
         {{ heroConfig.subhead }}
       </p>
 
-      <!-- Countdown (only during kteqlive phase) -->
-      <div v-if="isKteqLive && daysUntilReopening > 0" class="mt-6">
+      <!-- Countdown (during rediscover and kteqlive phases) -->
+      <div v-if="showCountdown" class="mt-6">
         <span class="font-mono text-3xl font-bold text-kteq-yellow">{{ daysUntilReopening }}</span>
         <span class="ml-2 text-sm text-kteq-muted">days until reopening</span>
       </div>
@@ -62,10 +62,11 @@ const player = usePlayerStore()
 
         <!-- Secondary CTA -->
         <RouterLink
-          to="/schedule"
+          v-if="heroConfig.secondaryCta"
+          :to="heroConfig.secondaryCta.route"
           class="inline-flex items-center gap-2 rounded-full border border-kteq-gray px-6 py-3 font-display text-sm font-medium text-kteq-light transition-colors hover:border-kteq-muted hover:text-kteq-white"
         >
-          View Schedule
+          {{ heroConfig.secondaryCta.text }}
         </RouterLink>
       </div>
     </div>

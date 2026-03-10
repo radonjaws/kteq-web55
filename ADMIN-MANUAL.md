@@ -16,7 +16,7 @@ Welcome to the KTEQ website content management guide. This manual explains how t
 6. [Managing DJ Profiles](#6-managing-dj-profiles)
 7. [Writing Blog Posts](#7-writing-blog-posts)
 8. [Managing the Timeline](#8-managing-the-timeline)
-9. [Site Settings](#9-site-settings)
+9. [Campaigns & Site Settings](#9-campaigns--site-settings)
 10. [Adding Images](#10-adding-images)
 11. [Formatting with Markdown](#11-formatting-with-markdown)
 12. [Troubleshooting](#12-troubleshooting)
@@ -390,24 +390,72 @@ Add a new entry to the `"entries"` array:
 
 ---
 
-## 9. Site Settings
+## 9. Campaigns & Site Settings
+
+### What are campaigns?
+
+Most websites are static — they look the same whether the station is in the middle of a fundraising push or just doing regular programming. KTEQ's website uses a **campaign system** that lets you change the entire tone and focus of the site by editing a single setting.
+
+Think of it like seasonal programming for the website. When the station's priorities shift — from reconnecting with alumni, to counting down to a reopening, to settling into regular operations — the website shifts with it. The homepage hero changes, calls-to-action update, and the overall emphasis moves without anyone touching code.
+
+This is useful because a radio station's website needs to do different jobs at different times. During a fundraising campaign, the site should emphasize the donate button and tell a compelling story. During normal operations, it should get out of the way and let people listen. The campaign phase system handles this.
+
+### How the (Re)Discover KTEQ campaign works
+
+The current campaign — **(Re)Discover KTEQ** — celebrates KTEQ's 55th anniversary and builds toward the grand reopening in September 2026. It has three phases:
+
+**Phase 1: `"rediscover"` — (Re)Discover KTEQ / 55th Anniversary**
+
+This is the main campaign phase and where the site spends most of 2026. The focus is on rediscovering KTEQ through its history — reconnecting with alumni who may not know the station is still on the air, celebrating 55 years of freeform radio, and building momentum toward the grand reopening. The 55th anniversary timeline is the centerpiece.
+
+- Homepage headline: "(Re)Discover KTEQ"
+- Primary CTA: "Explore Our History" → links to the timeline
+- Secondary CTA: "Listen Now" → starts the stream
+- Countdown to September 25 reopening is visible
+
+**Phase 2: `"kteqlive"` — KTEQ Live (Grand Reopening)**
+
+The culmination of the (Re)Discover campaign. This is a short-duration, high-energy phase centered on the September 25, 2026 reopening during M-Week and the anniversary concert. Switch to this phase a week or two before the event.
+
+- Homepage headline: "KTEQ Is Back"
+- Primary CTA: "Listen Live" → starts the stream
+- Secondary CTA: "Our History" → links to the timeline
+- Prominent countdown to reopening date
+
+**Phase 3: `"kteq2071"` — KTEQ 2071 (Standard Operations)**
+
+The post-campaign steady state. Once the reopening excitement settles, the site shifts to supporting daily operations: consistent programming, underwriting, regular fundraising intervals, and ongoing alumni engagement. The name "2071" represents KTEQ's 100th anniversary — the long-term horizon the station is building toward.
+
+- Homepage headline: "Black Hills Alternative Radio"
+- Primary CTA: "Listen Now" → starts the stream
+- Secondary CTA: "View Schedule" → links to the schedule
+- No countdown displayed
+
+### Changing the campaign phase
 
 **File:** `content/settings.json`
 
-This file controls station-wide settings. **Be careful editing this file** — incorrect values can affect the entire site.
+Find the `campaignPhase` field and change it to one of the three values:
 
-### Campaign phase
+```json
+"campaignPhase": "rediscover"
+```
 
-The `campaignPhase` setting changes the homepage hero section and messaging:
+Valid values: `"rediscover"`, `"kteqlive"`, `"kteq2071"`
 
-| Value | Phase | When to use |
-|-------|-------|-------------|
-| `"rediscover"` | (Re)Discover KTEQ | Initial reconnection phase |
-| `"55years"` | 55 Years of KTEQ | Anniversary celebration |
-| `"kteqlive"` | KTEQ Live | Grand reopening countdown |
-| `"kteq2071"` | KTEQ 2071 | Post-reopening, new normal |
+Commit the change and the homepage updates within about 60 seconds. That's it — one edit changes the entire feel of the site.
 
-To change phases, edit the value and commit. The homepage updates automatically.
+### Future campaigns
+
+The phase system isn't limited to (Re)Discover KTEQ. Future station campaigns — a spring fundraising push, a special event, a new programming launch — could add their own phases with custom messaging. The pattern is always the same: define a phase value, set it in settings, and the site adapts.
+
+---
+
+### Other site settings
+
+**File:** `content/settings.json`
+
+**Be careful editing this file** — incorrect values can affect the entire site.
 
 ### Announcement banner
 
