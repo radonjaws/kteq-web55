@@ -1,5 +1,5 @@
 {
-  "campaignPhase": "kteq100",
+  "campaignPhase": "rediscover",
   "streamUrl": "https://kteq-proxy.kteq.workers.dev",
   "streamFallbackUrl": "http://kteq-streamer.sdsmt.edu:8000/kteq_high",
   "stationName": "KTEQ-FM 91.3",
