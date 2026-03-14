@@ -1,5 +1,5 @@
 {
-  "campaignPhase": "kteq100",
+  "campaignPhase": "kteqlive",
   "streamUrl": "https://kteq-proxy.kteq.workers.dev",
   "streamFallbackUrl": "http://kteq-streamer.sdsmt.edu:8000/kteq_high",
   "stationName": "KTEQ-FM 91.3",
@@ -16,21 +16,5 @@
   "bannerText": "",
   "bannerUrl": "",
   "bannerDismissible": true,
-  "reopeningDate": "2026-09-25T18:00:00-06:00",
-  "logoUrl": "",
-  "navLinks": {
-    "listen": true,
-    "schedule": true,
-    "shows": true,
-    "djs": true,
-    "history": true,
-    "blog": true,
-    "donate": true
-  },
-  "campaignName": "(Re)Discover KTEQ",
-  "campaignHeroImage": "",
-  "campaignHeadline": "",
-  "campaignSubhead": "",
-  "campaignCtaPrimary": "",
-  "campaignCtaSecondary": ""
+  "reopeningDate": "2026-09-25T18:00:00-06:00"
 }
