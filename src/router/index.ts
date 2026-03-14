@@ -121,6 +121,18 @@ const router = createRouter({
       component: () => import('@/pages/admin/AdminSettings.vue'),
       meta: { requiresAdmin: true }
     },
+    {
+      path: '/admin/menu',
+      name: 'admin-menu',
+      component: () => import('@/pages/admin/AdminMenu.vue'),
+      meta: { requiresAdmin: true }
+    },
+    {
+      path: '/admin/campaigns',
+      name: 'admin-campaigns',
+      component: () => import('@/pages/admin/AdminCampaigns.vue'),
+      meta: { requiresAdmin: true }
+    },
 
     // Catch-all
     {

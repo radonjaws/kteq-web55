@@ -15,6 +15,8 @@ const sections = [
   { label: 'Timeline', route: '/admin/timeline', description: 'Add entries to the 55th anniversary timeline' },
   { label: 'Blog Posts', route: '/admin/posts', description: 'Write and publish news and updates' },
   { label: 'Settings', route: '/admin/settings', description: 'Campaign phase, stream URL, banner, socials' },
+  { label: 'Menu', route: '/admin/menu', description: 'Logo image and nav link visibility' },
+  { label: 'Campaigns', route: '/admin/campaigns', description: 'Campaign name, hero image, headline overrides' },
 ]
 </script>
 

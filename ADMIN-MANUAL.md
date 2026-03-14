@@ -91,6 +91,8 @@ After logging in, you'll see the admin dashboard with links to each content area
 - **Timeline** — add entries to the 55th anniversary timeline
 - **Blog Posts** — write and publish news and updates
 - **Settings** — campaign phase, stream URL, announcement banner, social links
+- **Menu** — logo image and nav link visibility (show/hide links for maintenance)
+- **Campaigns** — campaign name, hero image, and headline overrides
 
 Click into any section to start editing. Each section loads the current content from the repository, lets you make changes in a form, and saves your changes back with a single click.
 
@@ -203,6 +205,22 @@ Settings are managed by the programming director or station advisor. Most studen
 | **Banner Text** | Shows an announcement across the top of every page. Empty = hidden |
 | **Donate URL** | Where the Donate button links (CARA page) |
 | **Social Links** | Facebook, Instagram, TuneIn URLs |
+
+**Menu settings** (via the Menu editor):
+
+| Setting | What it does |
+|---------|-------------|
+| **Logo URL** | Path to a logo image in the site header. Empty = falls back to the "K" text icon |
+| **Nav Links** | Boolean toggle per link (Listen, Schedule, Shows, DJs, History, Blog, Donate). Set to `false` to hide a link during maintenance |
+
+**Campaign overrides** (via the Campaigns editor):
+
+| Setting | What it does |
+|---------|-------------|
+| **Campaign Name** | Internal name for the active campaign, e.g. "(Re)Discover KTEQ" |
+| **Campaign Hero Image** | Path to a background image for the homepage hero. Empty = no image |
+| **Headline / Subhead** | Override the phase default headline or subhead. Empty = use the phase default from `useCampaignPhase.ts` |
+| **Primary / Secondary CTA** | Override the CTA button text. Empty = use the phase default |
 
 ---
 
@@ -413,6 +431,34 @@ Each day contains an array of time slots:
 - `id`: unique, use `year-short-description`
 - `month` is optional (1-12), helps sort within a year
 - `category` must be: `"milestone"`, `"music"`, `"people"`, or `"technical"`
+
+### settings.json (selected fields)
+
+```json
+{
+  "campaignPhase": "rediscover",
+  "logoUrl": "",
+  "navLinks": {
+    "listen": true,
+    "schedule": true,
+    "shows": true,
+    "djs": true,
+    "history": true,
+    "blog": true,
+    "donate": true
+  },
+  "campaignName": "(Re)Discover KTEQ",
+  "campaignHeroImage": "",
+  "campaignHeadline": "",
+  "campaignSubhead": "",
+  "campaignCtaPrimary": "",
+  "campaignCtaSecondary": ""
+}
+```
+
+- `logoUrl`: path starting with `/images/brand/`. Empty string = "K" text fallback
+- `navLinks`: set any value to `false` to hide that link sitewide (useful during maintenance)
+- Campaign override fields: when empty, the phase defaults from `useCampaignPhase.ts` are used. Set a value to override just that field without changing the phase
 
 ### Blog post files (content/posts/*.json)
 
