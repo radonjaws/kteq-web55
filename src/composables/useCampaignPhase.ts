@@ -121,15 +121,22 @@ export function useCampaignPhase() {
     return `mailto:${email}?subject=${subject}&body=${body}`
   })
 
-  // Configurable countdown target (set via Campaigns admin editor)
-  const countdownTarget = computed(() => new Date(content.settings.countdownTarget))
+  // Configurable countdown — shown whenever a target is set and days remain
+  const countdownTarget = computed(() =>
+    content.settings.countdownTarget ? new Date(content.settings.countdownTarget) : null
+  )
   const daysUntilCountdown = computed(() => {
-    const now = new Date()
-    const diff = countdownTarget.value.getTime() - now.getTime()
+    if (!countdownTarget.value) return 0
+    const diff = countdownTarget.value.getTime() - Date.now()
     return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)))
   })
+  // Show if a target date is configured and hasn't passed
   const showCountdown = computed(() =>
-    (isRediscover.value || isKteqLive.value) && daysUntilCountdown.value > 0
+    !!countdownTarget.value && daysUntilCountdown.value > 0
+  )
+  const countdownLabel = computed(() => content.settings.countdownLabel ?? '')
+  const countdownLabelPosition = computed(() =>
+    content.settings.countdownLabelPosition === 'before' ? 'before' : 'after'
   )
 
   return {
@@ -141,6 +148,8 @@ export function useCampaignPhase() {
     memoriesMailto,
     countdownTarget,
     daysUntilCountdown,
-    showCountdown
+    showCountdown,
+    countdownLabel,
+    countdownLabelPosition
   }
 }

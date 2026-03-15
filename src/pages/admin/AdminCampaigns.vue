@@ -10,9 +10,9 @@ const sha = ref('')
 // Full loaded settings — spread into save payload so other editors' fields are preserved
 const rawContent = ref<any>(null)
 
-// countdownTarget is stored as an ISO 8601 string; we split it into editable parts
-const countdownDate = ref('2026-09-25')
-const countdownTime = ref('18:00')
+// countdownTarget is stored as ISO 8601; we split it for editing
+const countdownDate = ref('')
+const countdownTime = ref('')
 const countdownOffset = ref('-06:00') // Mountain Time (MDT = -06:00, MST = -07:00)
 
 const form = reactive({
@@ -21,21 +21,28 @@ const form = reactive({
   campaignHeadline: '',
   campaignSubhead: '',
   campaignCtaPrimary: '',
-  campaignCtaSecondary: ''
+  campaignCtaSecondary: '',
+  countdownLabel: '',
+  countdownLabelPosition: 'after' as 'before' | 'after'
 })
 
 // Split ISO timestamp into editable date/time parts, preserving the original offset
 function parseCountdown(iso: string) {
   if (!iso) return
-  countdownDate.value = iso.slice(0, 10)             // "2026-09-25"
-  countdownTime.value = iso.slice(11, 16)            // "18:00"
+  countdownDate.value = iso.slice(0, 10)              // "2026-09-25"
+  countdownTime.value = iso.slice(11, 16)             // "18:00"
   const offsetMatch = iso.match(/([+-]\d{2}:\d{2})$/)
   countdownOffset.value = offsetMatch ? offsetMatch[1] : '-06:00'
 }
 
+// Returns empty string when no date is set — downstream treats that as "no countdown"
 function buildCountdownTarget(): string {
-  return `${countdownDate.value}T${countdownTime.value}:00${countdownOffset.value}`
+  if (!countdownDate.value) return ''
+  const time = countdownTime.value || '00:00'
+  return `${countdownDate.value}T${time}:00${countdownOffset.value}`
 }
+
+const previewIso = computed(() => buildCountdownTarget())
 
 onMounted(async () => {
   try {
@@ -49,7 +56,9 @@ onMounted(async () => {
       campaignHeadline: content.campaignHeadline || '',
       campaignSubhead: content.campaignSubhead || '',
       campaignCtaPrimary: content.campaignCtaPrimary || '',
-      campaignCtaSecondary: content.campaignCtaSecondary || ''
+      campaignCtaSecondary: content.campaignCtaSecondary || '',
+      countdownLabel: content.countdownLabel || '',
+      countdownLabelPosition: content.countdownLabelPosition === 'before' ? 'before' : 'after'
     })
   } catch (e: any) {
     loadError.value = e.message
@@ -63,18 +72,20 @@ async function handleSave() {
     // Preserve all fields owned by other editors (Settings, Menu, etc.)
     ...rawContent.value,
     // Override with this editor's fields
-    countdownTarget: buildCountdownTarget(),
     campaignName: form.campaignName,
     campaignHeroImage: form.campaignHeroImage,
     campaignHeadline: form.campaignHeadline,
     campaignSubhead: form.campaignSubhead,
     campaignCtaPrimary: form.campaignCtaPrimary,
-    campaignCtaSecondary: form.campaignCtaSecondary
+    campaignCtaSecondary: form.campaignCtaSecondary,
+    countdownTarget: buildCountdownTarget(),
+    countdownLabel: form.countdownLabel,
+    countdownLabelPosition: form.countdownLabelPosition
   }, sha.value, 'Update campaign settings')
   if (newSha) sha.value = newSha
 }
 
-// Phase defaults for placeholder hints — keeps the form self-documenting
+// Phase defaults for placeholder hints — keeps override fields self-documenting
 const phaseDefaults = computed(() => {
   const phase = rawContent.value?.campaignPhase || 'rediscover'
   const map: Record<string, { headline: string; subhead: string; ctaPrimary: string; ctaSecondary: string }> = {
@@ -126,7 +137,7 @@ const phaseDefaults = computed(() => {
       <div class="flex items-start justify-between">
         <div>
           <h1 class="font-display text-2xl font-bold text-kteq-white">Campaigns</h1>
-          <p class="mt-1 text-sm text-kteq-muted">Countdown target, campaign identity, and hero text overrides.</p>
+          <p class="mt-1 text-sm text-kteq-muted">Campaign identity, hero text overrides, and an optional countdown.</p>
         </div>
 
         <!-- Save button + status -->
@@ -154,37 +165,6 @@ const phaseDefaults = computed(() => {
       <div v-else-if="loadError" class="mt-8 rounded-lg border border-kteq-red/30 bg-kteq-dark p-6 text-sm text-kteq-red">{{ loadError }}</div>
 
       <form v-else @submit.prevent="handleSave" class="mt-8 space-y-6">
-
-        <!-- Countdown Timer -->
-        <section class="rounded-lg border border-kteq-gray/30 bg-kteq-dark p-6">
-          <h2 class="mb-1 font-display text-base font-semibold text-kteq-white">Countdown Timer</h2>
-          <p class="mb-5 text-xs text-kteq-muted">
-            Displayed automatically when days &gt; 0 in the
-            <span class="text-kteq-light">Rediscover</span> and <span class="text-kteq-light">KTEQ Live</span> phases.
-          </p>
-          <div class="grid gap-4 sm:grid-cols-2">
-            <div>
-              <label class="mb-1.5 block font-display text-sm font-medium text-kteq-light">Target Date</label>
-              <input
-                type="date"
-                v-model="countdownDate"
-                class="w-full rounded-md border border-kteq-gray/50 bg-kteq-void px-3 py-2 font-mono text-sm text-kteq-white focus:border-kteq-yellow/50 focus:outline-none focus:ring-1 focus:ring-kteq-yellow/50 transition-colors"
-              />
-            </div>
-            <div>
-              <label class="mb-1.5 block font-display text-sm font-medium text-kteq-light">Target Time</label>
-              <input
-                type="time"
-                v-model="countdownTime"
-                class="w-full rounded-md border border-kteq-gray/50 bg-kteq-void px-3 py-2 font-mono text-sm text-kteq-white focus:border-kteq-yellow/50 focus:outline-none focus:ring-1 focus:ring-kteq-yellow/50 transition-colors"
-              />
-            </div>
-          </div>
-          <p class="mt-3 text-xs text-kteq-muted">
-            Mountain Time (MDT/MST). Stored as
-            <code class="rounded bg-kteq-void px-1.5 py-0.5 font-mono text-kteq-yellow">{{ buildCountdownTarget() }}</code>
-          </p>
-        </section>
 
         <!-- Campaign Identity -->
         <section class="rounded-lg border border-kteq-gray/30 bg-kteq-dark p-6">
@@ -267,9 +247,88 @@ const phaseDefaults = computed(() => {
                 />
               </div>
             </div>
-            <p class="text-xs text-kteq-muted">Only button text is overrideable — route and action type (play, mailto, link) follow the phase config.</p>
+            <p class="text-xs text-kteq-muted">Only button text is overrideable — route and action type follow the phase config.</p>
 
           </div>
+        </section>
+
+        <!-- Countdown (optional) -->
+        <section class="rounded-lg border border-kteq-gray/30 bg-kteq-dark p-6">
+          <h2 class="mb-1 font-display text-base font-semibold text-kteq-white">Countdown <span class="ml-2 font-normal text-kteq-muted text-sm">(optional)</span></h2>
+          <p class="mb-5 text-xs text-kteq-muted">Shows a number of days remaining on the homepage hero. Clear the date to hide it.</p>
+
+          <!-- Date + time -->
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label class="mb-1.5 block font-display text-sm font-medium text-kteq-light">Target Date</label>
+              <input
+                type="date"
+                v-model="countdownDate"
+                class="w-full rounded-md border border-kteq-gray/50 bg-kteq-void px-3 py-2 font-mono text-sm text-kteq-white focus:border-kteq-yellow/50 focus:outline-none focus:ring-1 focus:ring-kteq-yellow/50 transition-colors"
+              />
+            </div>
+            <div>
+              <label class="mb-1.5 block font-display text-sm font-medium text-kteq-light">Target Time <span class="font-normal text-kteq-muted">(optional)</span></label>
+              <input
+                type="time"
+                v-model="countdownTime"
+                class="w-full rounded-md border border-kteq-gray/50 bg-kteq-void px-3 py-2 font-mono text-sm text-kteq-white focus:border-kteq-yellow/50 focus:outline-none focus:ring-1 focus:ring-kteq-yellow/50 transition-colors"
+              />
+            </div>
+          </div>
+          <p class="mt-2 mb-5 text-xs text-kteq-muted">
+            Mountain Time (MDT/MST).
+            <span v-if="previewIso">Stored as <code class="rounded bg-kteq-void px-1.5 py-0.5 font-mono text-kteq-yellow">{{ previewIso }}</code></span>
+          </p>
+
+          <!-- Label text + position -->
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label class="mb-1.5 block font-display text-sm font-medium text-kteq-light">Label Text</label>
+              <input
+                type="text"
+                v-model="form.countdownLabel"
+                placeholder="e.g. days until reopening"
+                class="w-full rounded-md border border-kteq-gray/50 bg-kteq-void px-3 py-2 font-body text-sm text-kteq-white placeholder-kteq-muted/50 focus:border-kteq-yellow/50 focus:outline-none focus:ring-1 focus:ring-kteq-yellow/50 transition-colors"
+              />
+            </div>
+            <div>
+              <label class="mb-1.5 block font-display text-sm font-medium text-kteq-light">Label Position</label>
+              <div class="flex gap-3">
+                <label
+                  class="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-md border px-3 py-2 font-display text-sm transition-colors"
+                  :class="form.countdownLabelPosition === 'before'
+                    ? 'border-kteq-yellow/50 bg-kteq-yellow/10 text-kteq-yellow'
+                    : 'border-kteq-gray/50 bg-kteq-void text-kteq-muted hover:border-kteq-gray hover:text-kteq-light'"
+                >
+                  <input type="radio" v-model="form.countdownLabelPosition" value="before" class="sr-only" />
+                  <span class="font-mono text-xs opacity-70">abc</span>
+                  <span class="font-mono font-bold">42</span>
+                </label>
+                <label
+                  class="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-md border px-3 py-2 font-display text-sm transition-colors"
+                  :class="form.countdownLabelPosition === 'after'
+                    ? 'border-kteq-yellow/50 bg-kteq-yellow/10 text-kteq-yellow'
+                    : 'border-kteq-gray/50 bg-kteq-void text-kteq-muted hover:border-kteq-gray hover:text-kteq-light'"
+                >
+                  <input type="radio" v-model="form.countdownLabelPosition" value="after" class="sr-only" />
+                  <span class="font-mono font-bold">42</span>
+                  <span class="font-mono text-xs opacity-70">abc</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Live preview -->
+          <div v-if="form.countdownLabel || countdownDate" class="mt-4 rounded-md border border-kteq-gray/20 bg-kteq-void px-4 py-3">
+            <p class="mb-1.5 font-display text-xs text-kteq-muted">Preview</p>
+            <div class="inline-flex items-baseline gap-2">
+              <span v-if="form.countdownLabelPosition === 'before' && form.countdownLabel" class="text-sm text-kteq-muted">{{ form.countdownLabel }}</span>
+              <span class="font-mono text-3xl font-bold text-kteq-yellow">42</span>
+              <span v-if="form.countdownLabelPosition === 'after' && form.countdownLabel" class="text-sm text-kteq-muted">{{ form.countdownLabel }}</span>
+            </div>
+          </div>
+
         </section>
 
         <!-- Bottom save -->

@@ -2,7 +2,7 @@
 import { useCampaignPhase } from '@/composables/useCampaignPhase'
 import { usePlayerStore } from '@/stores/player'
 
-const { heroConfig, daysUntilCountdown, showCountdown, memoriesMailto } = useCampaignPhase()
+const { heroConfig, daysUntilCountdown, showCountdown, countdownLabel, countdownLabelPosition, memoriesMailto } = useCampaignPhase()
 const player = usePlayerStore()
 </script>
 
@@ -28,10 +28,11 @@ const player = usePlayerStore()
         {{ heroConfig.subhead }}
       </p>
 
-      <!-- Countdown (during rediscover and kteqlive phases) -->
-      <div v-if="showCountdown" class="mt-6">
+      <!-- Countdown — shown when a target date is configured and hasn't passed -->
+      <div v-if="showCountdown" class="mt-6 inline-flex items-baseline gap-2">
+        <span v-if="countdownLabelPosition === 'before' && countdownLabel" class="text-sm text-kteq-muted">{{ countdownLabel }}</span>
         <span class="font-mono text-3xl font-bold text-kteq-yellow">{{ daysUntilCountdown }}</span>
-        <span class="ml-2 text-sm text-kteq-muted">days until reopening</span>
+        <span v-if="countdownLabelPosition === 'after' && countdownLabel" class="text-sm text-kteq-muted">{{ countdownLabel }}</span>
       </div>
 
       <!-- CTA buttons -->
