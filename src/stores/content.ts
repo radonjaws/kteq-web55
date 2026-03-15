@@ -59,18 +59,46 @@ interface ScheduleSlot {
   notes: string
 }
 
+export interface CampaignPhaseItem {
+  name: string
+  headline: string
+  subhead: string
+  ctaPrimaryText: string
+  ctaPrimaryAction: string   // 'play' | 'mailto' | 'route'
+  ctaPrimaryRoute: string
+  ctaSecondaryText: string
+  ctaSecondaryRoute: string
+  phaseEnd: string           // ISO 8601; only used in 'dated' schedule mode
+}
+
 interface Campaign {
   slug: string
   name: string
-  phase: string
   heroImage: string
+  // Single-phase content (used when phases[] is absent or empty)
   headline: string
   subhead: string
   ctaPrimary: string
+  ctaPrimaryAction: string   // 'play' | 'mailto' | 'route'
+  ctaPrimaryRoute: string
   ctaSecondary: string
+  ctaSecondaryRoute: string
+  // Campaign date range (informational; not activation triggers)
+  campaignStart: string
+  campaignEnd: string
+  // Phase scheduling
+  scheduleType: string       // 'manual' | 'dated' | 'rotator'
+  phases: CampaignPhaseItem[]
+  activePhaseIndex: number   // used in manual multi-phase mode
+  rotatorValue: number
+  rotatorUnit: string        // 'minutes' | 'hours' | 'days'
+  rotatorMode: string        // 'each' | 'cycle'
+  // Countdown (campaign-level, not per-phase)
   countdownTarget: string
   countdownLabel: string
   countdownLabelPosition: string
+  // Legacy field — kept for backward compat during migration; ignored by composable
+  phase?: string
 }
 
 interface BlogPost {

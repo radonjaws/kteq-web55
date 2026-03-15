@@ -92,7 +92,7 @@ After logging in, you'll see the admin dashboard with links to each content area
 - **Blog Posts** — write and publish news and updates
 - **Settings** — stream URL, station info, announcement banner, social links
 - **Menu** — logo image and nav link visibility (show/hide links for maintenance)
-- **Campaigns** — manage campaign configurations; set the active one, edit phase, hero, and countdown
+- **Campaigns** — manage campaign configurations; set the active one, edit messaging, phases, and countdown
 
 Click into any section to start editing. Each section loads the current content from the repository, lets you make changes in a form, and saves your changes back with a single click.
 
@@ -219,10 +219,13 @@ Each campaign is a separate configuration. The Campaigns admin shows a list of a
 | Campaign field | What it does |
 |----------------|-------------|
 | **Campaign Name** | Internal name shown in the admin list, e.g. "(Re)Discover KTEQ" |
-| **Slug** | Auto-generated from the name; editable before first save, locked afterward. Used as the filename and referenced by `activeCampaign` in settings |
-| **Hero Image URL** | Path to a background image for the homepage hero. Empty = default gradient |
-| **Headline / Subhead** | Optional overrides. Empty = use the campaign defaults |
-| **Primary / Secondary CTA text** | Override the button label only. Empty = use the campaign defaults. Button routing and action type are set in code |
+| **Slug** | Auto-generated from the name; editable before first save, locked afterward |
+| **Hero Image URL** | Background image for the homepage hero. Empty = default gradient |
+| **Headline / Subhead** | Campaign messaging. Required for single-phase; per-phase when phases are enabled |
+| **Primary / Secondary CTA text** | Button labels. Routing is also configurable (see Section 8) |
+| **Campaign Start / End** | Informational date range displayed on the campaigns list |
+| **Use Phases** | Toggle to enable multi-phase messaging within one campaign |
+| **Phase Advancement** | Manual, Dated, or Rotator — see Section 8 |
 | **Countdown Target** | Date (and optional time) to count down to. Clear to hide the countdown |
 | **Countdown Label** | Text shown alongside the number, e.g. "days until reopening" |
 | **Label Position** | Whether the label appears before or after the day count |
@@ -468,26 +471,87 @@ Each day contains an array of time slots:
 
 ### Campaign files (content/campaigns/*.json)
 
+**Single-phase campaign:**
+
 ```json
 {
   "slug": "rediscover-2026",
   "name": "(Re)Discover KTEQ",
-  "phase": "rediscover",
   "heroImage": "",
-  "headline": "",
-  "subhead": "",
-  "ctaPrimary": "",
-  "ctaSecondary": "",
+  "headline": "Still Here. Still Weird.",
+  "subhead": "55 years of alternative radio in the Black Hills",
+  "ctaPrimary": "Share Your Memories",
+  "ctaPrimaryAction": "mailto",
+  "ctaPrimaryRoute": "",
+  "ctaSecondary": "Listen Now",
+  "ctaSecondaryRoute": "/listen",
+  "campaignStart": "2026-03-01T00:00:00-06:00",
+  "campaignEnd": "2026-12-31T23:59:59-06:00",
+  "scheduleType": "manual",
+  "phases": [],
+  "activePhaseIndex": 0,
+  "rotatorValue": 7,
+  "rotatorUnit": "days",
+  "rotatorMode": "each",
   "countdownTarget": "2026-09-25T18:00:00-06:00",
   "countdownLabel": "days until reopening",
   "countdownLabelPosition": "after"
 }
 ```
 
+**Multi-phase campaign (dated):**
+
+```json
+{
+  "slug": "kteqlive-2026",
+  "name": "KTEQ Live 2026",
+  "heroImage": "",
+  "campaignStart": "2026-08-15T00:00:00-06:00",
+  "campaignEnd": "2026-10-01T00:00:00-06:00",
+  "scheduleType": "dated",
+  "phases": [
+    {
+      "name": "Back to School",
+      "headline": "Welcome Back!",
+      "subhead": "Live from the Black Hills — KTEQ returns to the studio",
+      "ctaPrimaryText": "Listen Live",
+      "ctaPrimaryAction": "play",
+      "ctaPrimaryRoute": "",
+      "ctaSecondaryText": "Our History",
+      "ctaSecondaryRoute": "/history",
+      "phaseEnd": "2026-09-24T23:59:59-06:00"
+    },
+    {
+      "name": "Reopening",
+      "headline": "We're Back.",
+      "subhead": "KTEQ-FM 91.3 — Live from Rapid City",
+      "ctaPrimaryText": "Listen Now",
+      "ctaPrimaryAction": "play",
+      "ctaPrimaryRoute": "",
+      "ctaSecondaryText": "Explore Our History",
+      "ctaSecondaryRoute": "/history",
+      "phaseEnd": "2026-10-01T00:00:00-06:00"
+    }
+  ],
+  "activePhaseIndex": 0,
+  "rotatorValue": 7,
+  "rotatorUnit": "days",
+  "rotatorMode": "each",
+  "countdownTarget": "2026-09-25T18:00:00-06:00",
+  "countdownLabel": "days until reopening",
+  "countdownLabelPosition": "after"
+}
+```
+
+Key fields:
 - `slug`: must match the filename stem (e.g., `rediscover-2026.json` → `"slug": "rediscover-2026"`)
-- `phase`: one of `"rediscover"`, `"kteqlive"`, `"kteq100"` — drives site behavior and default messaging
-- `heroImage`, `headline`, `subhead`, `ctaPrimary`, `ctaSecondary`: all optional overrides — empty string falls through to the phase default
-- `countdownTarget`: ISO 8601 timestamp in Mountain Time. Clear to hide the countdown
+- `ctaPrimaryAction`: `"play"` (starts stream), `"mailto"` (opens station email), `"route"` (navigates to a site page)
+- `ctaPrimaryRoute`: used when action is `"route"` — a site path like `"/listen"` or `"/history"`
+- `scheduleType`: `"manual"`, `"dated"`, or `"rotator"` — ignored when `phases` is empty
+- `phases[].ctaPrimaryText` / `phases[].ctaSecondaryText`: note the `Text` suffix when inside a phase object (different from root-level `ctaPrimary`/`ctaSecondary`)
+- `phases[].phaseEnd`: ISO 8601 timestamp; only meaningful in `"dated"` mode
+- `activePhaseIndex`: which phase is currently shown in `"manual"` mode; updated by the list screen controls
+- `countdownTarget`: ISO 8601 in Mountain Time. Clear to hide the countdown
 - `countdownLabelPosition`: `"before"` or `"after"` the day number
 
 ### Blog post files (content/posts/*.json)
@@ -587,52 +651,47 @@ Go to **Campaigns** in the admin dashboard. You'll see:
 - **New Campaign** — creates a new campaign file
 
 Each campaign has:
-1. **Campaign Settings** — name (internal only), slug, hero image URL, headline, subhead, CTA text. Headline, subhead, and CTA are optional; leave any empty to use the campaign defaults. Slug is auto-generated from the name and can be edited before the first save, but is locked after creation.
-2. **Countdown** (optional, last) — target date/time, label text, label position
+1. **Campaign Settings** — name (internal only), slug, hero image URL, headline, subhead, CTA text. Headline, subhead, and CTA are optional; leave any empty to use the campaign defaults. Slug is auto-generated from the name and can be edited before the first save, but is locked after creation. When phases are enabled (see below), these text fields appear inside phase tabs instead.
+2. **Phase Schedule** — campaign start/end dates (informational context); optional phase system for multi-messaging campaigns.
+3. **Countdown** (optional, last) — target date/time, label text, label position.
 
-### Phase reference
+### Phase Schedule
 
-A campaign's **Phase** sets the site's behavioral defaults — routing, CTA action type, and fallback text. There are three phases:
+Each campaign can run as a **single-phase** campaign (one set of messaging for the whole run) or as a **multi-phase** campaign (different messaging at different times). Toggle **Use Phases** in the Phase Schedule panel to enable multi-phase mode.
 
-**`rediscover` — "Still Here. Still Weird."**
+**Phase tab system**
 
-The alumni and community outreach phase. The website's job is to establish that KTEQ exists, has history, and invite people to connect.
+When phases are enabled, the Campaign Settings panel shows a tab row — one tab per phase plus a **+ Add phase** button. Each phase tab has its own name, headline, subhead, and CTA fields. The phase name is admin-only (used as the tab label; not shown publicly).
 
-- Default headline: "Still Here. Still Weird."
-- Default subhead: "55 years of alternative radio in the Black Hills"
-- Primary CTA: "Share Your Memories" → opens an email to the station
-- Secondary CTA: "Listen Now" → player page
+**Phase advancement modes** (chosen in the Phase Schedule panel when phases are enabled):
 
-**`kteqlive` — "Welcome Back!"**
+| Mode | How it works |
+|------|-------------|
+| **Manual** | Phases advance only when you click the phase controls on the Campaigns list. Useful when you want intentional control over timing. |
+| **Dated** | Each phase runs until its **Phase Ends On** date/time passes, then the next phase begins automatically — all computed client-side, no deploys needed. The last phase holds indefinitely once all end dates have passed. |
+| **Rotator** | Phases cycle on a fixed schedule computed from the campaign start date. No end dates needed. Two sub-modes: **Show each phase for [N] [unit]** sets the per-phase duration; **Full cycle repeats every [N] [unit]** divides the total cycle duration equally across phases. |
 
-The return-to-studio phase. Welcomes students back to campus and builds anticipation for live broadcasts.
+**Dated mode notes:** If you set phase end dates out of order, they are automatically sorted on save and a notice appears. If you're editing a dated campaign where all end dates are already in the past, an informational note tells you the last phase is holding — this is a normal state for a campaign that has run its course.
 
-- Default headline: "Welcome Back!"
-- Default subhead: "Live from the Black Hills — KTEQ returns to the studio"
-- Primary CTA: "Listen Live" → starts the stream directly
-- Secondary CTA: "Our History" → timeline page
+**Manual phase advancement** (Campaigns list)
 
-**`kteq100` — Standard Operations**
+For active campaigns with manual phases, the Campaigns list shows the current phase indicator and controls: **‹** and **›** buttons to step back and forward one phase, plus clickable phase dots to jump directly to any phase. Changes commit to the repository and rebuild the site (~60 seconds).
 
-Post-campaign steady state. History content is built out; "Explore Our History" is backed by real material.
+### Campaign dates
 
-- Default headline: "Black Hills Alternative Radio"
-- Default subhead: "KTEQ-FM 91.3 — Rapid City, South Dakota"
-- Primary CTA: "Explore Our History" → timeline page
-- Secondary CTA: "Listen Now" → player page
-
-The CTA *routing and action type* (play stream, open email, navigate to page) are determined by the phase and cannot be changed from the admin panel — only the button text can be overridden. To change routing, use Claude Code with `CLAUDE.md` for context.
+**Campaign Start** and **Campaign End** are stored on the campaign but are informational only — they appear on the Campaigns list for context and are used as the origin point for rotator calculations. They do not automatically activate or deactivate a campaign.
 
 ### Adding a new campaign
 
 1. Go to **Campaigns** → **New Campaign**
 2. Enter a name — the slug is auto-generated (e.g., "KTEQ Live 2026" → `kteqlive-2026`)
-3. Select the phase
-4. Fill in any text overrides and countdown settings
-5. Click **Create Campaign**
-6. Back on the list, click **Set Active** when you're ready to go live
+3. Set campaign start/end dates if useful
+4. If this campaign needs multiple messaging phases, toggle **Use Phases** and configure each tab
+5. Set the countdown if one applies
+6. Click **Create Campaign**
+7. Back on the list, click **Set Active** when you're ready to go live
 
-You can create and configure a future campaign in advance without activating it — useful for scheduling a phase transition ahead of time.
+You can create and configure a future campaign in advance without activating it — useful for setting up a phase transition ahead of time.
 
 ### Activating a campaign
 
