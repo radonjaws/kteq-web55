@@ -61,6 +61,7 @@ interface ScheduleSlot {
 
 export interface CampaignPhaseItem {
   name: string
+  heroImage?: string         // per-phase hero image; falls back to campaign heroImage
   headline: string
   subhead: string
   ctaPrimaryText: string
