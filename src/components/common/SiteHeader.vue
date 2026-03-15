@@ -1,17 +1,33 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { usePlayerStore } from '@/stores/player'
+import { useContentStore } from '@/stores/content'
 
 const player = usePlayerStore()
+const content = useContentStore()
 const mobileMenuOpen = ref(false)
 
-const navLinks = [
-  { label: 'Schedule', to: '/schedule' },
-  { label: 'Shows', to: '/shows' },
-  { label: 'History', to: '/history' },
-  { label: 'Blog', to: '/blog' },
-  { label: 'Donate', to: '/donate' },
+const allNavLinks = [
+  { key: 'schedule', label: 'Schedule', to: '/schedule' },
+  { key: 'shows',    label: 'Shows',    to: '/shows' },
+  { key: 'djs',      label: 'DJs',      to: '/djs' },
+  { key: 'history',  label: 'History',  to: '/history' },
+  { key: 'blog',     label: 'Blog',     to: '/blog' },
+  { key: 'donate',   label: 'Donate',   to: '/donate' },
 ]
+
+const navLinks = computed(() => {
+  const enabled = (content.settings as any).navLinks
+  if (!enabled) return allNavLinks
+  return allNavLinks.filter(link => enabled[link.key] !== false)
+})
+
+const showListen = computed(() => {
+  const enabled = (content.settings as any).navLinks
+  return !enabled || enabled.listen !== false
+})
+
+const logoUrl = computed(() => (content.settings as any).logoUrl || '')
 
 function toggleMenu() {
   mobileMenuOpen.value = !mobileMenuOpen.value
@@ -23,8 +39,9 @@ function toggleMenu() {
     <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
       <!-- Logo / Station ID -->
       <RouterLink to="/" class="group flex items-center gap-3" @click="mobileMenuOpen = false">
-        <div class="flex h-9 w-9 items-center justify-center rounded-sm bg-kteq-yellow font-display text-sm font-bold tracking-tight text-kteq-black">
-          K
+        <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-sm bg-kteq-yellow font-display text-sm font-bold tracking-tight text-kteq-black overflow-hidden">
+          <img v-if="logoUrl" :src="logoUrl" alt="KTEQ" class="h-full w-full object-cover" />
+          <span v-else>K</span>
         </div>
         <div class="hidden sm:block">
           <div class="font-display text-sm font-semibold leading-tight tracking-wide text-kteq-white">
@@ -52,6 +69,7 @@ function toggleMenu() {
       <!-- Listen Button + Mobile Menu Toggle -->
       <div class="flex items-center gap-3">
         <button
+          v-if="showListen"
           @click="player.toggle()"
           class="flex items-center gap-2 rounded-full px-4 py-2 font-display text-sm font-semibold transition-all"
           :class="player.isPlaying

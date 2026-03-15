@@ -9,14 +9,14 @@ function logout() {
 }
 
 const sections = [
+  { label: 'Campaigns', route: '/admin/campaigns', description: 'Manage campaigns — hero content, phases, and countdown' },
+  { label: 'Menu', route: '/admin/menu', description: 'Logo image and nav link visibility' },
+  { label: 'Settings', route: '/admin/settings', description: 'Stream URL, station info, banner, and social links' },
+  { label: 'Blog Posts', route: '/admin/posts', description: 'Write and publish news and updates' },
   { label: 'Schedule', route: '/admin/schedule', description: 'Edit the weekly programming grid' },
   { label: 'Shows', route: '/admin/shows', description: 'Manage show listings and descriptions' },
   { label: 'DJs', route: '/admin/djs', description: 'Manage DJ profiles' },
   { label: 'Timeline', route: '/admin/timeline', description: 'Add entries to the 55th anniversary timeline' },
-  { label: 'Blog Posts', route: '/admin/posts', description: 'Write and publish news and updates' },
-  { label: 'Settings', route: '/admin/settings', description: 'Stream URL, station info, banner, and social links' },
-  { label: 'Menu', route: '/admin/menu', description: 'Logo image and nav link visibility' },
-  { label: 'Campaigns', route: '/admin/campaigns', description: 'Manage campaigns — set the active phase, hero overrides, and countdown' },
 ]
 </script>
 

@@ -1,5 +1,15 @@
 {
   "activeCampaign": "rediscover-2026",
+  "logoUrl": "",
+  "navLinks": {
+    "listen": true,
+    "schedule": true,
+    "shows": true,
+    "djs": false,
+    "history": true,
+    "blog": true,
+    "donate": true
+  },
   "streamUrl": "https://kteq-proxy.kteq.workers.dev",
   "streamFallbackUrl": "http://kteq-streamer.sdsmt.edu:8000/kteq",
   "stationName": "KTEQ-FM 91.3",
