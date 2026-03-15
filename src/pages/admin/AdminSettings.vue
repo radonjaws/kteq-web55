@@ -12,7 +12,6 @@ const sha = ref('')
 const rawContent = ref<any>(null)
 
 const form = reactive({
-  campaignPhase: 'rediscover',
   streamUrl: '',
   streamFallbackUrl: '',
   stationName: '',
@@ -37,8 +36,18 @@ onMounted(async () => {
     sha.value = fileSha
     rawContent.value = content
     Object.assign(form, {
-      ...content,
-      socialLinks: { ...content.socialLinks }
+      streamUrl: content.streamUrl,
+      streamFallbackUrl: content.streamFallbackUrl,
+      stationName: content.stationName,
+      stationTagline: content.stationTagline,
+      stationDescription: content.stationDescription,
+      requestLine: content.requestLine,
+      email: content.email,
+      donateUrl: content.donateUrl,
+      socialLinks: { ...content.socialLinks },
+      bannerText: content.bannerText,
+      bannerUrl: content.bannerUrl,
+      bannerDismissible: content.bannerDismissible
     })
   } catch (e: any) {
     loadError.value = e.message
@@ -52,7 +61,6 @@ async function handleSave() {
     // Preserve all fields (including those owned by other editors)
     ...rawContent.value,
     // Override with this editor's fields
-    campaignPhase: form.campaignPhase,
     streamUrl: form.streamUrl,
     streamFallbackUrl: form.streamFallbackUrl,
     stationName: form.stationName,
@@ -69,11 +77,6 @@ async function handleSave() {
   if (newSha) sha.value = newSha
 }
 
-const phaseOptions = [
-  { value: 'rediscover', label: 'Rediscover — Still Here. Still Weird.' },
-  { value: 'kteqlive', label: 'KTEQ Live — Welcome Back!' },
-  { value: 'kteq100', label: 'KTEQ 100 — Standard Operations' }
-]
 </script>
 
 <template>
@@ -101,7 +104,7 @@ const phaseOptions = [
       <div class="flex items-start justify-between">
         <div>
           <h1 class="font-display text-2xl font-bold text-kteq-white">Settings</h1>
-          <p class="mt-1 text-sm text-kteq-muted">Site-wide configuration. Saves commit directly to the repo.</p>
+          <p class="mt-1 text-sm text-kteq-muted">Stream, station info, banner, and social links. Saves commit directly to the repo.</p>
         </div>
 
         <!-- Save button + status -->
@@ -129,30 +132,6 @@ const phaseOptions = [
       <div v-else-if="loadError" class="mt-8 rounded-lg border border-kteq-red/30 bg-kteq-dark p-6 text-sm text-kteq-red">{{ loadError }}</div>
 
       <form v-else @submit.prevent="handleSave" class="mt-8 space-y-6">
-
-        <!-- Campaign -->
-        <section class="rounded-lg border border-kteq-gray/30 bg-kteq-dark p-6">
-          <div class="mb-5 flex items-center justify-between">
-            <h2 class="font-display text-base font-semibold text-kteq-white">Campaign</h2>
-            <RouterLink
-              to="/admin/campaigns"
-              class="font-display text-xs text-kteq-yellow transition-colors hover:text-kteq-yellow-bright"
-            >Countdown &amp; hero overrides →</RouterLink>
-          </div>
-
-          <div>
-            <label class="mb-1.5 block font-display text-sm font-medium text-kteq-light">Campaign Phase</label>
-            <select
-              v-model="form.campaignPhase"
-              class="w-full rounded-md border border-kteq-gray/50 bg-kteq-void px-3 py-2 font-body text-sm text-kteq-white focus:border-kteq-yellow/50 focus:outline-none focus:ring-1 focus:ring-kteq-yellow/50 transition-colors"
-            >
-              <option v-for="opt in phaseOptions" :key="opt.value" :value="opt.value">
-                {{ opt.label }}
-              </option>
-            </select>
-            <p class="mt-1.5 text-xs text-kteq-muted">Controls hero messaging, CTAs, and campaign-specific UI across the site.</p>
-          </div>
-        </section>
 
         <!-- Announcement Banner -->
         <section class="rounded-lg border border-kteq-gray/30 bg-kteq-dark p-6">

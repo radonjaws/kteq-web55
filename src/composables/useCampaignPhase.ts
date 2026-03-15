@@ -62,21 +62,20 @@ function getStationEmail(): string {
 export function useCampaignPhase() {
   const content = useContentStore()
 
-  const phase = computed(() => content.settings.campaignPhase)
+  // Active campaign drives the phase; falls back to 'rediscover' if nothing is set
+  const phase = computed(() => content.activeCampaign?.phase || 'rediscover')
 
   const isRediscover = computed(() => phase.value === 'rediscover')
   const isKteqLive = computed(() => phase.value === 'kteqlive')
   const isKteq100 = computed(() => phase.value === 'kteq100')
 
   const heroConfig = computed<HeroConfig>(() => {
+    // Phase defaults — used when the active campaign leaves a field empty
     const configs: Record<string, HeroConfig> = {
       rediscover: {
         headline: 'Still Here. Still Weird.',
         subhead: '55 years of alternative radio in the Black Hills',
-        cta: {
-          text: 'Share Your Memories',
-          action: 'mailto'
-        },
+        cta: { text: 'Share Your Memories', action: 'mailto' },
         secondaryCta: { text: 'Listen Now', route: '/listen' }
       },
       kteqlive: {
@@ -93,13 +92,13 @@ export function useCampaignPhase() {
       }
     }
     const base = configs[phase.value] || configs.rediscover
-    const s = content.settings
+    const c = content.activeCampaign
 
-    // Apply Campaigns admin overrides — empty string falls through to the phase default
-    const headline = s.campaignHeadline || base.headline
-    const subhead = s.campaignSubhead || base.subhead
-    const ctaText = s.campaignCtaPrimary || base.cta.text
-    const secondaryCtaText = s.campaignCtaSecondary || base.secondaryCta?.text
+    // Campaign overrides — empty string falls through to the phase default
+    const headline = c?.headline || base.headline
+    const subhead = c?.subhead || base.subhead
+    const ctaText = c?.ctaPrimary || base.cta.text
+    const secondaryCtaText = c?.ctaSecondary || base.secondaryCta?.text
 
     return {
       headline,
@@ -121,22 +120,24 @@ export function useCampaignPhase() {
     return `mailto:${email}?subject=${subject}&body=${body}`
   })
 
-  // Configurable countdown — shown whenever a target is set and days remain
+  // Countdown — driven by the active campaign's countdownTarget
   const countdownTarget = computed(() =>
-    content.settings.countdownTarget ? new Date(content.settings.countdownTarget) : null
+    content.activeCampaign?.countdownTarget
+      ? new Date(content.activeCampaign.countdownTarget)
+      : null
   )
   const daysUntilCountdown = computed(() => {
     if (!countdownTarget.value) return 0
     const diff = countdownTarget.value.getTime() - Date.now()
     return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)))
   })
-  // Show if a target date is configured and hasn't passed
+  // Show if a target date is set and hasn't passed — no phase gating
   const showCountdown = computed(() =>
     !!countdownTarget.value && daysUntilCountdown.value > 0
   )
-  const countdownLabel = computed(() => content.settings.countdownLabel ?? '')
+  const countdownLabel = computed(() => content.activeCampaign?.countdownLabel ?? '')
   const countdownLabelPosition = computed(() =>
-    content.settings.countdownLabelPosition === 'before' ? 'before' : 'after'
+    content.activeCampaign?.countdownLabelPosition === 'before' ? 'before' : 'after'
   )
 
   return {

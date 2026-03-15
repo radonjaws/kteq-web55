@@ -1,5 +1,5 @@
 {
-  "campaignPhase": "rediscover",
+  "activeCampaign": "rediscover-2026",
   "streamUrl": "https://kteq-proxy.kteq.workers.dev",
   "streamFallbackUrl": "http://kteq-streamer.sdsmt.edu:8000/kteq",
   "stationName": "KTEQ-FM 91.3",
@@ -15,14 +15,5 @@
   },
   "bannerText": "What does this banner look like?",
   "bannerUrl": "",
-  "bannerDismissible": true,
-  "countdownTarget": "2026-09-25T18:00:00-06:00",
-  "countdownLabel": "days until reopening",
-  "countdownLabelPosition": "after",
-  "campaignName": "(Re)Discover KTEQ",
-  "campaignHeroImage": "",
-  "campaignHeadline": "",
-  "campaignSubhead": "",
-  "campaignCtaPrimary": "",
-  "campaignCtaSecondary": ""
+  "bannerDismissible": true
 }

@@ -133,6 +133,12 @@ const router = createRouter({
       component: () => import('@/pages/admin/AdminCampaigns.vue'),
       meta: { requiresAdmin: true }
     },
+    {
+      path: '/admin/campaigns/:id',
+      name: 'admin-campaign-edit',
+      component: () => import('@/pages/admin/AdminCampaignEdit.vue'),
+      meta: { requiresAdmin: true }
+    },
 
     // Catch-all
     {

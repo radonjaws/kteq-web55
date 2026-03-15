@@ -90,9 +90,9 @@ After logging in, you'll see the admin dashboard with links to each content area
 - **DJs** — manage DJ profiles
 - **Timeline** — add entries to the 55th anniversary timeline
 - **Blog Posts** — write and publish news and updates
-- **Settings** — campaign phase, stream URL, announcement banner, social links
+- **Settings** — stream URL, station info, announcement banner, social links
 - **Menu** — logo image and nav link visibility (show/hide links for maintenance)
-- **Campaigns** — campaign name, hero image, and headline overrides
+- **Campaigns** — manage campaign configurations; set the active one, edit phase, hero, and countdown
 
 Click into any section to start editing. Each section loads the current content from the repository, lets you make changes in a form, and saves your changes back with a single click.
 
@@ -200,7 +200,6 @@ Settings are managed by the programming director or station advisor. Most studen
 
 | Setting | What it does |
 |---------|-------------|
-| **Campaign Phase** | Changes the entire homepage. See Section 8 |
 | **Stream URL** | Where the player connects. Don't change unless the stream moves |
 | **Banner Text** | Shows an announcement across the top of every page. Empty = hidden |
 | **Donate URL** | Where the Donate button links (CARA page) |
@@ -213,14 +212,20 @@ Settings are managed by the programming director or station advisor. Most studen
 | **Logo URL** | Path to a logo image in the site header. Empty = falls back to the "K" text icon |
 | **Nav Links** | Boolean toggle per link (Listen, Schedule, Shows, DJs, History, Blog, Donate). Set to `false` to hide a link during maintenance |
 
-**Campaign overrides** (via the Campaigns editor):
+**Campaign settings** (via the Campaigns editor — see Section 8):
 
-| Setting | What it does |
-|---------|-------------|
-| **Campaign Name** | Internal name for the active campaign, e.g. "(Re)Discover KTEQ" |
-| **Campaign Hero Image** | Path to a background image for the homepage hero. Empty = no image |
-| **Headline / Subhead** | Override the phase default headline or subhead. Empty = use the phase default from `useCampaignPhase.ts` |
-| **Primary / Secondary CTA** | Override the CTA button text. Empty = use the phase default |
+Each campaign is a separate configuration. The Campaigns admin shows a list of all campaigns with an **Active** badge on the current one. Use **Set Active** to switch which campaign is driving the site. Use **Edit** or **New Campaign** to manage campaign details.
+
+| Campaign field | What it does |
+|----------------|-------------|
+| **Campaign Name** | Internal name shown in the admin list, e.g. "(Re)Discover KTEQ" |
+| **Phase** | Which phase this campaign uses (`rediscover`, `kteqlive`, or `kteq100`). Drives the site's default messaging, CTA routing, and behavior |
+| **Hero Image URL** | Path to a background image for the homepage hero. Empty = default gradient |
+| **Headline / Subhead** | Override the phase default. Empty = use the phase default |
+| **Primary / Secondary CTA text** | Override the button text. Empty = use the phase default |
+| **Countdown Target** | Date (and optional time) to count down to. Clear to hide the countdown |
+| **Countdown Label** | Text shown alongside the number, e.g. "days until reopening" |
+| **Label Position** | Whether the label appears before or after the day count |
 
 ---
 
@@ -244,7 +249,8 @@ The site rebuilds automatically. Your changes are live in about 60 seconds.
 
 | File | What it controls |
 |------|-----------------|
-| `content/settings.json` | Stream URL, campaign phase, banner, social links |
+| `content/settings.json` | Active campaign slug, stream URL, banner, social links |
+| `content/campaigns/*.json` | Campaign configurations (one file per campaign) |
 | `content/schedule.json` | The weekly programming grid |
 | `content/shows.json` | Show names, descriptions, genres |
 | `content/djs.json` | DJ profiles and bios |
@@ -436,7 +442,13 @@ Each day contains an array of time slots:
 
 ```json
 {
-  "campaignPhase": "rediscover",
+  "activeCampaign": "rediscover-2026",
+  "streamUrl": "https://kteq-proxy.kteq.workers.dev",
+  "streamFallbackUrl": "http://kteq-streamer.sdsmt.edu:8000/kteq",
+  "stationName": "KTEQ-FM 91.3",
+  "bannerText": "",
+  "bannerUrl": "",
+  "bannerDismissible": true,
   "logoUrl": "",
   "navLinks": {
     "listen": true,
@@ -446,19 +458,37 @@ Each day contains an array of time slots:
     "history": true,
     "blog": true,
     "donate": true
-  },
-  "campaignName": "(Re)Discover KTEQ",
-  "campaignHeroImage": "",
-  "campaignHeadline": "",
-  "campaignSubhead": "",
-  "campaignCtaPrimary": "",
-  "campaignCtaSecondary": ""
+  }
 }
 ```
 
+- `activeCampaign`: slug of the active campaign file in `content/campaigns/`. Changing this switches everything the campaign controls (phase, hero, countdown)
 - `logoUrl`: path starting with `/images/brand/`. Empty string = "K" text fallback
 - `navLinks`: set any value to `false` to hide that link sitewide (useful during maintenance)
-- Campaign override fields: when empty, the phase defaults from `useCampaignPhase.ts` are used. Set a value to override just that field without changing the phase
+
+### Campaign files (content/campaigns/*.json)
+
+```json
+{
+  "slug": "rediscover-2026",
+  "name": "(Re)Discover KTEQ",
+  "phase": "rediscover",
+  "heroImage": "",
+  "headline": "",
+  "subhead": "",
+  "ctaPrimary": "",
+  "ctaSecondary": "",
+  "countdownTarget": "2026-09-25T18:00:00-06:00",
+  "countdownLabel": "days until reopening",
+  "countdownLabelPosition": "after"
+}
+```
+
+- `slug`: must match the filename stem (e.g., `rediscover-2026.json` → `"slug": "rediscover-2026"`)
+- `phase`: one of `"rediscover"`, `"kteqlive"`, `"kteq100"` — drives site behavior and default messaging
+- `heroImage`, `headline`, `subhead`, `ctaPrimary`, `ctaSecondary`: all optional overrides — empty string falls through to the phase default
+- `countdownTarget`: ISO 8601 timestamp in Mountain Time. Clear to hide the countdown
+- `countdownLabelPosition`: `"before"` or `"after"` the day number
 
 ### Blog post files (content/posts/*.json)
 
@@ -541,63 +571,81 @@ The admin panel at `kteq.org/#/admin` uses a GitHub Personal Access Token (PAT) 
 
 ### What campaigns are
 
-The KTEQ website has a **campaign system** that changes the homepage messaging, calls-to-action, and overall tone by editing a single setting. Think of it like seasonal programming for the website.
+The KTEQ website has a **campaign system** that changes the homepage messaging, calls-to-action, countdown timer, and overall tone — all without touching any code. Think of it like seasonal programming for the website.
 
-This matters because the website needs to do different jobs at different times. During an alumni outreach effort, the site should invite people to reconnect. During a grand reopening, it should build excitement. During normal operations, it should get out of the way and let people listen. The campaign system handles all of this without code changes.
+Each campaign is a configuration file in `content/campaigns/`. One campaign is designated **active** at any time; it drives everything the visitor sees on the homepage: the headline, subhead, CTA buttons, and the countdown (if any).
 
-### What students see vs. what leadership controls
+This matters because the website needs to do different jobs at different times. During an alumni outreach effort, the site should invite people to reconnect. During a grand reopening, it should build excitement. During normal operations, it should get out of the way and let people listen. Creating a new campaign — and activating it — handles all of this without code changes.
 
-**Admin panel users** (DJs, most students) can see which campaign phase is active in the Settings editor and could technically change it, but they shouldn't — phase changes are strategic decisions that affect the entire site.
+### How campaigns work in the admin panel
 
-**Campaign messaging** — the actual headlines, subheads, and CTA text — is defined in code (`src/composables/useCampaignPhase.ts`), not in the admin panel. This is intentional: "Still Here. Still Weird." isn't something that should be casually edited. Leadership defines the messaging; the admin panel just selects which phase is active.
+Go to **Campaigns** in the admin dashboard. You'll see:
 
-To change campaign messaging, use Claude Code with the project context in `CLAUDE.md`. The composable is well-documented and Code can add or modify phases in a few minutes.
+- A list of all campaign files with an **active** badge on the current one
+- **Set Active** — click to make any campaign the live one. The switch takes ~60 seconds to deploy
+- **Edit →** — opens the campaign editor for that entry
+- **New Campaign** — creates a new campaign file
 
-### The (Re)Discover KTEQ campaign
+Each campaign has:
+1. **Campaign Identity** — name (internal only), phase, hero image URL
+2. **Hero Text Overrides** — headline, subhead, CTA text. Leave any field empty to use the phase default
+3. **Countdown** (optional, last) — target date/time, label text, label position
 
-**(Re)Discover KTEQ** is the internal name for the station's 2026 campaign — the umbrella covering the 55th anniversary, studio renovation, fundraising, alumni outreach, and grand reopening. The public-facing messaging is different at each stage because the website's job changes as the campaign progresses.
+### Phase reference
 
-Meanwhile, social media carries the chronological anniversary storytelling — yearly milestones, alumni engagement, music history. The website and social media complement each other but don't say the same things.
+A campaign's **Phase** sets the site's behavioral defaults — routing, CTA action type, and fallback text. There are three phases:
 
-**Phase 1: `"rediscover"` — "Still Here. Still Weird."**
+**`rediscover` — "Still Here. Still Weird."**
 
-The opening phase, running through summer 2026. Social media does the heavy lifting of anniversary storytelling. The website's job is warmer and simpler: establish that KTEQ exists, has 55 years of history, and invite people to connect.
+The alumni and community outreach phase. The website's job is to establish that KTEQ exists, has history, and invite people to connect.
 
-The primary CTA is **"Share Your Memories"** — a mailto link to the station. The goal is to collect alumni stories and photos that become timeline content and anniversary material. Build the relationship before asking for donations.
-
-- Headline: "Still Here. Still Weird."
-- Subhead: "55 years of alternative radio in the Black Hills"
-- Primary CTA: "Share Your Memories" → email to station
+- Default headline: "Still Here. Still Weird."
+- Default subhead: "55 years of alternative radio in the Black Hills"
+- Primary CTA: "Share Your Memories" → opens an email to the station
 - Secondary CTA: "Listen Now" → player page
-- Countdown to September 25 visible
 
-**Phase 2: `"kteqlive"` — "Welcome Back!"**
+**`kteqlive` — "Welcome Back!"**
 
-Switch to this in late August, a couple weeks before the reopening. Does double duty: welcomes students returning to campus, previews the return to live broadcasts from the renovated studio, and welcomes homecoming visitors. The September 25 M-Week reopening is the centerpiece. Short, high-energy phase.
+The return-to-studio phase. Welcomes students back to campus and builds anticipation for live broadcasts.
 
-- Headline: "Welcome Back!"
-- Subhead: "Live from the Black Hills — KTEQ returns to the studio"
-- Primary CTA: "Listen Live" → starts stream
-- Secondary CTA: "Our History" → timeline
-- Prominent countdown
+- Default headline: "Welcome Back!"
+- Default subhead: "Live from the Black Hills — KTEQ returns to the studio"
+- Primary CTA: "Listen Live" → starts the stream directly
+- Secondary CTA: "Our History" → timeline page
 
-**Phase 3: `"kteq100"` — Standard Operations**
+**`kteq100` — Standard Operations**
 
-Post-campaign steady state. By now, the summer's collected history content is built out, so "Explore Our History" is backed by real content. Consistent programming, underwriting, regular fundraising intervals, alumni engagement — focused on long-term sustainability. "KTEQ 100" represents the station's 100th anniversary (2071) as the planning horizon.
+Post-campaign steady state. History content is built out; "Explore Our History" is backed by real material.
 
-The next campaign evolution from here: inviting new students — now familiar with the station's history and context — to contribute as DJs, programmers, and staff.
-
-- Headline: "Black Hills Alternative Radio"
-- Subhead: "KTEQ-FM 91.3 — Rapid City, South Dakota"
-- Primary CTA: "Explore Our History" → timeline
+- Default headline: "Black Hills Alternative Radio"
+- Default subhead: "KTEQ-FM 91.3 — Rapid City, South Dakota"
+- Primary CTA: "Explore Our History" → timeline page
 - Secondary CTA: "Listen Now" → player page
-- No countdown
 
-### Changing the phase
+The CTA *routing and action type* (play stream, open email, navigate to page) are determined by the phase and cannot be changed from the admin panel — only the button text can be overridden. To change routing, use Claude Code with `CLAUDE.md` for context.
 
-In `content/settings.json`, change `campaignPhase` to one of: `"rediscover"`, `"kteqlive"`, `"kteq100"`
+### Adding a new campaign
 
-Or use the Settings editor in the admin panel.
+1. Go to **Campaigns** → **New Campaign**
+2. Enter a name — the slug is auto-generated (e.g., "KTEQ Live 2026" → `kteqlive-2026`)
+3. Select the phase
+4. Fill in any text overrides and countdown settings
+5. Click **Create Campaign**
+6. Back on the list, click **Set Active** when you're ready to go live
+
+You can create and configure a future campaign in advance without activating it — useful for scheduling a phase transition ahead of time.
+
+### Activating a campaign
+
+On the **Campaigns** list, click **Set Active** next to the campaign you want to make live. This saves `activeCampaign` in `settings.json` and triggers a rebuild. The site switches in ~60 seconds.
+
+The previously active campaign is not deleted — it stays in the list and can be re-activated at any time.
+
+### Deleting a campaign
+
+Open the campaign via **Edit →**. A **Delete campaign** link appears at the bottom of the form. Deletion is blocked if the campaign is currently active — activate a different campaign first.
+
+Deleted campaigns are gone from the file system. If you need to recover one, it can be restored from the repository's commit history.
 
 ---
 
@@ -699,10 +747,11 @@ Examples: `the-deep-cut`, `alex-r`, `spring-schedule-2026`, `1971-first-broadcas
 
 ### Content file quick links
 
+- [Settings](https://github.com/kteq/kteq-web55/blob/main/content/settings.json)
+- [Campaigns](https://github.com/kteq/kteq-web55/tree/main/content/campaigns)
 - [Schedule](https://github.com/kteq/kteq-web55/blob/main/content/schedule.json)
 - [Shows](https://github.com/kteq/kteq-web55/blob/main/content/shows.json)
 - [DJs](https://github.com/kteq/kteq-web55/blob/main/content/djs.json)
 - [Timeline](https://github.com/kteq/kteq-web55/blob/main/content/timeline.json)
-- [Settings](https://github.com/kteq/kteq-web55/blob/main/content/settings.json)
 - [Blog posts](https://github.com/kteq/kteq-web55/tree/main/content/posts)
 - [Images](https://github.com/kteq/kteq-web55/tree/main/public/images)

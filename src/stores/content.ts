@@ -11,6 +11,9 @@ import timelineData from '@content/timeline.json'
 // Blog posts via glob import
 const postModules = import.meta.glob('@content/posts/*.json', { eager: true }) as Record<string, { default: any }>
 
+// Campaigns via glob import
+const campaignModules = import.meta.glob('@content/campaigns/*.json', { eager: true }) as Record<string, { default: any }>
+
 interface Show {
   slug: string
   name: string
@@ -54,6 +57,20 @@ interface ScheduleSlot {
   showSlug: string
   isAutomation: boolean
   notes: string
+}
+
+interface Campaign {
+  slug: string
+  name: string
+  phase: string
+  heroImage: string
+  headline: string
+  subhead: string
+  ctaPrimary: string
+  ctaSecondary: string
+  countdownTarget: string
+  countdownLabel: string
+  countdownLabelPosition: string
 }
 
 interface BlogPost {
@@ -113,6 +130,14 @@ export const useContentStore = defineStore('content', () => {
     return [...decades].sort()
   })
 
+  // Campaigns
+  const campaigns = ref<Campaign[]>(
+    Object.values(campaignModules).map((m: any) => m.default || m)
+  )
+  const activeCampaign = computed<Campaign | null>(() =>
+    campaigns.value.find(c => c.slug === settings.value.activeCampaign) ?? campaigns.value[0] ?? null
+  )
+
   // Blog posts
   const posts = ref<BlogPost[]>(
     Object.values(postModules)
@@ -150,6 +175,8 @@ export const useContentStore = defineStore('content', () => {
 
   return {
     settings,
+    campaigns,
+    activeCampaign,
     schedule,
     shows,
     showBySlug,
