@@ -1,14 +1,13 @@
 {
   "activeCampaign": "rediscover-2026",
+  "headerCta": "listen",
   "logoUrl": "https://kteq.org/img/logo-shadow.png",
   "navLinks": {
-    "listen": false,
     "schedule": false,
     "shows": false,
     "djs": false,
     "history": false,
-    "blog": false,
-    "donate": true
+    "blog": false
   },
   "homepageElements": {
     "schedule": true,

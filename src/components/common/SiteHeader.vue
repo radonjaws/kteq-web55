@@ -13,7 +13,6 @@ const allNavLinks = [
   { key: 'djs',      label: 'DJs',      to: '/djs' },
   { key: 'history',  label: 'History',  to: '/history' },
   { key: 'blog',     label: 'Blog',     to: '/blog' },
-  { key: 'donate',   label: 'Donate',   to: '/donate' },
 ]
 
 const navLinks = computed(() => {
@@ -22,9 +21,8 @@ const navLinks = computed(() => {
   return allNavLinks.filter(link => enabled[link.key] !== false)
 })
 
-const showListen = computed(() => {
-  const enabled = (content.settings as any).navLinks
-  return !enabled || enabled.listen !== false
+const headerCta = computed<'listen' | 'donate'>(() => {
+  return (content.settings as any).headerCta || 'listen'
 })
 
 const logoUrl = computed(() => (content.settings as any).logoUrl || '')
@@ -39,9 +37,9 @@ function toggleMenu() {
     <div class="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
       <!-- Logo / Station ID -->
       <RouterLink to="/" class="group flex items-center gap-3" @click="mobileMenuOpen = false">
-        <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-sm bg-kteq-yellow font-display text-sm font-bold tracking-tight text-kteq-black overflow-hidden">
-          <img v-if="logoUrl" :src="logoUrl" alt="KTEQ" class="h-full w-full object-cover" />
-          <span v-else>K</span>
+        <img v-if="logoUrl" :src="logoUrl" alt="KTEQ" class="h-9 w-auto object-contain shrink-0" />
+        <div v-else class="flex h-9 w-9 shrink-0 items-center justify-center rounded-sm bg-kteq-yellow font-display text-sm font-bold tracking-tight text-kteq-black">
+          K
         </div>
         <div class="hidden sm:block">
           <div class="font-display text-sm font-semibold leading-tight tracking-wide text-kteq-white">
@@ -66,10 +64,11 @@ function toggleMenu() {
         </RouterLink>
       </nav>
 
-      <!-- Listen Button + Mobile Menu Toggle -->
+      <!-- Header CTA + Mobile Menu Toggle -->
       <div class="flex items-center gap-3">
+        <!-- Listen button -->
         <button
-          v-if="showListen"
+          v-if="headerCta === 'listen'"
           @click="player.toggle()"
           class="flex items-center gap-2 rounded-full px-4 py-2 font-display text-sm font-semibold transition-all"
           :class="player.isPlaying
@@ -88,6 +87,18 @@ function toggleMenu() {
           </svg>
           <span class="hidden sm:inline">{{ player.isPlaying ? 'Listening' : 'Listen' }}</span>
         </button>
+
+        <!-- Donate button -->
+        <RouterLink
+          v-else-if="headerCta === 'donate'"
+          to="/donate"
+          class="flex items-center gap-2 rounded-full bg-kteq-yellow px-4 py-2 font-display text-sm font-semibold text-kteq-black transition-all hover:bg-kteq-yellow-bright glow-yellow"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4">
+            <path d="M9.653 16.915l-.005-.003-.019-.01a20.759 20.759 0 01-1.162-.682 22.045 22.045 0 01-2.582-2.025 11.566 11.566 0 01-1.95-2.656c-.242-.499-.41-1.023-.41-1.539 0-1.99 1.614-3.5 3.5-3.5.868 0 1.72.328 2.375.876A3.487 3.487 0 0112.5 6.5c1.886 0 3.5 1.51 3.5 3.5 0 .516-.168 1.04-.41 1.539a11.566 11.566 0 01-1.95 2.656 22.045 22.045 0 01-2.582 2.025 20.757 20.757 0 01-1.181.692l-.019.01-.005.002z" />
+          </svg>
+          <span class="hidden sm:inline">Donate</span>
+        </RouterLink>
 
         <!-- Mobile hamburger -->
         <button
