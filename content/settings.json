@@ -16,5 +16,11 @@
   "bannerText": "",
   "bannerUrl": "",
   "bannerDismissible": true,
-  "reopeningDate": "2026-09-25T18:00:00-06:00"
+  "countdownTarget": "2026-09-25T18:00:00-06:00",
+  "campaignName": "(Re)Discover KTEQ",
+  "campaignHeroImage": "",
+  "campaignHeadline": "",
+  "campaignSubhead": "",
+  "campaignCtaPrimary": "",
+  "campaignCtaSecondary": ""
 }

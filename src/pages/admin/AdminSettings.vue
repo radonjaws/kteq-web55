@@ -7,6 +7,9 @@ const { saving, error, lastSaved, save, getContent } = useGitHub()
 const loading = ref(true)
 const loadError = ref<string | null>(null)
 const sha = ref('')
+// Full loaded content — spread into save payload so fields owned by other
+// editors (Campaigns, Menu) are preserved across Settings saves.
+const rawContent = ref<any>(null)
 
 const form = reactive({
   campaignPhase: 'rediscover',
@@ -25,32 +28,17 @@ const form = reactive({
   },
   bannerText: '',
   bannerUrl: '',
-  bannerDismissible: true,
-  // UI-only: split from reopeningDate ISO string
-  _reopeningDate: '',
-  _reopeningTime: ''
+  bannerDismissible: true
 })
-
-function parseReopening(iso: string) {
-  const match = iso?.match(/^(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2})/)
-  return match ? { date: match[1], time: match[2] } : { date: '', time: '' }
-}
-
-function buildReopening(date: string, time: string): string {
-  if (!date || !time) return ''
-  return `${date}T${time}:00-06:00`
-}
 
 onMounted(async () => {
   try {
     const { content, sha: fileSha } = await getContent('content/settings.json')
     sha.value = fileSha
-    const { date, time } = parseReopening(content.reopeningDate)
+    rawContent.value = content
     Object.assign(form, {
       ...content,
-      socialLinks: { ...content.socialLinks },
-      _reopeningDate: date,
-      _reopeningTime: time
+      socialLinks: { ...content.socialLinks }
     })
   } catch (e: any) {
     loadError.value = e.message
@@ -60,7 +48,10 @@ onMounted(async () => {
 })
 
 async function handleSave() {
-  const payload = {
+  const newSha = await save('content/settings.json', {
+    // Preserve all fields (including those owned by other editors)
+    ...rawContent.value,
+    // Override with this editor's fields
     campaignPhase: form.campaignPhase,
     streamUrl: form.streamUrl,
     streamFallbackUrl: form.streamFallbackUrl,
@@ -73,10 +64,8 @@ async function handleSave() {
     socialLinks: { ...form.socialLinks },
     bannerText: form.bannerText,
     bannerUrl: form.bannerUrl,
-    bannerDismissible: form.bannerDismissible,
-    reopeningDate: buildReopening(form._reopeningDate, form._reopeningTime)
-  }
-  const newSha = await save('content/settings.json', payload, sha.value, 'Update site settings')
+    bannerDismissible: form.bannerDismissible
+  }, sha.value, 'Update site settings')
   if (newSha) sha.value = newSha
 }
 
@@ -143,42 +132,25 @@ const phaseOptions = [
 
         <!-- Campaign -->
         <section class="rounded-lg border border-kteq-gray/30 bg-kteq-dark p-6">
-          <h2 class="mb-5 font-display text-base font-semibold text-kteq-white">Campaign</h2>
-          <div class="space-y-5">
+          <div class="mb-5 flex items-center justify-between">
+            <h2 class="font-display text-base font-semibold text-kteq-white">Campaign</h2>
+            <RouterLink
+              to="/admin/campaigns"
+              class="font-display text-xs text-kteq-yellow transition-colors hover:text-kteq-yellow-bright"
+            >Countdown &amp; hero overrides →</RouterLink>
+          </div>
 
-            <div>
-              <label class="mb-1.5 block font-display text-sm font-medium text-kteq-light">Campaign Phase</label>
-              <select
-                v-model="form.campaignPhase"
-                class="w-full rounded-md border border-kteq-gray/50 bg-kteq-void px-3 py-2 font-body text-sm text-kteq-white focus:border-kteq-yellow/50 focus:outline-none focus:ring-1 focus:ring-kteq-yellow/50 transition-colors"
-              >
-                <option v-for="opt in phaseOptions" :key="opt.value" :value="opt.value">
-                  {{ opt.label }}
-                </option>
-              </select>
-              <p class="mt-1.5 text-xs text-kteq-muted">Controls hero messaging, CTAs, and campaign-specific UI across the site.</p>
-            </div>
-
-            <div class="grid gap-4 sm:grid-cols-2">
-              <div>
-                <label class="mb-1.5 block font-display text-sm font-medium text-kteq-light">Reopening Date</label>
-                <input
-                  type="date"
-                  v-model="form._reopeningDate"
-                  class="w-full rounded-md border border-kteq-gray/50 bg-kteq-void px-3 py-2 font-mono text-sm text-kteq-white focus:border-kteq-yellow/50 focus:outline-none focus:ring-1 focus:ring-kteq-yellow/50 transition-colors"
-                />
-              </div>
-              <div>
-                <label class="mb-1.5 block font-display text-sm font-medium text-kteq-light">Reopening Time</label>
-                <input
-                  type="time"
-                  v-model="form._reopeningTime"
-                  class="w-full rounded-md border border-kteq-gray/50 bg-kteq-void px-3 py-2 font-mono text-sm text-kteq-white focus:border-kteq-yellow/50 focus:outline-none focus:ring-1 focus:ring-kteq-yellow/50 transition-colors"
-                />
-              </div>
-            </div>
-            <p class="-mt-2 text-xs text-kteq-muted">Stored as Mountain Time (CDT, −6:00). Used by the countdown display.</p>
-
+          <div>
+            <label class="mb-1.5 block font-display text-sm font-medium text-kteq-light">Campaign Phase</label>
+            <select
+              v-model="form.campaignPhase"
+              class="w-full rounded-md border border-kteq-gray/50 bg-kteq-void px-3 py-2 font-body text-sm text-kteq-white focus:border-kteq-yellow/50 focus:outline-none focus:ring-1 focus:ring-kteq-yellow/50 transition-colors"
+            >
+              <option v-for="opt in phaseOptions" :key="opt.value" :value="opt.value">
+                {{ opt.label }}
+              </option>
+            </select>
+            <p class="mt-1.5 text-xs text-kteq-muted">Controls hero messaging, CTAs, and campaign-specific UI across the site.</p>
           </div>
         </section>
 

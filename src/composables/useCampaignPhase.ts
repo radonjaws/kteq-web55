@@ -92,7 +92,23 @@ export function useCampaignPhase() {
         secondaryCta: { text: 'Listen Now', route: '/listen' }
       }
     }
-    return configs[phase.value] || configs.rediscover
+    const base = configs[phase.value] || configs.rediscover
+    const s = content.settings
+
+    // Apply Campaigns admin overrides — empty string falls through to the phase default
+    const headline = s.campaignHeadline || base.headline
+    const subhead = s.campaignSubhead || base.subhead
+    const ctaText = s.campaignCtaPrimary || base.cta.text
+    const secondaryCtaText = s.campaignCtaSecondary || base.secondaryCta?.text
+
+    return {
+      headline,
+      subhead,
+      cta: { ...base.cta, text: ctaText },
+      secondaryCta: base.secondaryCta
+        ? { ...base.secondaryCta, text: secondaryCtaText! }
+        : undefined
+    }
   })
 
   // mailto link for "Share Your Memories" CTA
@@ -105,15 +121,15 @@ export function useCampaignPhase() {
     return `mailto:${email}?subject=${subject}&body=${body}`
   })
 
-  // Countdown to reopening (relevant during rediscover and kteqlive)
-  const reopeningDate = computed(() => new Date(content.settings.reopeningDate))
-  const daysUntilReopening = computed(() => {
+  // Configurable countdown target (set via Campaigns admin editor)
+  const countdownTarget = computed(() => new Date(content.settings.countdownTarget))
+  const daysUntilCountdown = computed(() => {
     const now = new Date()
-    const diff = reopeningDate.value.getTime() - now.getTime()
+    const diff = countdownTarget.value.getTime() - now.getTime()
     return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)))
   })
   const showCountdown = computed(() =>
-    (isRediscover.value || isKteqLive.value) && daysUntilReopening.value > 0
+    (isRediscover.value || isKteqLive.value) && daysUntilCountdown.value > 0
   )
 
   return {
@@ -123,8 +139,8 @@ export function useCampaignPhase() {
     isKteq100,
     heroConfig,
     memoriesMailto,
-    reopeningDate,
-    daysUntilReopening,
+    countdownTarget,
+    daysUntilCountdown,
     showCountdown
   }
 }
