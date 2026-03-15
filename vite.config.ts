@@ -14,6 +14,6 @@ export default defineConfig({
       '@content': resolve(__dirname, 'content')
     }
   },
-  // GitHub Pages deploys to root of custom domain
-  base: '/'
+  // VITE_BASE_URL=/kteq-web55/ while on the project URL, / once kteq.org DNS is live
+  base: process.env.VITE_BASE_URL ?? '/'
 })
