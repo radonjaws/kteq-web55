@@ -3,11 +3,11 @@
   "logoUrl": "",
   "navLinks": {
     "listen": true,
-    "schedule": true,
-    "shows": true,
+    "schedule": false,
+    "shows": false,
     "djs": false,
-    "history": true,
-    "blog": true,
+    "history": false,
+    "blog": false,
     "donate": true
   },
   "streamUrl": "https://kteq-proxy.kteq.workers.dev",
