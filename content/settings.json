@@ -2,7 +2,7 @@
   "activeCampaign": "rediscover-2026",
   "logoUrl": "",
   "navLinks": {
-    "listen": true,
+    "listen": false,
     "schedule": false,
     "shows": false,
     "djs": false,
