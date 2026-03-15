@@ -219,10 +219,10 @@ Each campaign is a separate configuration. The Campaigns admin shows a list of a
 | Campaign field | What it does |
 |----------------|-------------|
 | **Campaign Name** | Internal name shown in the admin list, e.g. "(Re)Discover KTEQ" |
-| **Phase** | Which phase this campaign uses (`rediscover`, `kteqlive`, or `kteq100`). Drives the site's default messaging, CTA routing, and behavior |
+| **Slug** | Auto-generated from the name; editable before first save, locked afterward. Used as the filename and referenced by `activeCampaign` in settings |
 | **Hero Image URL** | Path to a background image for the homepage hero. Empty = default gradient |
-| **Headline / Subhead** | Override the phase default. Empty = use the phase default |
-| **Primary / Secondary CTA text** | Override the button text. Empty = use the phase default |
+| **Headline / Subhead** | Optional overrides. Empty = use the campaign defaults |
+| **Primary / Secondary CTA text** | Override the button label only. Empty = use the campaign defaults. Button routing and action type are set in code |
 | **Countdown Target** | Date (and optional time) to count down to. Clear to hide the countdown |
 | **Countdown Label** | Text shown alongside the number, e.g. "days until reopening" |
 | **Label Position** | Whether the label appears before or after the day count |
@@ -587,9 +587,8 @@ Go to **Campaigns** in the admin dashboard. You'll see:
 - **New Campaign** — creates a new campaign file
 
 Each campaign has:
-1. **Campaign Identity** — name (internal only), phase, hero image URL
-2. **Hero Text Overrides** — headline, subhead, CTA text. Leave any field empty to use the phase default
-3. **Countdown** (optional, last) — target date/time, label text, label position
+1. **Campaign Settings** — name (internal only), slug, hero image URL, headline, subhead, CTA text. Headline, subhead, and CTA are optional; leave any empty to use the campaign defaults. Slug is auto-generated from the name and can be edited before the first save, but is locked after creation.
+2. **Countdown** (optional, last) — target date/time, label text, label position
 
 ### Phase reference
 

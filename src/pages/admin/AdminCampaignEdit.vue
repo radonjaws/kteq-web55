@@ -38,37 +38,6 @@ const confirmingDelete = ref(false)
 const deleting = ref(false)
 const deleteError = ref<string | null>(null)
 
-const phaseOptions = [
-  { value: 'rediscover', label: 'Rediscover — Still Here. Still Weird.' },
-  { value: 'kteqlive', label: 'KTEQ Live — Welcome Back!' },
-  { value: 'kteq100', label: 'KTEQ 100 — Standard Operations' }
-]
-
-// Phase defaults — shown as placeholders so override fields are self-documenting
-const phaseDefaults = computed(() => {
-  const map: Record<string, { headline: string; subhead: string; ctaPrimary: string; ctaSecondary: string }> = {
-    rediscover: {
-      headline: 'Still Here. Still Weird.',
-      subhead: '55 years of alternative radio in the Black Hills',
-      ctaPrimary: 'Share Your Memories',
-      ctaSecondary: 'Listen Now'
-    },
-    kteqlive: {
-      headline: 'Welcome Back!',
-      subhead: 'Live from the Black Hills — KTEQ returns to the studio',
-      ctaPrimary: 'Listen Live',
-      ctaSecondary: 'Our History'
-    },
-    kteq100: {
-      headline: 'Black Hills Alternative Radio',
-      subhead: 'KTEQ-FM 91.3 — Rapid City, South Dakota',
-      ctaPrimary: 'Explore Our History',
-      ctaSecondary: 'Listen Now'
-    }
-  }
-  return map[form.phase] || map.rediscover
-})
-
 function slugify(name: string): string {
   return name
     .toLowerCase()
@@ -253,11 +222,12 @@ async function handleDelete() {
 
       <form v-else @submit.prevent="handleSave" class="mt-8 space-y-6">
 
-        <!-- Campaign Identity -->
+        <!-- Campaign Settings -->
         <section class="rounded-lg border border-kteq-gray/30 bg-kteq-dark p-6">
-          <h2 class="mb-5 font-display text-base font-semibold text-kteq-white">Campaign Identity</h2>
+          <h2 class="mb-5 font-display text-base font-semibold text-kteq-white">Campaign Settings</h2>
           <div class="space-y-4">
 
+            <!-- Name + Slug -->
             <div class="grid gap-4 sm:grid-cols-2">
               <div>
                 <label class="mb-1.5 block font-display text-sm font-medium text-kteq-light">Campaign Name <span class="text-kteq-red">*</span></label>
@@ -268,7 +238,7 @@ async function handleDelete() {
                   required
                   class="w-full rounded-md border border-kteq-gray/50 bg-kteq-void px-3 py-2 font-body text-sm text-kteq-white placeholder-kteq-muted/50 focus:border-kteq-yellow/50 focus:outline-none focus:ring-1 focus:ring-kteq-yellow/50 transition-colors"
                 />
-                <p class="mt-1.5 text-xs text-kteq-muted">Shown in admin. Not displayed on the public site.</p>
+                <p class="mt-1.5 text-xs text-kteq-muted">Shown in admin only. Not displayed on the public site.</p>
               </div>
               <div>
                 <label class="mb-1.5 block font-display text-sm font-medium text-kteq-light">Slug <span class="text-kteq-red">*</span></label>
@@ -286,19 +256,7 @@ async function handleDelete() {
               </div>
             </div>
 
-            <div>
-              <label class="mb-1.5 block font-display text-sm font-medium text-kteq-light">Phase</label>
-              <select
-                v-model="form.phase"
-                class="w-full rounded-md border border-kteq-gray/50 bg-kteq-void px-3 py-2 font-body text-sm text-kteq-white focus:border-kteq-yellow/50 focus:outline-none focus:ring-1 focus:ring-kteq-yellow/50 transition-colors"
-              >
-                <option v-for="opt in phaseOptions" :key="opt.value" :value="opt.value">
-                  {{ opt.label }}
-                </option>
-              </select>
-              <p class="mt-1.5 text-xs text-kteq-muted">Sets the site's messaging tone, CTAs, and behavior when this campaign is active.</p>
-            </div>
-
+            <!-- Hero Image -->
             <div>
               <label class="mb-1.5 block font-display text-sm font-medium text-kteq-light">
                 Hero Image URL <span class="font-normal text-kteq-muted">(optional)</span>
@@ -309,59 +267,53 @@ async function handleDelete() {
                 placeholder="https://…"
                 class="w-full rounded-md border border-kteq-gray/50 bg-kteq-void px-3 py-2 font-body text-sm text-kteq-white placeholder-kteq-muted/50 focus:border-kteq-yellow/50 focus:outline-none focus:ring-1 focus:ring-kteq-yellow/50 transition-colors"
               />
-              <p class="mt-1.5 text-xs text-kteq-muted">Reserved for a campaign hero image. Leave empty to use the default gradient background.</p>
+              <p class="mt-1.5 text-xs text-kteq-muted">Background image for the homepage hero. Leave empty for the default gradient.</p>
             </div>
 
-          </div>
-        </section>
-
-        <!-- Hero Text Overrides -->
-        <section class="rounded-lg border border-kteq-gray/30 bg-kteq-dark p-6">
-          <h2 class="mb-1 font-display text-base font-semibold text-kteq-white">Hero Text Overrides</h2>
-          <p class="mb-5 text-xs text-kteq-muted">Leave any field empty to use the phase default. Placeholders show what each phase uses.</p>
-          <div class="space-y-4">
-
-            <div>
-              <label class="mb-1.5 block font-display text-sm font-medium text-kteq-light">Headline</label>
-              <input
-                type="text"
-                v-model="form.headline"
-                :placeholder="`Phase default: ${phaseDefaults.headline}`"
-                class="w-full rounded-md border border-kteq-gray/50 bg-kteq-void px-3 py-2 font-body text-sm text-kteq-white placeholder-kteq-muted/40 focus:border-kteq-yellow/50 focus:outline-none focus:ring-1 focus:ring-kteq-yellow/50 transition-colors"
-              />
-            </div>
-
-            <div>
-              <label class="mb-1.5 block font-display text-sm font-medium text-kteq-light">Subhead</label>
-              <input
-                type="text"
-                v-model="form.subhead"
-                :placeholder="`Phase default: ${phaseDefaults.subhead}`"
-                class="w-full rounded-md border border-kteq-gray/50 bg-kteq-void px-3 py-2 font-body text-sm text-kteq-white placeholder-kteq-muted/40 focus:border-kteq-yellow/50 focus:outline-none focus:ring-1 focus:ring-kteq-yellow/50 transition-colors"
-              />
-            </div>
-
+            <!-- Headline + Subhead -->
             <div class="grid gap-4 sm:grid-cols-2">
               <div>
-                <label class="mb-1.5 block font-display text-sm font-medium text-kteq-light">Primary CTA Text</label>
+                <label class="mb-1.5 block font-display text-sm font-medium text-kteq-light">Headline <span class="font-normal text-kteq-muted">(optional)</span></label>
+                <input
+                  type="text"
+                  v-model="form.headline"
+                  placeholder="Override headline"
+                  class="w-full rounded-md border border-kteq-gray/50 bg-kteq-void px-3 py-2 font-body text-sm text-kteq-white placeholder-kteq-muted/40 focus:border-kteq-yellow/50 focus:outline-none focus:ring-1 focus:ring-kteq-yellow/50 transition-colors"
+                />
+              </div>
+              <div>
+                <label class="mb-1.5 block font-display text-sm font-medium text-kteq-light">Subhead <span class="font-normal text-kteq-muted">(optional)</span></label>
+                <input
+                  type="text"
+                  v-model="form.subhead"
+                  placeholder="Override subhead"
+                  class="w-full rounded-md border border-kteq-gray/50 bg-kteq-void px-3 py-2 font-body text-sm text-kteq-white placeholder-kteq-muted/40 focus:border-kteq-yellow/50 focus:outline-none focus:ring-1 focus:ring-kteq-yellow/50 transition-colors"
+                />
+              </div>
+            </div>
+
+            <!-- CTA text -->
+            <div class="grid gap-4 sm:grid-cols-2">
+              <div>
+                <label class="mb-1.5 block font-display text-sm font-medium text-kteq-light">Primary CTA Text <span class="font-normal text-kteq-muted">(optional)</span></label>
                 <input
                   type="text"
                   v-model="form.ctaPrimary"
-                  :placeholder="`Phase default: ${phaseDefaults.ctaPrimary}`"
+                  placeholder="Override primary button text"
                   class="w-full rounded-md border border-kteq-gray/50 bg-kteq-void px-3 py-2 font-body text-sm text-kteq-white placeholder-kteq-muted/40 focus:border-kteq-yellow/50 focus:outline-none focus:ring-1 focus:ring-kteq-yellow/50 transition-colors"
                 />
               </div>
               <div>
-                <label class="mb-1.5 block font-display text-sm font-medium text-kteq-light">Secondary CTA Text</label>
+                <label class="mb-1.5 block font-display text-sm font-medium text-kteq-light">Secondary CTA Text <span class="font-normal text-kteq-muted">(optional)</span></label>
                 <input
                   type="text"
                   v-model="form.ctaSecondary"
-                  :placeholder="`Phase default: ${phaseDefaults.ctaSecondary}`"
+                  placeholder="Override secondary button text"
                   class="w-full rounded-md border border-kteq-gray/50 bg-kteq-void px-3 py-2 font-body text-sm text-kteq-white placeholder-kteq-muted/40 focus:border-kteq-yellow/50 focus:outline-none focus:ring-1 focus:ring-kteq-yellow/50 transition-colors"
                 />
               </div>
             </div>
-            <p class="text-xs text-kteq-muted">Only button text is overrideable — route and action type follow the phase config.</p>
+            <p class="text-xs text-kteq-muted">Headline, subhead, and CTA text are all optional — leave any field empty to use the campaign defaults. Button routing and action type are set in code and are not configurable here.</p>
 
           </div>
         </section>
