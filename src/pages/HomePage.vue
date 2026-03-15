@@ -6,6 +6,12 @@ import { useNowOnAir } from '@/composables/useNowOnAir'
 const content = useContentStore()
 const { currentShow } = useNowOnAir()
 
+// Homepage section visibility (defaults to true if not set)
+const hp = (content.settings as any).homepageElements ?? {}
+const showSchedule = hp.schedule !== false
+const showHistory  = hp.history  !== false
+const showBlog     = hp.blog     !== false
+
 // Latest 3 blog posts
 const recentPosts = content.posts.slice(0, 3)
 
@@ -19,7 +25,7 @@ const recentHistory = [...content.timelineSorted].reverse().slice(0, 3)
     <CampaignHero />
 
     <!-- What's On Now -->
-    <section class="border-b border-kteq-gray/30 bg-kteq-black">
+    <section v-if="showSchedule" class="border-b border-kteq-gray/30 bg-kteq-black">
       <div class="mx-auto max-w-6xl px-4 py-12">
         <div class="flex items-center gap-3 mb-6">
           <span class="on-air-dot" />
@@ -51,7 +57,7 @@ const recentHistory = [...content.timelineSorted].reverse().slice(0, 3)
     </section>
 
     <!-- Recent From the Timeline -->
-    <section v-if="recentHistory.length" class="border-b border-kteq-gray/30 bg-kteq-void">
+    <section v-if="showHistory && recentHistory.length" class="border-b border-kteq-gray/30 bg-kteq-void">
       <div class="mx-auto max-w-6xl px-4 py-12">
         <div class="flex items-center justify-between mb-8">
           <h2 class="font-display text-xs font-semibold uppercase tracking-widest text-kteq-muted">
@@ -76,7 +82,7 @@ const recentHistory = [...content.timelineSorted].reverse().slice(0, 3)
     </section>
 
     <!-- Recent Blog Posts -->
-    <section v-if="recentPosts.length" class="bg-kteq-black">
+    <section v-if="showBlog && recentPosts.length" class="bg-kteq-black">
       <div class="mx-auto max-w-6xl px-4 py-12">
         <div class="flex items-center justify-between mb-8">
           <h2 class="font-display text-xs font-semibold uppercase tracking-widest text-kteq-muted">

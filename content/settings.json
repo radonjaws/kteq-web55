@@ -10,6 +10,11 @@
     "blog": false,
     "donate": true
   },
+  "homepageElements": {
+    "schedule": true,
+    "history": true,
+    "blog": true
+  },
   "streamUrl": "https://kteq-proxy.kteq.workers.dev",
   "streamFallbackUrl": "http://kteq-streamer.sdsmt.edu:8000/kteq",
   "stationName": "KTEQ-FM 91.3",
