@@ -1,0 +1,23 @@
+{
+  "slug": "welcome-back",
+  "name": "Welcome Back!",
+  "heroImage": "",
+  "campaignStart": "0026-08-24T00:00:00-06:00",
+  "campaignEnd": "",
+  "countdownTarget": "",
+  "countdownLabel": "",
+  "countdownLabelPosition": "after",
+  "scheduleType": "manual",
+  "phases": [],
+  "activePhaseIndex": 0,
+  "rotatorValue": 7,
+  "rotatorUnit": "days",
+  "rotatorMode": "each",
+  "headline": "",
+  "subhead": "",
+  "ctaPrimary": "",
+  "ctaPrimaryAction": "play",
+  "ctaPrimaryRoute": "/listen",
+  "ctaSecondary": "",
+  "ctaSecondaryRoute": "/listen"
+}
