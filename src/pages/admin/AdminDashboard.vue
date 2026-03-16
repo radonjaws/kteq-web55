@@ -70,11 +70,10 @@ const sections: Section[] = [
     homepageKey: 'history',
   },
   {
-    label: 'Blog Posts',
-    route: '/admin/posts',
-    description: 'Write and publish news and updates',
-    navKey: 'blog',
-    homepageKey: 'blog',
+    label: 'Shows',
+    route: '/admin/shows',
+    description: 'Manage show listings and descriptions',
+    navKey: 'shows',
   },
   {
     label: 'Schedule',
@@ -84,16 +83,17 @@ const sections: Section[] = [
     homepageKey: 'schedule',
   },
   {
-    label: 'Shows',
-    route: '/admin/shows',
-    description: 'Manage show listings and descriptions',
-    navKey: 'shows',
-  },
-  {
     label: 'DJs',
     route: '/admin/djs',
     description: 'Manage DJ profiles',
     navKey: 'djs',
+  },
+  {
+    label: 'Blog Posts',
+    route: '/admin/posts',
+    description: 'Write and publish news and updates',
+    navKey: 'blog',
+    homepageKey: 'blog',
   },
 ]
 
