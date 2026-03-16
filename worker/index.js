@@ -92,9 +92,10 @@ export default {
       const upstreamReq = new Request(UPSTREAM_STREAM, {
         method:  request.method,
         headers: {
-          // Request inline ICY metadata so the browser can parse track titles
-          // (the Audio element ignores it, but it's there for future custom parsers)
-          'Icy-MetaData':  request.headers.get('Icy-MetaData') ?? '1',
+          // Only pass ICY metadata through if the client explicitly requested it.
+          // The <Audio> element does NOT send this header, so it defaults to '0'
+          // (clean audio data). Our readIcyMetadata() fetch sends '1' explicitly.
+          'Icy-MetaData':  request.headers.get('Icy-MetaData') ?? '0',
           'User-Agent':    'KTEQ-Proxy/1.0',
         },
       })

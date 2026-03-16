@@ -141,26 +141,24 @@ export const usePlayerStore = defineStore('player', () => {
 
   // ── Metadata ────────────────────────────────────────────────────────────────
   let pollTimer: ReturnType<typeof setInterval> | null = null
-  let useIcy = true   // flips to false if icy-metaint isn't available
 
   async function fetchMetadata() {
     const url = (useContentStore().settings as any).streamUrl as string | undefined
     if (!url) return
 
-    let result: NowPlaying | null = null
+    // Stats endpoint is the primary source — it always reflects current track.
+    // ICY stream parsing is the fallback: useful when the /metadata route isn't
+    // available, but ICY blocks can be empty between track transitions.
+    let result = await readStatsMetadata(url)
 
-    if (useIcy) {
-      result = await readIcyMetadata(url)
-      if (!result) {
-        // icy-metaint not forwarded by this Worker build — switch to stats polling
-        useIcy = false
-        result = await readStatsMetadata(url)
-      }
-    } else {
-      result = await readStatsMetadata(url)
+    if (!result?.title) {
+      // Stats came back empty or failed — try reading directly from the stream
+      const icy = await readIcyMetadata(url)
+      if (icy?.title) result = icy
     }
 
-    if (result) nowPlaying.value = result
+    // Only update if we actually got a title — don't wipe good data with empty
+    if (result?.title) nowPlaying.value = result
   }
 
   function startPolling() {
@@ -175,7 +173,6 @@ export const usePlayerStore = defineStore('player', () => {
   function stopPolling() {
     if (pollTimer) { clearInterval(pollTimer); pollTimer = null }
     nowPlaying.value = { ...EMPTY }
-    useIcy = true   // reset for next session
   }
 
   // ── Playback ────────────────────────────────────────────────────────────────
