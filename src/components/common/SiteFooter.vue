@@ -1,8 +1,15 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useContentStore } from '@/stores/content'
 
 const content = useContentStore()
 const year = new Date().getFullYear()
+
+// Mirror the same navLinks logic as the header so footer stays in sync
+const navEnabled = computed(() => (content.settings as any).navLinks ?? {})
+function showNav(key: string): boolean {
+  return navEnabled.value[key] !== false
+}
 </script>
 
 <template>
@@ -25,10 +32,11 @@ const year = new Date().getFullYear()
         <div>
           <div class="font-display text-xs font-semibold uppercase tracking-widest text-kteq-muted">Navigate</div>
           <nav class="mt-3 flex flex-col gap-2">
-            <RouterLink to="/schedule" class="text-sm text-kteq-light hover:text-kteq-yellow">Schedule</RouterLink>
-            <RouterLink to="/shows" class="text-sm text-kteq-light hover:text-kteq-yellow">Shows</RouterLink>
-            <RouterLink to="/history" class="text-sm text-kteq-light hover:text-kteq-yellow">History</RouterLink>
-            <RouterLink to="/blog" class="text-sm text-kteq-light hover:text-kteq-yellow">Blog</RouterLink>
+            <RouterLink v-if="showNav('schedule')" to="/schedule" class="text-sm text-kteq-light hover:text-kteq-yellow">Schedule</RouterLink>
+            <RouterLink v-if="showNav('shows')"    to="/shows"    class="text-sm text-kteq-light hover:text-kteq-yellow">Shows</RouterLink>
+            <RouterLink v-if="showNav('djs')"      to="/djs"      class="text-sm text-kteq-light hover:text-kteq-yellow">DJs</RouterLink>
+            <RouterLink v-if="showNav('history')"  to="/history"  class="text-sm text-kteq-light hover:text-kteq-yellow">History</RouterLink>
+            <RouterLink v-if="showNav('blog')"     to="/blog"     class="text-sm text-kteq-light hover:text-kteq-yellow">Blog</RouterLink>
             <RouterLink to="/donate" class="text-sm text-kteq-light hover:text-kteq-yellow">Donate</RouterLink>
           </nav>
         </div>

@@ -226,15 +226,6 @@ function toggleHomepage(key: HomepageKey) {
         <!-- ── Section cards ────────────────────────────────────────────────── -->
         <div class="mt-3 grid gap-3 sm:grid-cols-2">
 
-          <!-- Settings -->
-          <RouterLink
-            to="/admin/settings"
-            class="group rounded-lg border border-kteq-gray/30 bg-kteq-dark px-5 py-5 transition-colors hover:border-kteq-yellow/30"
-          >
-            <h2 class="font-display text-base font-semibold text-kteq-white transition-colors group-hover:text-kteq-yellow">Settings</h2>
-            <p class="mt-1 text-sm text-kteq-muted">Stream URL, station info, banner, and social links</p>
-          </RouterLink>
-
           <!-- Menu — inline headerCta selector, no clickthrough -->
           <div class="rounded-lg border border-kteq-gray/30 bg-kteq-dark transition-colors hover:border-kteq-yellow/30">
             <div class="px-5 pt-5 pb-3">
@@ -310,7 +301,7 @@ function toggleHomepage(key: HomepageKey) {
                     :class="form.navLinks[section.navKey] ? 'translate-x-4' : 'translate-x-0.5'"
                   />
                 </button>
-                <span class="font-display text-xs text-kteq-muted">Nav link</span>
+                <span class="font-display text-xs text-kteq-muted">Nav Links</span>
               </div>
 
               <div v-if="section.homepageKey" class="flex items-center gap-2">
