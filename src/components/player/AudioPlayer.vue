@@ -42,6 +42,10 @@ const { currentShow } = useNowOnAir()
             <template v-if="player.hasError">
               {{ player.errorMessage }}
             </template>
+            <!-- Live track metadata from Icecast -->
+            <template v-else-if="player.isPlaying && player.nowPlaying.song">
+              {{ player.nowPlaying.song }}
+            </template>
             <template v-else-if="currentShow?.show">
               {{ currentShow.show.name }}
             </template>
@@ -51,11 +55,15 @@ const { currentShow } = useNowOnAir()
           </span>
         </div>
         <div class="truncate text-xs text-kteq-muted">
-          <template v-if="player.isPlaying">
-            Listening live
-          </template>
-          <template v-else-if="player.isLoading">
+          <template v-if="player.isLoading">
             Connecting...
+          </template>
+          <!-- Show artist when we have live metadata -->
+          <template v-else-if="player.isPlaying && player.nowPlaying.artist">
+            {{ player.nowPlaying.artist }}
+          </template>
+          <template v-else-if="player.isPlaying">
+            Listening live · {{ currentShow?.show?.name ?? 'KTEQ-FM 91.3' }}
           </template>
           <template v-else-if="currentShow?.slot">
             {{ currentShow.slot.startTime }}–{{ currentShow.slot.endTime === '00:00' ? 'Midnight' : currentShow.slot.endTime }}

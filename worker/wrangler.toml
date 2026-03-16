@@ -1,0 +1,11 @@
+name = "kteq-proxy"
+main = "index.js"
+compatibility_date = "2024-01-01"
+
+[vars]
+# No secrets needed — upstream URL is hardcoded in index.js
+
+# Optional: restrict to kteq.org origin in production
+# [[routes]]
+# pattern = "kteq-proxy.kteq.workers.dev/*"
+# zone_name = "kteq.workers.dev"
