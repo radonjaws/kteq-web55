@@ -8,6 +8,14 @@ const player = usePlayerStore()
 
 <template>
   <section class="noise relative overflow-hidden bg-kteq-void">
+    <!-- Hero image (when set) -->
+    <img
+      v-if="heroConfig.heroImage"
+      :src="heroConfig.heroImage"
+      alt=""
+      aria-hidden="true"
+      class="absolute inset-0 h-full w-full object-cover opacity-20"
+    />
     <!-- Background texture / gradient -->
     <div class="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,oklch(0.92_0.18_100_/_0.06),transparent)]" />
 

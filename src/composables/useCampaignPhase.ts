@@ -23,6 +23,7 @@ import type { CampaignPhaseItem } from '@/stores/content'
 interface HeroConfig {
   headline: string
   subhead: string
+  heroImage?: string
   cta: { text: string; route?: string; action?: 'play' | 'mailto' }
   secondaryCta?: { text: string; route: string }
 }
@@ -78,11 +79,12 @@ function resolveActivePhase(campaign: any): CampaignPhaseItem | null {
 }
 
 // Build a HeroConfig from a resolved phase item
-function phaseToHeroConfig(phase: CampaignPhaseItem): HeroConfig {
+function phaseToHeroConfig(phase: CampaignPhaseItem, fallbackImage?: string): HeroConfig {
   const action = (phase.ctaPrimaryAction || 'route') as 'play' | 'mailto' | 'route'
   return {
     headline: phase.headline,
     subhead: phase.subhead,
+    heroImage: phase.heroImage || fallbackImage || undefined,
     cta: {
       text: phase.ctaPrimaryText || 'Listen Now',
       action: action !== 'route' ? action : undefined,
@@ -110,13 +112,14 @@ export function useCampaignPhase() {
 
     // Multi-phase path
     const activePhase = resolveActivePhase(c)
-    if (activePhase) return phaseToHeroConfig(activePhase)
+    if (activePhase) return phaseToHeroConfig(activePhase, c.heroImage)
 
     // Single-phase path — use root campaign fields
     const action = ((c as any).ctaPrimaryAction || 'route') as 'play' | 'mailto' | 'route'
     return {
       headline: c.headline || EMPTY_CONFIG.headline,
       subhead: c.subhead || EMPTY_CONFIG.subhead,
+      heroImage: c.heroImage || undefined,
       cta: {
         text: c.ctaPrimary || 'Listen Now',
         action: action !== 'route' ? action : undefined,
