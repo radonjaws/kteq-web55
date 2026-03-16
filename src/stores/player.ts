@@ -2,121 +2,194 @@ import { defineStore } from 'pinia'
 import { ref, watch } from 'vue'
 import { useContentStore } from './content'
 
-interface NowPlaying {
-  title:     string
+export interface NowPlaying {
+  title:     string  // raw "Artist - Title" string
   artist:    string
   song:      string
   listeners: number
 }
 
-const EMPTY_NOW_PLAYING: NowPlaying = { title: '', artist: '', song: '', listeners: 0 }
+const EMPTY: NowPlaying = { title: '', artist: '', song: '', listeners: 0 }
 
+// ── ICY metadata parser ───────────────────────────────────────────────────────
+// Opens a fresh connection to the stream, reads until the first ICY metadata
+// block (at byte offset `icy-metaint`), parses StreamTitle, then closes.
+// Returns null if the stream doesn't advertise icy-metaint (old proxy).
+async function readIcyMetadata(streamUrl: string): Promise<NowPlaying | null> {
+  let reader: ReadableStreamDefaultReader<Uint8Array> | null = null
+  try {
+    const res = await fetch(streamUrl, {
+      headers: { 'Icy-MetaData': '1' },
+      cache: 'no-store',
+    })
+
+    const metaint = parseInt(res.headers.get('icy-metaint') ?? '0', 10)
+    if (!metaint || !res.body) return null
+
+    reader = res.body.getReader()
+
+    // Collect chunks until we have metaint bytes of audio + 1 length byte
+    // + up to 16 * 255 = 4080 bytes of metadata (the practical ceiling is ~100 bytes)
+    const needed = metaint + 1 + 4080
+    const chunks: Uint8Array[] = []
+    let total = 0
+
+    while (total < needed) {
+      const { done, value } = await reader.read()
+      if (done || !value) break
+      chunks.push(value)
+      total += value.length
+    }
+
+    // Flatten
+    const buf = new Uint8Array(total)
+    let off = 0
+    for (const c of chunks) { buf.set(c, off); off += c.length }
+
+    if (buf.length < metaint + 1) return null
+
+    const metaLen = buf[metaint] * 16
+    if (metaLen === 0 || buf.length < metaint + 1 + metaLen) return null
+
+    const metaStr = new TextDecoder().decode(buf.slice(metaint + 1, metaint + 1 + metaLen))
+      .replace(/\0/g, '')
+      .trim()
+
+    const m = metaStr.match(/StreamTitle='([^']*)'/i)
+    if (!m) return null
+
+    return parseTitle(m[1].trim(), 0)
+  } catch {
+    return null
+  } finally {
+    reader?.cancel().catch(() => {})
+  }
+}
+
+// ── Stats-endpoint fallback ───────────────────────────────────────────────────
+// Polls the Worker's /metadata route, which proxies the Icecast JSON stats.
+async function readStatsMetadata(streamUrl: string): Promise<NowPlaying | null> {
+  try {
+    const url = new URL(streamUrl)
+    url.pathname = '/metadata'
+    const res = await fetch(url.toString(), { cache: 'no-store' })
+    if (!res.ok) return null
+    const data = await res.json()
+    if (!data.title && !data.song) return null
+    return {
+      title:     data.title     ?? '',
+      artist:    data.artist    ?? '',
+      song:      data.song      ?? '',
+      listeners: data.listeners ?? 0,
+    }
+  } catch {
+    return null
+  }
+}
+
+function parseTitle(raw: string, listeners: number): NowPlaying {
+  const dashIdx = raw.indexOf(' - ')
+  return {
+    title:     raw,
+    artist:    dashIdx > -1 ? raw.slice(0, dashIdx).trim() : '',
+    song:      dashIdx > -1 ? raw.slice(dashIdx + 3).trim() : raw,
+    listeners,
+  }
+}
+
+// ── Store ─────────────────────────────────────────────────────────────────────
 export const usePlayerStore = defineStore('player', () => {
-  // Audio element — created once, never destroyed
   const audio = new Audio()
   audio.preload = 'none'
 
-  // Reactive state
-  const isPlaying      = ref(false)
-  const isLoading      = ref(false)
-  const hasError       = ref(false)
-  const errorMessage   = ref('')
-  const volume         = ref(parseFloat(localStorage.getItem('kteq-volume') || '0.8'))
-  const nowPlaying     = ref<NowPlaying>({ ...EMPTY_NOW_PLAYING })
+  const isPlaying    = ref(false)
+  const isLoading    = ref(false)
+  const hasError     = ref(false)
+  const errorMessage = ref('')
+  const volume       = ref(parseFloat(localStorage.getItem('kteq-volume') || '0.8'))
+  const nowPlaying   = ref<NowPlaying>({ ...EMPTY })
 
-  // Apply saved volume
   audio.volume = volume.value
 
-  // ── Audio event listeners ─────────────────────────────────────────────────
   audio.addEventListener('playing', () => {
-    isPlaying.value  = true
-    isLoading.value  = false
-    hasError.value   = false
-    // Fetch metadata immediately on connect
+    isPlaying.value = true
+    isLoading.value = false
+    hasError.value  = false
     fetchMetadata()
   })
 
   audio.addEventListener('pause', () => {
     isPlaying.value = false
     isLoading.value = false
-    stopMetadataPolling()
+    stopPolling()
   })
 
-  audio.addEventListener('waiting', () => {
-    isLoading.value = true
-  })
+  audio.addEventListener('waiting', () => { isLoading.value = true })
 
   audio.addEventListener('error', () => {
-    isPlaying.value  = false
-    isLoading.value  = false
-    hasError.value   = true
+    isPlaying.value    = false
+    isLoading.value    = false
+    hasError.value     = true
     errorMessage.value = 'Stream unavailable'
-    stopMetadataPolling()
+    stopPolling()
   })
 
-  // Persist volume preference
   watch(volume, (v) => {
     audio.volume = v
     localStorage.setItem('kteq-volume', v.toString())
   })
 
-  // ── Metadata polling ──────────────────────────────────────────────────────
-  let metadataTimer: ReturnType<typeof setInterval> | null = null
+  // ── Metadata ────────────────────────────────────────────────────────────────
+  let pollTimer: ReturnType<typeof setInterval> | null = null
+  let useIcy = true   // flips to false if icy-metaint isn't available
 
   async function fetchMetadata() {
-    const content = useContentStore()
-    const streamUrl = (content.settings as any).streamUrl as string | undefined
-    if (!streamUrl) return
+    const url = (useContentStore().settings as any).streamUrl as string | undefined
+    if (!url) return
 
-    // The Worker exposes /metadata at the same origin as the stream proxy
-    try {
-      const url = new URL(streamUrl)
-      url.pathname = '/metadata'
-      const res = await fetch(url.toString(), { cache: 'no-store' })
-      if (res.ok) {
-        const data = await res.json()
-        if (data.title !== undefined) {
-          nowPlaying.value = {
-            title:     data.title     ?? '',
-            artist:    data.artist    ?? '',
-            song:      data.song      ?? '',
-            listeners: data.listeners ?? 0,
-          }
-        }
+    let result: NowPlaying | null = null
+
+    if (useIcy) {
+      result = await readIcyMetadata(url)
+      if (!result) {
+        // icy-metaint not forwarded by this Worker build — switch to stats polling
+        useIcy = false
+        result = await readStatsMetadata(url)
       }
-    } catch {
-      // Metadata is best-effort — never surface errors to the user
+    } else {
+      result = await readStatsMetadata(url)
     }
+
+    if (result) nowPlaying.value = result
   }
 
-  function startMetadataPolling() {
+  function startPolling() {
     fetchMetadata()
-    if (!metadataTimer) {
-      metadataTimer = setInterval(fetchMetadata, 15_000)
+    if (!pollTimer) {
+      // ICY: poll every 20 s (fast enough; 320kbps downloads 16 KB in ~0.4 s)
+      // Stats fallback: same cadence
+      pollTimer = setInterval(fetchMetadata, 20_000)
     }
   }
 
-  function stopMetadataPolling() {
-    if (metadataTimer) {
-      clearInterval(metadataTimer)
-      metadataTimer = null
-    }
-    nowPlaying.value = { ...EMPTY_NOW_PLAYING }
+  function stopPolling() {
+    if (pollTimer) { clearInterval(pollTimer); pollTimer = null }
+    nowPlaying.value = { ...EMPTY }
+    useIcy = true   // reset for next session
   }
 
-  // ── Playback ──────────────────────────────────────────────────────────────
+  // ── Playback ────────────────────────────────────────────────────────────────
   async function tryPlay(url: string): Promise<boolean> {
     audio.src = url
     audio.load()
     try {
       await audio.play()
-      startMetadataPolling()
+      startPolling()
       return true
     } catch (err: any) {
       if (err.name === 'NotAllowedError') {
-        // Browser blocked autoplay — not a stream problem, surface it
-        isLoading.value  = false
-        hasError.value   = true
+        isLoading.value    = false
+        hasError.value     = true
         errorMessage.value = 'Click play to start listening'
       }
       return false
@@ -124,35 +197,27 @@ export const usePlayerStore = defineStore('player', () => {
   }
 
   async function play() {
-    const content = useContentStore()
-    const primaryUrl  = (content.settings as any).streamUrl as string | undefined
-    const fallbackUrl = (content.settings as any).streamFallbackUrl as string | undefined
+    const settings    = useContentStore().settings as any
+    const primaryUrl  = settings.streamUrl as string | undefined
+    const fallbackUrl = settings.streamFallbackUrl as string | undefined
 
     if (!primaryUrl) {
-      hasError.value   = true
-      errorMessage.value = 'No stream URL configured'
-      return
+      hasError.value = true; errorMessage.value = 'No stream URL configured'; return
     }
 
     hasError.value  = false
     isLoading.value = true
 
-    // Try primary (HTTPS proxy)
-    const ok = await tryPlay(primaryUrl)
-    if (ok) return
-
-    // Autoplay was blocked — don't attempt fallback
+    if (await tryPlay(primaryUrl)) return
     if (errorMessage.value === 'Click play to start listening') return
 
-    // Try fallback if defined (HTTP direct — works on local dev, blocked on HTTPS pages)
+    // HTTP fallback — works on local dev; blocked by browsers on HTTPS pages
     if (fallbackUrl && fallbackUrl !== primaryUrl) {
-      const fallbackOk = await tryPlay(fallbackUrl)
-      if (fallbackOk) return
+      if (await tryPlay(fallbackUrl)) return
     }
 
-    // Both failed
-    isLoading.value  = false
-    hasError.value   = true
+    isLoading.value    = false
+    hasError.value     = true
     errorMessage.value = 'Could not connect to stream'
   }
 
@@ -162,31 +227,15 @@ export const usePlayerStore = defineStore('player', () => {
     audio.removeAttribute('src')
     isPlaying.value = false
     isLoading.value = false
-    stopMetadataPolling()
+    stopPolling()
   }
 
   function toggle() {
-    if (isPlaying.value || isLoading.value) {
-      stop()
-    } else {
-      play()
-    }
+    if (isPlaying.value || isLoading.value) stop()
+    else play()
   }
 
-  function setVolume(v: number) {
-    volume.value = Math.max(0, Math.min(1, v))
-  }
+  function setVolume(v: number) { volume.value = Math.max(0, Math.min(1, v)) }
 
-  return {
-    isPlaying,
-    isLoading,
-    hasError,
-    errorMessage,
-    volume,
-    nowPlaying,
-    play,
-    stop,
-    toggle,
-    setVolume,
-  }
+  return { isPlaying, isLoading, hasError, errorMessage, volume, nowPlaying, play, stop, toggle, setVolume }
 })

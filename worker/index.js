@@ -53,7 +53,8 @@ export default {
           ? data.icestats.source.find(s => s.listenurl?.endsWith('/kteq')) ?? data.icestats.source[0]
           : data?.icestats?.source ?? null
 
-        const rawTitle = src?.title ?? src?.song ?? ''
+        // Icecast 2.5+ puts ICY title in metadata.x_icy_title; older versions use title
+        const rawTitle = src?.metadata?.x_icy_title ?? src?.title ?? ''
         // Most automation systems encode as "Artist - Title"
         const dashIdx = rawTitle.indexOf(' - ')
         const artist = dashIdx > -1 ? rawTitle.slice(0, dashIdx).trim() : ''
