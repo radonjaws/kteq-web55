@@ -49,7 +49,10 @@ export async function getContent(path: string): Promise<GitHubFile> {
   )
   if (!res.ok) throw new Error(`Failed to fetch ${path}: ${res.status}`)
   const data = await res.json()
-  const content = JSON.parse(atob(data.content))
+  // atob() produces a binary (Latin-1) string. Use the escape/decodeURIComponent
+  // trick to correctly reconstruct the UTF-8 text before parsing JSON.
+  // This is the exact inverse of the btoa(unescape(encodeURIComponent(...))) write path.
+  const content = JSON.parse(decodeURIComponent(escape(atob(data.content))))
   return { content, sha: data.sha }
 }
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, reactive } from 'vue'
+import { ref, computed, onMounted, reactive, toRaw } from 'vue'
 import { useContentStore } from '@/stores/content'
 import { useGitHub } from '@/composables/useGitHub'
 
@@ -31,7 +31,8 @@ const loadError  = ref<string | null>(null)
 const sha        = ref('')
 const djs        = ref<DJ[]>([])
 const allShows   = ref<Show[]>([])
-const expandedId = ref<string | null>(null)
+const expandedId    = ref<string | null>(null)
+const originalSlug  = ref<string>('')
 const confirmDeleteSlug = ref<string | null>(null)
 
 // ─── Edit form ────────────────────────────────────────────────────────────────
@@ -82,6 +83,7 @@ onMounted(async () => {
 // ─── Expand helpers ───────────────────────────────────────────────────────────
 function openEdit(dj: DJ) {
   isNew.value = false
+  originalSlug.value = dj.slug
   expandedId.value = dj.slug
   Object.assign(editForm, JSON.parse(JSON.stringify(dj)))
   for (const k of SOCIAL_KEYS) {
@@ -94,6 +96,7 @@ function openEdit(dj: DJ) {
 
 function openNew() {
   isNew.value = true
+  originalSlug.value = ''
   expandedId.value = '__new__'
   const blank = blankDj()
   for (const k of SOCIAL_KEYS) blank.socialLinks[k] = ''
@@ -133,7 +136,7 @@ function removeSocial(key: string) {
 const formValid = computed(() => editForm.slug.length > 0 && editForm.name.length > 0)
 
 function cleanedForm(): DJ {
-  const clean = JSON.parse(JSON.stringify(editForm)) as DJ
+  const clean = JSON.parse(JSON.stringify(toRaw(editForm))) as DJ
   for (const k of Object.keys(clean.socialLinks)) {
     if (!clean.socialLinks[k]) delete clean.socialLinks[k]
   }
@@ -150,7 +153,7 @@ async function handleSave() {
   const data = cleanedForm()
   const updated = isNew.value
     ? [...djs.value, data]
-    : djs.value.map(d => d.slug === data.slug ? data : d)
+    : djs.value.map(d => d.slug === originalSlug.value ? data : d)
 
   const newSha = await save(
     'content/djs.json',

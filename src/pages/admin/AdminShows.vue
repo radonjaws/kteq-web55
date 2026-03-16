@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, reactive } from 'vue'
+import { ref, computed, onMounted, reactive, toRaw } from 'vue'
 import { useContentStore } from '@/stores/content'
 import { useGitHub } from '@/composables/useGitHub'
 
@@ -33,7 +33,8 @@ const loadError  = ref<string | null>(null)
 const sha        = ref('')
 const shows      = ref<Show[]>([])
 const allDjs     = ref<DJ[]>([])
-const expandedId = ref<string | null>(null)   // slug of open show, or '__new__'
+const expandedId    = ref<string | null>(null)   // slug of open show, or '__new__'
+const originalSlug  = ref<string>('')            // slug at the time edit was opened
 const confirmDeleteSlug = ref<string | null>(null)
 
 // ─── Edit form ────────────────────────────────────────────────────────────────
@@ -85,6 +86,7 @@ onMounted(async () => {
 // ─── Expand helpers ───────────────────────────────────────────────────────────
 function openEdit(show: Show) {
   isNew.value = false
+  originalSlug.value = show.slug
   expandedId.value = show.slug
   Object.assign(editForm, JSON.parse(JSON.stringify(show)))
   // Ensure all SOCIAL_KEYS are present in the form (as empty strings)
@@ -98,6 +100,7 @@ function openEdit(show: Show) {
 
 function openNew() {
   isNew.value = true
+  originalSlug.value = ''
   expandedId.value = '__new__'
   const blank = blankShow()
   for (const k of SOCIAL_KEYS) blank.socialLinks[k] = ''
@@ -136,9 +139,11 @@ function removeSocial(key: string) {
 // ─── Save ─────────────────────────────────────────────────────────────────────
 const formValid = computed(() => editForm.slug.length > 0 && editForm.name.length > 0)
 
-// Strip empty social links before saving
+// Strip empty social links before saving.
+// toRaw() unwraps Vue's reactive proxy before serialising to avoid subtle
+// proxy-induced stale-snapshot bugs when reactive objects are JSON-stringified.
 function cleanedForm(): Show {
-  const clean = JSON.parse(JSON.stringify(editForm)) as Show
+  const clean = JSON.parse(JSON.stringify(toRaw(editForm))) as Show
   for (const k of Object.keys(clean.socialLinks)) {
     if (!clean.socialLinks[k]) delete clean.socialLinks[k]
   }
@@ -147,9 +152,10 @@ function cleanedForm(): Show {
 
 async function handleSave() {
   const data = cleanedForm()
+  // Match on originalSlug so renaming the slug field doesn't orphan the entry.
   const updated = isNew.value
     ? [...shows.value, data]
-    : shows.value.map(s => s.slug === data.slug ? data : s)
+    : shows.value.map(s => s.slug === originalSlug.value ? data : s)
 
   const newSha = await save(
     'content/shows.json',
