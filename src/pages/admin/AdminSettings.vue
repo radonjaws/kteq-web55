@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, computed} from 'vue'
 import { useGitHub } from '@/composables/useGitHub'
+import { useContentStore } from '@/stores/content'
 
 const { saving, error, lastSaved, save, getContent } = useGitHub()
+const _contentStore = useContentStore()
+const adminLogoUrl = computed(() => (_contentStore.settings as any).logoUrl || '')
 
 const loading = ref(true)
 const loadError = ref<string | null>(null)
@@ -88,8 +91,10 @@ async function handleSave() {
         <div class="flex items-center gap-3">
           <RouterLink
             to="/admin"
-            class="flex h-8 w-8 items-center justify-center rounded-sm bg-kteq-yellow font-display text-sm font-bold text-kteq-black"
-          >K</RouterLink>
+          >
+            <img v-if="adminLogoUrl" :src="adminLogoUrl" alt="KTEQ" class="h-8 w-auto object-contain" />
+            <span v-else class="flex h-8 w-8 items-center justify-center rounded-sm bg-kteq-yellow font-display text-sm font-bold text-kteq-black">K</span>
+          </RouterLink>
           <span class="font-display text-sm font-semibold text-kteq-white">KTEQ Admin</span>
           <span class="font-display text-sm text-kteq-muted">/ Settings</span>
         </div>

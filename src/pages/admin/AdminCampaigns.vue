@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed} from 'vue'
 import { useRouter } from 'vue-router'
 import { useGitHub } from '@/composables/useGitHub'
+import { useContentStore } from '@/stores/content'
 
 const router = useRouter()
 const { saving, error, save, getContent, listContent } = useGitHub()
+const _contentStore = useContentStore()
+const adminLogoUrl = computed(() => (_contentStore.settings as any).logoUrl || '')
 
 interface CampaignMeta {
   filename: string          // slug — stem of the JSON filename
@@ -141,7 +144,10 @@ async function setPhase(c: CampaignMeta, newIndex: number) {
     <header class="border-b border-kteq-gray/50 bg-kteq-void px-4 py-4">
       <div class="mx-auto flex max-w-4xl items-center justify-between">
         <div class="flex items-center gap-3">
-          <RouterLink to="/admin" class="flex h-8 w-8 items-center justify-center rounded-sm bg-kteq-yellow font-display text-sm font-bold text-kteq-black">K</RouterLink>
+          <RouterLink to="/admin">
+            <img v-if="adminLogoUrl" :src="adminLogoUrl" alt="KTEQ" class="h-8 w-auto object-contain" />
+            <span v-else class="flex h-8 w-8 items-center justify-center rounded-sm bg-kteq-yellow font-display text-sm font-bold text-kteq-black">K</span>
+          </RouterLink>
           <span class="font-display text-sm font-semibold text-kteq-white">KTEQ Admin</span>
           <span class="font-display text-sm text-kteq-muted">/ Campaigns</span>
         </div>

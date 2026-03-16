@@ -1,15 +1,20 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useGitHub } from '@/composables/useGitHub'
+import { useContentStore } from '@/stores/content'
 
 const router = useRouter()
+const content = useContentStore()
 const { saving, error, lastSaved, save, getContent } = useGitHub()
 
 function logout() {
   localStorage.removeItem('kteq-admin-token')
   router.push('/admin/login')
 }
+
+// Logo from store (reflects last deploy)
+const headerLogoUrl = computed(() => (content.settings as any).logoUrl || '')
 
 // ─── Settings state ───────────────────────────────────────────────────────────
 const loading = ref(true)
@@ -21,7 +26,8 @@ type NavKey      = 'schedule' | 'shows' | 'djs' | 'history' | 'blog'
 type HomepageKey = 'schedule' | 'history' | 'blog'
 
 const form = reactive({
-  logoUrl: '',
+  logoUrl:    '',
+  headerCta:  'listen' as 'listen' | 'donate',
   navLinks: {
     schedule: true,
     shows:    true,
@@ -36,7 +42,7 @@ const form = reactive({
   } as Record<HomepageKey, boolean>,
 })
 
-// ─── Section definitions ──────────────────────────────────────────────────────
+// ─── Section definitions (excludes Menu, which is rendered inline) ────────────
 interface Section {
   label: string
   route: string
@@ -47,14 +53,21 @@ interface Section {
 
 const sections: Section[] = [
   {
+    label: 'Settings',
+    route: '/admin/settings',
+    description: 'Stream URL, station info, banner, and social links',
+  },
+  {
     label: 'Campaigns',
     route: '/admin/campaigns',
     description: 'Manage campaigns — hero content, phases, and countdown',
   },
   {
-    label: 'Settings',
-    route: '/admin/settings',
-    description: 'Stream URL, station info, banner, and social links',
+    label: 'History',
+    route: '/admin/timeline',
+    description: 'Add entries to the anniversary timeline',
+    navKey: 'history',
+    homepageKey: 'history',
   },
   {
     label: 'Blog Posts',
@@ -82,32 +95,26 @@ const sections: Section[] = [
     description: 'Manage DJ profiles',
     navKey: 'djs',
   },
-  {
-    label: 'History',
-    route: '/admin/timeline',
-    description: 'Add entries to the anniversary timeline',
-    navKey: 'history',
-    homepageKey: 'history',
-  },
 ]
 
 // ─── Load ─────────────────────────────────────────────────────────────────────
 onMounted(async () => {
   try {
-    const { content, sha: fileSha } = await getContent('content/settings.json')
+    const { content: c, sha: fileSha } = await getContent('content/settings.json')
     sha.value = fileSha
-    rawContent.value = content
+    rawContent.value = c
 
-    form.logoUrl = content.logoUrl || ''
+    form.logoUrl   = c.logoUrl || ''
+    form.headerCta = c.headerCta === 'donate' ? 'donate' : 'listen'
 
-    if (content.navLinks) {
+    if (c.navLinks) {
       for (const key of Object.keys(form.navLinks) as NavKey[]) {
-        if (key in content.navLinks) form.navLinks[key] = content.navLinks[key]
+        if (key in c.navLinks) form.navLinks[key] = c.navLinks[key]
       }
     }
-    if (content.homepageElements) {
+    if (c.homepageElements) {
       for (const key of Object.keys(form.homepageElements) as HomepageKey[]) {
-        if (key in content.homepageElements) form.homepageElements[key] = content.homepageElements[key]
+        if (key in c.homepageElements) form.homepageElements[key] = c.homepageElements[key]
       }
     }
   } catch (e: any) {
@@ -121,9 +128,10 @@ onMounted(async () => {
 async function handleSave() {
   const newSha = await save('content/settings.json', {
     ...rawContent.value,
-    logoUrl: form.logoUrl,
+    logoUrl:   form.logoUrl,
+    headerCta: form.headerCta,
     navLinks: {
-      ...rawContent.value?.navLinks,   // preserve listen, donate from Menu editor
+      ...rawContent.value?.navLinks,
       ...form.navLinks,
     },
     homepageElements: {
@@ -151,7 +159,10 @@ function toggleHomepage(key: HomepageKey) {
     <header class="border-b border-kteq-gray/50 bg-kteq-void px-4 py-4">
       <div class="mx-auto flex max-w-4xl items-center justify-between">
         <div class="flex items-center gap-3">
-          <RouterLink to="/" class="flex h-8 w-8 items-center justify-center rounded-sm bg-kteq-yellow font-display text-sm font-bold text-kteq-black">K</RouterLink>
+          <RouterLink to="/admin">
+            <img v-if="headerLogoUrl" :src="headerLogoUrl" alt="KTEQ" class="h-8 w-auto object-contain" />
+            <span v-else class="flex h-8 w-8 items-center justify-center rounded-sm bg-kteq-yellow font-display text-sm font-bold text-kteq-black">K</span>
+          </RouterLink>
           <span class="font-display text-sm font-semibold text-kteq-white">KTEQ Admin</span>
         </div>
         <div class="flex items-center gap-4">
@@ -166,7 +177,7 @@ function toggleHomepage(key: HomepageKey) {
       <!-- Page title + save -->
       <div class="flex items-start justify-between">
         <div>
-          <h1 class="font-display text-2xl font-bold text-kteq-white">Dashboard</h1>
+          <h1 class="font-display text-2xl font-bold text-kteq-white">Admin Dashboard</h1>
           <p class="mt-1 text-sm text-kteq-muted">Changes commit directly to the repo and deploy automatically (~60 seconds).</p>
         </div>
         <div class="flex items-center gap-3">
@@ -193,10 +204,10 @@ function toggleHomepage(key: HomepageKey) {
 
         <!-- ── Logo ────────────────────────────────────────────────────────── -->
         <div class="mt-6 flex items-center gap-4 rounded-lg border border-kteq-gray/30 bg-kteq-dark p-4">
-          <!-- Preview mark -->
-          <div class="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-sm bg-kteq-yellow font-display text-sm font-bold text-kteq-black">
-            <img v-if="form.logoUrl" :src="form.logoUrl" alt="Logo" class="h-full w-full object-cover" />
-            <span v-else>K</span>
+          <!-- Preview -->
+          <div class="shrink-0">
+            <img v-if="form.logoUrl" :src="form.logoUrl" alt="Logo preview" class="h-10 w-auto object-contain" />
+            <div v-else class="flex h-10 w-10 items-center justify-center rounded-sm bg-kteq-yellow font-display text-sm font-bold text-kteq-black">K</div>
           </div>
           <!-- URL input -->
           <div class="flex-1 min-w-0">
@@ -213,13 +224,62 @@ function toggleHomepage(key: HomepageKey) {
         </div>
 
         <!-- ── Section cards ────────────────────────────────────────────────── -->
-        <div class="mt-6 grid gap-3 sm:grid-cols-2">
+        <div class="mt-3 grid gap-3 sm:grid-cols-2">
+
+          <!-- Settings -->
+          <RouterLink
+            to="/admin/settings"
+            class="group rounded-lg border border-kteq-gray/30 bg-kteq-dark px-5 py-5 transition-colors hover:border-kteq-yellow/30"
+          >
+            <h2 class="font-display text-base font-semibold text-kteq-white transition-colors group-hover:text-kteq-yellow">Settings</h2>
+            <p class="mt-1 text-sm text-kteq-muted">Stream URL, station info, banner, and social links</p>
+          </RouterLink>
+
+          <!-- Menu — inline headerCta selector, no clickthrough -->
+          <div class="rounded-lg border border-kteq-gray/30 bg-kteq-dark transition-colors hover:border-kteq-yellow/30">
+            <div class="px-5 pt-5 pb-3">
+              <h2 class="font-display text-base font-semibold text-kteq-white">Menu</h2>
+              <p class="mt-1 text-sm text-kteq-muted">Header CTA button</p>
+            </div>
+            <div class="flex items-center gap-2 border-t border-kteq-gray/20 px-5 py-2.5">
+              <!-- Listen option -->
+              <button
+                type="button"
+                @click="form.headerCta = 'listen'"
+                class="flex items-center gap-1.5 rounded-md border px-3 py-1.5 font-display text-xs font-medium transition-colors"
+                :class="form.headerCta === 'listen'
+                  ? 'border-kteq-yellow/50 bg-kteq-yellow/10 text-kteq-yellow'
+                  : 'border-kteq-gray/50 bg-kteq-void text-kteq-muted hover:border-kteq-gray hover:text-kteq-light'"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-3.5 w-3.5">
+                  <path d="M6.3 2.84A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.27l9.344-5.891a1.5 1.5 0 000-2.538L6.3 2.841z" />
+                </svg>
+                Listen
+              </button>
+              <!-- Donate option -->
+              <button
+                type="button"
+                @click="form.headerCta = 'donate'"
+                class="flex items-center gap-1.5 rounded-md border px-3 py-1.5 font-display text-xs font-medium transition-colors"
+                :class="form.headerCta === 'donate'
+                  ? 'border-kteq-yellow/50 bg-kteq-yellow/10 text-kteq-yellow'
+                  : 'border-kteq-gray/50 bg-kteq-void text-kteq-muted hover:border-kteq-gray hover:text-kteq-light'"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-3.5 w-3.5">
+                  <path d="M9.653 16.915l-.005-.003-.019-.01a20.759 20.759 0 01-1.162-.682 22.045 22.045 0 01-2.582-2.025 11.566 11.566 0 01-1.95-2.656c-.242-.499-.41-1.023-.41-1.539 0-1.99 1.614-3.5 3.5-3.5.868 0 1.72.328 2.375.876A3.487 3.487 0 0112.5 6.5c1.886 0 3.5 1.51 3.5 3.5 0 .516-.168 1.04-.41 1.539a11.566 11.566 0 01-1.95 2.656 22.045 22.045 0 01-2.582 2.025 20.757 20.757 0 01-1.181.692l-.019.01-.005.002z" />
+                </svg>
+                Donate
+              </button>
+            </div>
+          </div>
+
+          <!-- All other sections -->
           <div
             v-for="section in sections"
             :key="section.route"
             class="rounded-lg border border-kteq-gray/30 bg-kteq-dark transition-colors hover:border-kteq-yellow/30"
           >
-            <!-- Clickable title + description area -->
+            <!-- Clickable title + description -->
             <RouterLink
               :to="section.route"
               class="group block px-5 pt-5"
@@ -231,12 +291,11 @@ function toggleHomepage(key: HomepageKey) {
               <p class="mt-1 text-sm text-kteq-muted">{{ section.description }}</p>
             </RouterLink>
 
-            <!-- Toggle strip (sections with nav/homepage controls) -->
+            <!-- Toggle strip -->
             <div
               v-if="section.navKey || section.homepageKey"
               class="flex items-center gap-5 border-t border-kteq-gray/20 px-5 py-2.5"
             >
-              <!-- Nav link toggle -->
               <div v-if="section.navKey" class="flex items-center gap-2">
                 <button
                   type="button"
@@ -254,7 +313,6 @@ function toggleHomepage(key: HomepageKey) {
                 <span class="font-display text-xs text-kteq-muted">Nav link</span>
               </div>
 
-              <!-- Homepage element toggle -->
               <div v-if="section.homepageKey" class="flex items-center gap-2">
                 <button
                   type="button"
@@ -274,16 +332,7 @@ function toggleHomepage(key: HomepageKey) {
             </div>
           </div>
 
-          <!-- Menu card (separate editor for Listen + Donate) -->
-          <RouterLink
-            to="/admin/menu"
-            class="group rounded-lg border border-kteq-gray/30 bg-kteq-dark px-5 py-5 transition-colors hover:border-kteq-yellow/30"
-          >
-            <h2 class="font-display text-base font-semibold text-kteq-white transition-colors group-hover:text-kteq-yellow">Menu</h2>
-            <p class="mt-1 text-sm text-kteq-muted">Listen button and Donate link visibility</p>
-          </RouterLink>
         </div>
-
       </template>
     </div>
   </div>

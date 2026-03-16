@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { useContentStore } from '@/stores/content'
+import { computed } from 'vue'
+const _contentStore = useContentStore()
+const adminLogoUrl = computed(() => (_contentStore.settings as any).logoUrl || '')
 // AdminSchedule — full implementation coming in Phase 4
 </script>
 
@@ -7,7 +11,10 @@
     <header class="border-b border-kteq-gray/50 bg-kteq-void px-4 py-4">
       <div class="mx-auto flex max-w-4xl items-center justify-between">
         <div class="flex items-center gap-3">
-          <RouterLink to="/admin" class="flex h-8 w-8 items-center justify-center rounded-sm bg-kteq-yellow font-display text-sm font-bold text-kteq-black">K</RouterLink>
+          <RouterLink to="/admin">
+            <img v-if="adminLogoUrl" :src="adminLogoUrl" alt="KTEQ" class="h-8 w-auto object-contain" />
+            <span v-else class="flex h-8 w-8 items-center justify-center rounded-sm bg-kteq-yellow font-display text-sm font-bold text-kteq-black">K</span>
+          </RouterLink>
           <span class="font-display text-sm font-semibold text-kteq-white">KTEQ Admin</span>
           <span class="font-display text-sm text-kteq-muted">/ Schedule</span>
         </div>

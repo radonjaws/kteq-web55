@@ -3,10 +3,13 @@ import { ref, reactive, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { marked } from 'marked'
 import { useGitHub } from '@/composables/useGitHub'
+import { useContentStore } from '@/stores/content'
 
 const route = useRoute()
 const router = useRouter()
 const { saving, error, lastSaved, save, create, destroy, getContent } = useGitHub()
+const _contentStore = useContentStore()
+const adminLogoUrl = computed(() => (_contentStore.settings as any).logoUrl || '')
 
 const isNew = computed(() => route.params.id === 'new')
 const loading = ref(true)
@@ -141,10 +144,10 @@ async function handleDelete() {
     <header class="border-b border-kteq-gray/50 bg-kteq-void px-4 py-4">
       <div class="mx-auto flex max-w-4xl items-center justify-between">
         <div class="flex min-w-0 items-center gap-3">
-          <RouterLink
-            to="/admin"
-            class="flex h-8 w-8 shrink-0 items-center justify-center rounded-sm bg-kteq-yellow font-display text-sm font-bold text-kteq-black"
-          >K</RouterLink>
+          <RouterLink to="/admin">
+            <img v-if="adminLogoUrl" :src="adminLogoUrl" alt="KTEQ" class="h-8 w-auto object-contain" />
+            <span v-else class="flex h-8 w-8 shrink-0 items-center justify-center rounded-sm bg-kteq-yellow font-display text-sm font-bold text-kteq-black">K</span>
+          </RouterLink>
           <span class="font-display text-sm font-semibold text-kteq-white">KTEQ Admin</span>
           <span class="font-display text-sm text-kteq-muted">/ Posts /</span>
           <span class="truncate font-display text-sm text-kteq-muted">{{ isNew ? 'New Post' : (form.title || '…') }}</span>
