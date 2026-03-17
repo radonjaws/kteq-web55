@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-03-09T12:00:00Z",
+  "lastUpdated": "2026-03-17T05:56:49.046Z",
   "entries": [
     {
       "id": "1969-terc",
@@ -111,6 +111,16 @@
       "year": 2026,
       "title": "55th Anniversary: (Re)Discover KTEQ",
       "description": "KTEQ launches the (Re)Discover KTEQ campaign celebrating 55 years of freeform radio in the Black Hills, culminating in a grand reopening during M-Week.",
+      "image": "",
+      "mediaUrl": "",
+      "category": "milestone",
+      "sources": ""
+    },
+    {
+      "id": "1971-the-year-it-all-began",
+      "year": 1971,
+      "title": "The Year it All Began",
+      "description": "",
       "image": "",
       "mediaUrl": "",
       "category": "milestone",
