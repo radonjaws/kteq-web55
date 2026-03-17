@@ -1,14 +1,14 @@
 {
-  "lastUpdated": "2026-03-16T23:26:50.873Z",
+  "lastUpdated": "2026-03-17T01:17:45.549Z",
   "shows": [
     {
-      "slug": "automation",
+      "slug": "solid-gold",
       "name": "KTEQ Solid Gold",
-      "tagline": "Always on. Always alternative.",
-      "description": "KTEQ’s automated programming, powered by PlayoutONE Pro. A carefully curated rotation spanning the full spectrum of alternative music — from indie and punk to metal, electronic, and everything the algorithm would never find.",
+      "tagline": "KTEQ's equivalent of a plain black T-shirt.",
+      "description": "An ever-evolving blend of 70s, 80s, and 90s punk and alternative classics, with some deep cuts, rare gems, and edge cases thrown in for good measure.  ",
       "djSlugs": [],
       "image": "",
-      "genre": "Alternative / Freeform",
+      "genre": "Alternative",
       "isActive": true,
       "isAutomation": true,
       "socialLinks": {}
