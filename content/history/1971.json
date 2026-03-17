@@ -2,8 +2,12 @@
   "slug": "1971",
   "year": 1971,
   "title": "The Year it all Began",
-  "body": "# 1971\n\nIntro text paragraph. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lobortis quam vel lectus lacinia venenatis. Pellentesque malesuada sed arcu sit amet aliquam. Fusce laoreet, eros a lacinia posuere, neque lectus vestibulum sapien, vel accumsan elit nisi eget nunc. Vestibulum cursus est rhoncus, vehicula augue a, aliquet odio. Vivamus eleifend pretium pretium. Maecenas blandit tellus in ligula imperdiet, ac convallis dui posuere. Phasellus a lectus lacus. Nulla facilisi. In pharetra nibh nec elementum tincidunt. Duis vehicula justo id aliquam dictum.\n\n## News\nBrief list of things that were happening around the world for context.  \n\n## People\nPeople behind the station, their jobs, etc. Need some way to add optional pictures with captions to this section\n\n## Music\nWhat people were spinning at the station, CMJ chart-toppers (for later years than this), local concerts. \n\n## Photos\nA miscellaneous photo gallery with optional captions. \n\n\n",
   "featuredImage": "",
+  "intro": "Intro text paragraph. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lobortis quam vel lectus lacinia venenatis. Pellentesque malesuada sed arcu sit amet aliquam. Fusce laoreet, eros a lacinia posuere, neque lectus vestibulum sapien, vel accumsan elit nisi eget nunc. Vestibulum cursus est rhoncus, vehicula augue a, aliquet odio. Vivamus eleifend pretium pretium. Maecenas blandit tellus in ligula imperdiet, ac convallis dui posuere. Phasellus a lectus lacus. Nulla facilisi. In pharetra nibh nec elementum tincidunt. Duis vehicula justo id aliquam dictum.",
+  "news": "Brief list of things that were happening around the world for context.",
+  "people": [],
+  "music": "What people were spinning at the station, CMJ chart-toppers (for later years than this), local concerts.",
+  "photos": [],
   "sources": "",
   "createdAt": "2026-03-17T00:00:00Z",
   "updatedAt": "2026-03-17T14:45:32.161Z"

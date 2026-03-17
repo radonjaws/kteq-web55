@@ -54,15 +54,34 @@ interface TimelineEntry {
   articleSlug?: string   // links to content/history/{slug}.json
 }
 
+export interface HistoryArticlePerson {
+  name: string
+  role: string
+  bio: string
+  image: string
+  caption: string
+}
+
+export interface HistoryArticlePhoto {
+  url: string
+  caption: string
+}
+
 export interface HistoryArticle {
   slug: string
   year: number
   title: string
-  body: string
   featuredImage: string
-  sources: string
+  intro: string
+  news?: string
+  people?: HistoryArticlePerson[]
+  music?: string
+  photos?: HistoryArticlePhoto[]
+  sources?: string
   createdAt: string
   updatedAt: string
+  // Legacy field — kept for backward compat; superseded by structured fields
+  body?: string
 }
 
 interface ScheduleSlot {

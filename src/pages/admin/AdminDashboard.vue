@@ -45,7 +45,8 @@ const form = reactive({
 // ─── Section definitions (excludes Menu, which is rendered inline) ────────────
 interface Section {
   label: string
-  route: string
+  route?: string
+  links?: Array<{ label: string; route: string }>
   description: string
   navKey?: NavKey
   homepageKey?: HomepageKey
@@ -63,16 +64,13 @@ const sections: Section[] = [
     description: 'Manage campaigns — hero content, phases, and countdown',
   },
   {
-    label: 'History Articles',
-    route: '/admin/history',
-    description: 'Year-in-review articles shown on the homepage and history page',
+    label: 'History',
+    description: 'Year-in-review yearbook entries and timeline milestones',
+    links: [
+      { label: 'Yearbook', route: '/admin/yearbook' },
+      { label: 'Timeline', route: '/admin/timeline' },
+    ],
     navKey: 'history',
-    homepageKey: 'history',
-  },
-  {
-    label: 'Timeline',
-    route: '/admin/timeline',
-    description: 'Milestone entries for the horizontal timeline visualization',
   },
   {
     label: 'Shows',
@@ -272,11 +270,12 @@ function toggleHomepage(key: HomepageKey) {
           <!-- All other sections -->
           <div
             v-for="section in sections"
-            :key="section.route"
+            :key="section.route ?? section.label"
             class="rounded-lg border border-kteq-gray/30 bg-kteq-dark transition-colors hover:border-kteq-yellow/30"
           >
-            <!-- Clickable title + description -->
+            <!-- Title + description — RouterLink if single route, plain div if sub-links -->
             <RouterLink
+              v-if="section.route"
               :to="section.route"
               class="group block px-5 pt-5"
               :class="section.navKey || section.homepageKey ? 'pb-3' : 'pb-5'"
@@ -286,44 +285,64 @@ function toggleHomepage(key: HomepageKey) {
               </h2>
               <p class="mt-1 text-sm text-kteq-muted">{{ section.description }}</p>
             </RouterLink>
+            <div v-else class="px-5 pt-5 pb-3">
+              <h2 class="font-display text-base font-semibold text-kteq-white">{{ section.label }}</h2>
+              <p class="mt-1 text-sm text-kteq-muted">{{ section.description }}</p>
+            </div>
 
-            <!-- Toggle strip -->
+            <!-- Bottom strip — sub-links on left, toggles on right -->
             <div
-              v-if="section.navKey || section.homepageKey"
-              class="flex items-center gap-5 border-t border-kteq-gray/20 px-5 py-2.5"
+              v-if="section.links || section.navKey || section.homepageKey"
+              class="flex items-center justify-between gap-4 border-t border-kteq-gray/20 px-5 py-2.5"
             >
-              <div v-if="section.navKey" class="flex items-center gap-2">
-                <button
-                  type="button"
-                  @click="toggleNav(section.navKey!)"
-                  class="relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus:outline-none focus:ring-2 focus:ring-kteq-yellow/50 focus:ring-offset-1 focus:ring-offset-kteq-dark"
-                  :class="form.navLinks[section.navKey] ? 'bg-kteq-yellow' : 'bg-kteq-gray'"
-                  role="switch"
-                  :aria-checked="form.navLinks[section.navKey]"
+              <!-- Sub-links -->
+              <div v-if="section.links" class="flex items-center gap-4">
+                <RouterLink
+                  v-for="link in section.links"
+                  :key="link.route"
+                  :to="link.route"
+                  class="font-display text-xs font-medium text-kteq-yellow transition-colors hover:text-kteq-yellow-bright"
                 >
-                  <span
-                    class="pointer-events-none inline-block h-3 w-3 rounded-full bg-white shadow transition-transform"
-                    :class="form.navLinks[section.navKey] ? 'translate-x-4' : 'translate-x-0.5'"
-                  />
-                </button>
-                <span class="font-display text-xs text-kteq-muted">Nav Links</span>
+                  {{ link.label }} →
+                </RouterLink>
               </div>
+              <div v-else />
 
-              <div v-if="section.homepageKey" class="flex items-center gap-2">
-                <button
-                  type="button"
-                  @click="toggleHomepage(section.homepageKey!)"
-                  class="relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus:outline-none focus:ring-2 focus:ring-kteq-yellow/50 focus:ring-offset-1 focus:ring-offset-kteq-dark"
-                  :class="form.homepageElements[section.homepageKey] ? 'bg-kteq-yellow' : 'bg-kteq-gray'"
-                  role="switch"
-                  :aria-checked="form.homepageElements[section.homepageKey]"
-                >
-                  <span
-                    class="pointer-events-none inline-block h-3 w-3 rounded-full bg-white shadow transition-transform"
-                    :class="form.homepageElements[section.homepageKey] ? 'translate-x-4' : 'translate-x-0.5'"
-                  />
-                </button>
-                <span class="font-display text-xs text-kteq-muted">Homepage</span>
+              <!-- Toggle switches -->
+              <div v-if="section.navKey || section.homepageKey" class="flex items-center gap-5">
+                <div v-if="section.navKey" class="flex items-center gap-2">
+                  <button
+                    type="button"
+                    @click="toggleNav(section.navKey!)"
+                    class="relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus:outline-none focus:ring-2 focus:ring-kteq-yellow/50 focus:ring-offset-1 focus:ring-offset-kteq-dark"
+                    :class="form.navLinks[section.navKey] ? 'bg-kteq-yellow' : 'bg-kteq-gray'"
+                    role="switch"
+                    :aria-checked="form.navLinks[section.navKey]"
+                  >
+                    <span
+                      class="pointer-events-none inline-block h-3 w-3 rounded-full bg-white shadow transition-transform"
+                      :class="form.navLinks[section.navKey] ? 'translate-x-4' : 'translate-x-0.5'"
+                    />
+                  </button>
+                  <span class="font-display text-xs text-kteq-muted">Nav</span>
+                </div>
+
+                <div v-if="section.homepageKey" class="flex items-center gap-2">
+                  <button
+                    type="button"
+                    @click="toggleHomepage(section.homepageKey!)"
+                    class="relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors focus:outline-none focus:ring-2 focus:ring-kteq-yellow/50 focus:ring-offset-1 focus:ring-offset-kteq-dark"
+                    :class="form.homepageElements[section.homepageKey] ? 'bg-kteq-yellow' : 'bg-kteq-gray'"
+                    role="switch"
+                    :aria-checked="form.homepageElements[section.homepageKey]"
+                  >
+                    <span
+                      class="pointer-events-none inline-block h-3 w-3 rounded-full bg-white shadow transition-transform"
+                      :class="form.homepageElements[section.homepageKey] ? 'translate-x-4' : 'translate-x-0.5'"
+                    />
+                  </button>
+                  <span class="font-display text-xs text-kteq-muted">Homepage</span>
+                </div>
               </div>
             </div>
           </div>

@@ -115,6 +115,18 @@ const router = createRouter({
       meta: { requiresAdmin: true }
     },
     {
+      path: '/admin/yearbook',
+      name: 'admin-yearbook',
+      component: () => import('@/pages/admin/AdminYearbook.vue'),
+      meta: { requiresAdmin: true }
+    },
+    {
+      path: '/admin/yearbook/:id',
+      name: 'admin-yearbook-edit',
+      component: () => import('@/pages/admin/AdminYearbookEdit.vue'),
+      meta: { requiresAdmin: true }
+    },
+    {
       path: '/admin/timeline',
       name: 'admin-timeline',
       component: () => import('@/pages/admin/AdminTimeline.vue'),
