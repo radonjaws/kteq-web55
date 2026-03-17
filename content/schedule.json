@@ -3,41 +3,41 @@
   "updatedBy": "Jason",
   "days": {
     "sunday": [
-      { "id": "sun-0000", "startTime": "00:00", "endTime": "06:00", "showSlug": "automation", "isAutomation": true, "notes": "" },
-      { "id": "sun-0600", "startTime": "06:00", "endTime": "12:00", "showSlug": "automation", "isAutomation": true, "notes": "" },
-      { "id": "sun-1200", "startTime": "12:00", "endTime": "18:00", "showSlug": "automation", "isAutomation": true, "notes": "" },
-      { "id": "sun-1800", "startTime": "18:00", "endTime": "00:00", "showSlug": "automation", "isAutomation": true, "notes": "" }
+      { "id": "sun-0000", "startTime": "00:00", "endTime": "06:00", "showSlug": "solid-gold", "isAutomation": true, "notes": "" },
+      { "id": "sun-0600", "startTime": "06:00", "endTime": "12:00", "showSlug": "solid-gold", "isAutomation": true, "notes": "" },
+      { "id": "sun-1200", "startTime": "12:00", "endTime": "18:00", "showSlug": "solid-gold", "isAutomation": true, "notes": "" },
+      { "id": "sun-1800", "startTime": "18:00", "endTime": "00:00", "showSlug": "solid-gold", "isAutomation": true, "notes": "" }
     ],
     "monday": [
-      { "id": "mon-0000", "startTime": "00:00", "endTime": "10:00", "showSlug": "automation", "isAutomation": true, "notes": "" },
+      { "id": "mon-0000", "startTime": "00:00", "endTime": "10:00", "showSlug": "solid-gold", "isAutomation": true, "notes": "" },
       { "id": "mon-1000", "startTime": "10:00", "endTime": "12:00", "showSlug": "placeholder-show", "isAutomation": false, "notes": "" },
-      { "id": "mon-1200", "startTime": "12:00", "endTime": "14:00", "showSlug": "automation", "isAutomation": true, "notes": "" },
+      { "id": "mon-1200", "startTime": "12:00", "endTime": "14:00", "showSlug": "solid-gold", "isAutomation": true, "notes": "" },
       { "id": "mon-1400", "startTime": "14:00", "endTime": "16:00", "showSlug": "placeholder-show", "isAutomation": false, "notes": "" },
-      { "id": "mon-1600", "startTime": "16:00", "endTime": "00:00", "showSlug": "automation", "isAutomation": true, "notes": "" }
+      { "id": "mon-1600", "startTime": "16:00", "endTime": "00:00", "showSlug": "solid-gold", "isAutomation": true, "notes": "" }
     ],
     "tuesday": [
-      { "id": "tue-0000", "startTime": "00:00", "endTime": "10:00", "showSlug": "automation", "isAutomation": true, "notes": "" },
+      { "id": "tue-0000", "startTime": "00:00", "endTime": "10:00", "showSlug": "solid-gold", "isAutomation": true, "notes": "" },
       { "id": "tue-1000", "startTime": "10:00", "endTime": "12:00", "showSlug": "placeholder-show", "isAutomation": false, "notes": "" },
-      { "id": "tue-1200", "startTime": "12:00", "endTime": "00:00", "showSlug": "automation", "isAutomation": true, "notes": "" }
+      { "id": "tue-1200", "startTime": "12:00", "endTime": "00:00", "showSlug": "solid-gold", "isAutomation": true, "notes": "" }
     ],
     "wednesday": [
-      { "id": "wed-0000", "startTime": "00:00", "endTime": "10:00", "showSlug": "automation", "isAutomation": true, "notes": "" },
+      { "id": "wed-0000", "startTime": "00:00", "endTime": "10:00", "showSlug": "solid-gold", "isAutomation": true, "notes": "" },
       { "id": "wed-1000", "startTime": "10:00", "endTime": "12:00", "showSlug": "placeholder-show", "isAutomation": false, "notes": "" },
-      { "id": "wed-1200", "startTime": "12:00", "endTime": "00:00", "showSlug": "automation", "isAutomation": true, "notes": "" }
+      { "id": "wed-1200", "startTime": "12:00", "endTime": "00:00", "showSlug": "solid-gold", "isAutomation": true, "notes": "" }
     ],
     "thursday": [
-      { "id": "thu-0000", "startTime": "00:00", "endTime": "10:00", "showSlug": "automation", "isAutomation": true, "notes": "" },
+      { "id": "thu-0000", "startTime": "00:00", "endTime": "10:00", "showSlug": "solid-gold", "isAutomation": true, "notes": "" },
       { "id": "thu-1000", "startTime": "10:00", "endTime": "12:00", "showSlug": "placeholder-show", "isAutomation": false, "notes": "" },
-      { "id": "thu-1200", "startTime": "12:00", "endTime": "00:00", "showSlug": "automation", "isAutomation": true, "notes": "" }
+      { "id": "thu-1200", "startTime": "12:00", "endTime": "00:00", "showSlug": "solid-gold", "isAutomation": true, "notes": "" }
     ],
     "friday": [
-      { "id": "fri-0000", "startTime": "00:00", "endTime": "10:00", "showSlug": "automation", "isAutomation": true, "notes": "" },
+      { "id": "fri-0000", "startTime": "00:00", "endTime": "10:00", "showSlug": "solid-gold", "isAutomation": true, "notes": "" },
       { "id": "fri-1000", "startTime": "10:00", "endTime": "12:00", "showSlug": "placeholder-show", "isAutomation": false, "notes": "" },
-      { "id": "fri-1200", "startTime": "12:00", "endTime": "00:00", "showSlug": "automation", "isAutomation": true, "notes": "" }
+      { "id": "fri-1200", "startTime": "12:00", "endTime": "00:00", "showSlug": "solid-gold", "isAutomation": true, "notes": "" }
     ],
     "saturday": [
-      { "id": "sat-0000", "startTime": "00:00", "endTime": "12:00", "showSlug": "automation", "isAutomation": true, "notes": "" },
-      { "id": "sat-1200", "startTime": "12:00", "endTime": "00:00", "showSlug": "automation", "isAutomation": true, "notes": "" }
+      { "id": "sat-0000", "startTime": "00:00", "endTime": "12:00", "showSlug": "solid-gold", "isAutomation": true, "notes": "" },
+      { "id": "sat-1200", "startTime": "12:00", "endTime": "00:00", "showSlug": "solid-gold", "isAutomation": true, "notes": "" }
     ]
   }
 }
