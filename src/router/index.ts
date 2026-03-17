@@ -48,6 +48,11 @@ const router = createRouter({
       component: () => import('@/pages/HistoryPage.vue')
     },
     {
+      path: '/history/:slug',
+      name: 'history-article',
+      component: () => import('@/pages/HistoryArticlePage.vue')
+    },
+    {
       path: '/blog',
       name: 'blog',
       component: () => import('@/pages/BlogPage.vue')

@@ -14,6 +14,9 @@ const postModules = import.meta.glob('@content/posts/*.json', { eager: true }) a
 // Campaigns via glob import
 const campaignModules = import.meta.glob('@content/campaigns/*.json', { eager: true }) as Record<string, { default: any }>
 
+// History articles via glob import
+const historyModules = import.meta.glob('@content/history/*.json', { eager: true }) as Record<string, { default: any }>
+
 interface Show {
   slug: string
   name: string
@@ -48,6 +51,18 @@ interface TimelineEntry {
   mediaUrl: string
   category: string
   sources: string
+  articleSlug?: string   // links to content/history/{slug}.json
+}
+
+export interface HistoryArticle {
+  slug: string
+  year: number
+  title: string
+  body: string
+  featuredImage: string
+  sources: string
+  createdAt: string
+  updatedAt: string
 }
 
 interface ScheduleSlot {
@@ -177,6 +192,20 @@ export const useContentStore = defineStore('content', () => {
       )
   )
 
+  // History articles
+  const historyArticles = ref<HistoryArticle[]>(
+    Object.values(historyModules)
+      .map((m: any) => m.default || m)
+      .sort((a: HistoryArticle, b: HistoryArticle) => a.year - b.year)
+  )
+  const historyBySlug = computed(() => {
+    const map: Record<string, HistoryArticle> = {}
+    for (const article of historyArticles.value) {
+      map[article.slug] = article
+    }
+    return map
+  })
+
   // Schedule helpers
   function getScheduleForDay(day: string): ScheduleSlot[] {
     return schedule.value.days[day as keyof typeof schedule.value.days] || []
@@ -190,13 +219,13 @@ export const useContentStore = defineStore('content', () => {
 
     const slots = getScheduleForDay(day)
     for (const slot of slots) {
+      const show = showBySlug.value[slot.showSlug]
+      if (!show) continue   // orphaned slug — skip rather than crash
       // Handle midnight-crossing shows
       if (slot.endTime === '00:00') {
-        if (time >= slot.startTime) {
-          return { slot, show: showBySlug.value[slot.showSlug] }
-        }
+        if (time >= slot.startTime) return { slot, show }
       } else if (time >= slot.startTime && time < slot.endTime) {
-        return { slot, show: showBySlug.value[slot.showSlug] }
+        return { slot, show }
       }
     }
     return null
@@ -215,6 +244,8 @@ export const useContentStore = defineStore('content', () => {
     timelineSorted,
     timelineDecades,
     posts,
+    historyArticles,
+    historyBySlug,
     getScheduleForDay,
     getCurrentShow
   }
