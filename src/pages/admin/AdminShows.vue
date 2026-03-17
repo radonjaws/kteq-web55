@@ -399,9 +399,13 @@ async function handleDelete(slug: string) {
                     class="w-full rounded-md border border-kteq-gray/50 bg-kteq-void px-3 py-1.5 font-body text-sm text-kteq-white placeholder-kteq-muted/50 focus:border-kteq-yellow/50 focus:outline-none focus:ring-1 focus:ring-kteq-yellow/50" />
                 </div>
                 <div>
-                  <label class="mb-1 block font-display text-xs font-medium text-kteq-light">Slug <span class="font-normal text-kteq-muted">(URL identifier)</span></label>
-                  <input type="text" v-model="editForm.slug"
-                    class="w-full rounded-md border border-kteq-gray/50 bg-kteq-void px-3 py-1.5 font-mono text-sm text-kteq-white placeholder-kteq-muted/50 focus:border-kteq-yellow/50 focus:outline-none focus:ring-1 focus:ring-kteq-yellow/50" />
+                  <label class="mb-1 block font-display text-xs font-medium text-kteq-light">Slug <span class="font-normal text-kteq-muted">(fixed at creation)</span></label>
+                  <div class="flex items-center gap-2 rounded-md border border-kteq-gray/30 bg-kteq-black px-3 py-1.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3 w-3 shrink-0 text-kteq-muted">
+                      <path fill-rule="evenodd" d="M8 1a3.5 3.5 0 0 0-3.5 3.5V7A1.5 1.5 0 0 0 3 8.5v5A1.5 1.5 0 0 0 4.5 15h7a1.5 1.5 0 0 0 1.5-1.5v-5A1.5 1.5 0 0 0 11.5 7V4.5A3.5 3.5 0 0 0 8 1Zm2 6V4.5a2 2 0 1 0-4 0V7h4Z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="font-mono text-sm text-kteq-muted">{{ editForm.slug }}</span>
+                  </div>
                 </div>
                 <div>
                   <label class="mb-1 block font-display text-xs font-medium text-kteq-light">Genre</label>
