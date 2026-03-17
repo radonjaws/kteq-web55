@@ -11,8 +11,8 @@
   },
   "homepageElements": {
     "schedule": true,
-    "history": true,
-    "blog": true
+    "history": false,
+    "blog": false
   },
   "streamUrl": "https://kteq-proxy.kteq.workers.dev",
   "streamFallbackUrl": "http://kteq-streamer.sdsmt.edu:8000/kteq",
