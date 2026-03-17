@@ -4,16 +4,6 @@ import { useContentStore } from '@/stores/content'
 const content = useContentStore()
 
 const baseUrl = import.meta.env.BASE_URL   // '/' in dev, '/kteq-web55/' in prod
-
-// All entries in chronological order (oldest first)
-const entries = content.timelineSorted
-
-const CATEGORY_LABELS: Record<string, string> = {
-  milestone: 'Milestone',
-  technical: 'Technical',
-  music:     'Music',
-  people:    'People',
-}
 </script>
 
 <template>
@@ -52,44 +42,26 @@ const CATEGORY_LABELS: Record<string, string> = {
       </div>
     </section>
 
-    <!-- ── Annual entry grid ─────────────────────────────────────────────── -->
+    <!-- ── Year-in-review grid ───────────────────────────────────────────── -->
     <section class="bg-kteq-black px-4 py-16">
       <div class="mx-auto max-w-6xl">
-        <h2 class="mb-10 font-display text-xs font-semibold uppercase tracking-widest text-kteq-muted">The Full Record</h2>
+        <h2 class="mb-10 font-display text-xs font-semibold uppercase tracking-widest text-kteq-muted">55 Years On Air</h2>
 
-        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <component
-            :is="(entry as any).articleSlug ? 'RouterLink' : 'div'"
-            v-for="entry in entries"
-            :key="entry.id"
-            v-bind="(entry as any).articleSlug ? { to: `/history/${(entry as any).articleSlug}` } : {}"
-            class="group rounded-lg border bg-kteq-dark p-5 transition-colors"
-            :class="(entry as any).articleSlug
-              ? 'border-kteq-gray/30 hover:border-kteq-yellow/30 cursor-pointer'
-              : 'border-kteq-gray/20'"
+        <div v-if="content.historyArticles.length" class="grid gap-3 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+          <RouterLink
+            v-for="article in content.historyArticles"
+            :key="article.slug"
+            :to="`/history/${article.slug}`"
+            class="group flex aspect-square flex-col justify-end rounded-lg border border-kteq-gray/30 bg-kteq-dark p-4 transition-colors hover:border-kteq-yellow/30"
           >
-            <span
-              class="font-mono text-sm font-bold transition-colors"
-              :class="(entry as any).articleSlug ? 'text-kteq-yellow' : 'text-kteq-muted'"
-            >{{ entry.year }}</span>
-
-            <h3
-              class="mt-1 font-display text-sm font-semibold leading-snug transition-colors"
-              :class="(entry as any).articleSlug
-                ? 'text-kteq-white group-hover:text-kteq-yellow'
-                : 'text-kteq-light'"
-            >{{ entry.title }}</h3>
-
-            <div class="mt-3 flex items-center justify-between gap-2">
-              <span class="rounded bg-kteq-void px-1.5 py-0.5 font-mono text-[10px] text-kteq-muted">
-                {{ CATEGORY_LABELS[entry.category] ?? entry.category }}
-              </span>
-              <span v-if="(entry as any).articleSlug" class="font-display text-[10px] text-kteq-yellow opacity-0 transition-opacity group-hover:opacity-100">
-                Read →
-              </span>
-            </div>
-          </component>
+            <span class="font-mono text-2xl font-bold text-kteq-yellow transition-colors group-hover:text-kteq-yellow-bright leading-none">{{ article.year }}</span>
+            <h3 class="mt-2 font-display text-xs font-semibold leading-snug text-kteq-white transition-colors group-hover:text-kteq-yellow line-clamp-2">
+              {{ article.title }}
+            </h3>
+          </RouterLink>
         </div>
+
+        <p v-else class="text-sm text-kteq-muted">No history articles yet. Add the first one in the admin panel.</p>
       </div>
     </section>
 

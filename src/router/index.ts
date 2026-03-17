@@ -103,6 +103,18 @@ const router = createRouter({
       meta: { requiresAdmin: true }
     },
     {
+      path: '/admin/history',
+      name: 'admin-history',
+      component: () => import('@/pages/admin/AdminHistory.vue'),
+      meta: { requiresAdmin: true }
+    },
+    {
+      path: '/admin/history/:id',
+      name: 'admin-history-edit',
+      component: () => import('@/pages/admin/AdminHistoryEdit.vue'),
+      meta: { requiresAdmin: true }
+    },
+    {
       path: '/admin/timeline',
       name: 'admin-timeline',
       component: () => import('@/pages/admin/AdminTimeline.vue'),

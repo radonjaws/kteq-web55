@@ -15,10 +15,9 @@ const showBlog     = hp.blog     !== false
 // Latest 3 blog posts
 const recentPosts = content.posts.slice(0, 3)
 
-// Latest 3 timeline entries that have a linked history article (most recent first)
-const recentHistory = [...content.timelineSorted]
-  .reverse()
-  .filter(e => (e as any).articleSlug)
+// Latest 3 history articles (most recent year first)
+const recentHistory = [...content.historyArticles]
+  .sort((a, b) => b.year - a.year)
   .slice(0, 3)
 </script>
 
@@ -72,14 +71,14 @@ const recentHistory = [...content.timelineSorted]
         </div>
         <div class="grid gap-4 sm:grid-cols-3">
           <RouterLink
-            v-for="entry in recentHistory"
-            :key="entry.id"
-            :to="`/history/${(entry as any).articleSlug}`"
-            class="group rounded-lg border border-kteq-gray/30 bg-kteq-dark p-5 transition-colors hover:border-kteq-yellow/30"
+            v-for="article in recentHistory"
+            :key="article.slug"
+            :to="`/history/${article.slug}`"
+            class="group flex aspect-[4/3] flex-col justify-end rounded-lg border border-kteq-gray/30 bg-kteq-dark p-5 transition-colors hover:border-kteq-yellow/30"
           >
-            <span class="font-mono text-xs text-kteq-yellow">{{ entry.year }}</span>
-            <h3 class="mt-1 font-display text-base font-semibold text-kteq-white transition-colors group-hover:text-kteq-yellow">
-              {{ entry.title }}
+            <span class="font-mono text-3xl font-bold text-kteq-yellow transition-colors group-hover:text-kteq-yellow-bright">{{ article.year }}</span>
+            <h3 class="mt-1 font-display text-sm font-semibold leading-snug text-kteq-white transition-colors group-hover:text-kteq-yellow">
+              {{ article.title }}
             </h3>
           </RouterLink>
         </div>

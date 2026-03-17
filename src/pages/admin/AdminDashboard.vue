@@ -63,11 +63,16 @@ const sections: Section[] = [
     description: 'Manage campaigns — hero content, phases, and countdown',
   },
   {
-    label: 'History',
-    route: '/admin/timeline',
-    description: 'Add entries to the anniversary timeline',
+    label: 'History Articles',
+    route: '/admin/history',
+    description: 'Year-in-review articles shown on the homepage and history page',
     navKey: 'history',
     homepageKey: 'history',
+  },
+  {
+    label: 'Timeline',
+    route: '/admin/timeline',
+    description: 'Milestone entries for the horizontal timeline visualization',
   },
   {
     label: 'Shows',
