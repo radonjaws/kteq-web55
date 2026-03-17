@@ -6,7 +6,7 @@
     "schedule": true,
     "shows": true,
     "djs": false,
-    "history": false,
+    "history": true,
     "blog": false
   },
   "homepageElements": {
