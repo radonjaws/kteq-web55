@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-03-17T04:07:03.794Z",
+  "lastUpdated": "2026-03-23T02:02:42.941Z",
   "shows": [
     {
       "slug": "solid-gold",
@@ -17,11 +17,11 @@
       "slug": "placeholder-show",
       "name": "Live on KTEQ",
       "tagline": "Student-hosted freeform radio",
-      "description": "A live DJ show on KTEQ. Live DJ shows will return Fall 2026 when the refurbished studio reopens, but some DJs will be contributing to voice tracked segments later this spring and summer. Stay tuned for more information. ",
+      "description": "Live DJ shows will return Fall 2026 when the refurbished studio reopens, but some DJs will be contributing to voice tracked segments later this spring and summer. Stay tuned for more information. ",
       "djSlugs": [],
       "image": "",
       "genre": "Freeform",
-      "isActive": true,
+      "isActive": false,
       "isAutomation": false,
       "socialLinks": {}
     }
