@@ -16,8 +16,8 @@
   "headline": "Still Here. Still Weird.",
   "subhead": "55 years of alternative radio in the Black Hills",
   "ctaPrimary": "Share Your Memories",
-  "ctaPrimaryAction": "mailto",
+  "ctaPrimaryAction": "play",
   "ctaPrimaryRoute": "/listen",
-  "ctaSecondary": "Listen Now",
+  "ctaSecondary": "",
   "ctaSecondaryRoute": "/listen"
 }
