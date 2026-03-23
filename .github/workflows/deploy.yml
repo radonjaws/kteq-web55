@@ -27,12 +27,7 @@ jobs:
 
       - run: npm ci
 
-      # Set VITE_BASE_URL=/kteq-web55/ while serving from the project URL.
-      # Once kteq.org DNS is live and the custom domain is configured in
-      # GitHub Pages settings, change this to VITE_BASE_URL=/ (or remove it).
       - run: npm run build
-        env:
-          VITE_BASE_URL: /kteq-web55/
 
       - uses: actions/upload-pages-artifact@v3
         with:
