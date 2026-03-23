@@ -11,7 +11,7 @@
   },
   "homepageElements": {
     "schedule": true,
-    "history": true,
+    "history": false,
     "blog": false
   },
   "streamUrl": "https://kteq-proxy.kteq.workers.dev",
