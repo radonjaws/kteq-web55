@@ -283,7 +283,7 @@ async function handleDelete() {
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="h-3 w-3">
                   <path d="M8.75 3.75a.75.75 0 0 0-1.5 0v3.5h-3.5a.75.75 0 0 0 0 1.5h3.5v3.5a.75.75 0 0 0 1.5 0v-3.5h3.5a.75.75 0 0 0 0-1.5h-3.5v-3.5Z" />
                 </svg>
-                Add Person
+                Add Entry
               </button>
             </div>
             <p class="mb-4 text-xs text-kteq-muted">People behind the station — their jobs, photos, and stories.</p>
@@ -299,7 +299,7 @@ async function handleDelete() {
                 class="rounded-md border border-kteq-gray/30 bg-kteq-void p-4"
               >
                 <div class="mb-3 flex items-center justify-between">
-                  <span class="font-display text-xs font-medium text-kteq-muted">Person {{ i + 1 }}</span>
+                  <span class="font-display text-xs font-medium text-kteq-muted">Entry {{ i + 1 }}</span>
                   <button
                     type="button"
                     @click="removePerson(i)"
@@ -310,23 +310,17 @@ async function handleDelete() {
                 </div>
                 <div class="grid gap-3 sm:grid-cols-2">
                   <div>
-                    <label class="mb-1 block font-display text-xs text-kteq-light">Name</label>
+                    <label class="mb-1 block font-display text-xs text-kteq-light">Name <span class="font-normal text-kteq-muted">(optional)</span></label>
                     <input type="text" v-model="person.name" placeholder="Jane Doe"
                       class="w-full rounded-md border border-kteq-gray/50 bg-kteq-black px-3 py-1.5 font-body text-sm text-kteq-white placeholder-kteq-muted/50 focus:border-kteq-yellow/50 focus:outline-none focus:ring-1 focus:ring-kteq-yellow/50"
                     />
                   </div>
                   <div>
-                    <label class="mb-1 block font-display text-xs text-kteq-light">Role / Title</label>
+                    <label class="mb-1 block font-display text-xs text-kteq-light">Role / Title <span class="font-normal text-kteq-muted">(optional)</span></label>
                     <input type="text" v-model="person.role" placeholder="Station Manager"
                       class="w-full rounded-md border border-kteq-gray/50 bg-kteq-black px-3 py-1.5 font-body text-sm text-kteq-white placeholder-kteq-muted/50 focus:border-kteq-yellow/50 focus:outline-none focus:ring-1 focus:ring-kteq-yellow/50"
                     />
                   </div>
-                </div>
-                <div class="mt-3">
-                  <label class="mb-1 block font-display text-xs text-kteq-light">Bio</label>
-                  <textarea v-model="person.bio" rows="2" placeholder="A brief sentence or two about this person..."
-                    class="w-full resize-y rounded-md border border-kteq-gray/50 bg-kteq-black px-3 py-1.5 font-body text-sm text-kteq-white placeholder-kteq-muted/50 focus:border-kteq-yellow/50 focus:outline-none focus:ring-1 focus:ring-kteq-yellow/50"
-                  />
                 </div>
                 <div class="mt-3 grid gap-3 sm:grid-cols-2">
                   <div>
@@ -336,9 +330,9 @@ async function handleDelete() {
                     />
                   </div>
                   <div>
-                    <label class="mb-1 block font-display text-xs text-kteq-light">Photo Caption <span class="font-normal text-kteq-muted">(optional)</span></label>
-                    <input type="text" v-model="person.caption" placeholder="Class of 1971"
-                      class="w-full rounded-md border border-kteq-gray/50 bg-kteq-black px-3 py-1.5 font-body text-sm text-kteq-white placeholder-kteq-muted/50 focus:border-kteq-yellow/50 focus:outline-none focus:ring-1 focus:ring-kteq-yellow/50"
+                    <label class="mb-1 block font-display text-xs text-kteq-light">Caption <span class="font-normal text-kteq-muted">(optional)</span></label>
+                    <textarea v-model="person.bio" rows="2" placeholder="A brief description or caption for this photo…"
+                      class="w-full resize-y rounded-md border border-kteq-gray/50 bg-kteq-black px-3 py-1.5 font-body text-sm text-kteq-white placeholder-kteq-muted/50 focus:border-kteq-yellow/50 focus:outline-none focus:ring-1 focus:ring-kteq-yellow/50"
                     />
                   </div>
                 </div>
