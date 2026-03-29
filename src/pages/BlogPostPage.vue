@@ -24,7 +24,7 @@ const renderedBody = computed(() => post.value ? marked(post.value.body) : '')
         <span v-for="tag in post.tags" :key="tag" class="rounded bg-kteq-dark px-2.5 py-0.5 text-xs text-kteq-muted">{{ tag }}</span>
       </div>
       <div class="divider-static my-8" />
-      <img v-if="post.featuredImage" :src="post.featuredImage" :alt="post.title" class="mb-8 w-full rounded-lg object-cover max-h-96" />
+      <img v-if="post.featuredImage" :src="post.featuredImage" :alt="post.title" class="mb-8 w-full rounded-lg object-cover aspect-video" />
       <div class="prose prose-invert max-w-none text-kteq-light [&_h1]:font-display [&_h2]:font-display [&_h3]:font-display [&_a]:text-kteq-yellow [&_strong]:text-kteq-white" v-html="renderedBody" />
     </article>
     <div v-else class="mt-6 text-kteq-muted">Post not found.</div>
