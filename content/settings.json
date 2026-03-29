@@ -7,12 +7,12 @@
     "shows": true,
     "djs": false,
     "history": false,
-    "blog": false
+    "blog": true
   },
   "homepageElements": {
     "schedule": true,
     "history": false,
-    "blog": false
+    "blog": true
   },
   "streamUrl": "https://kteq-proxy.kteq.workers.dev",
   "streamFallbackUrl": "http://kteq-streamer.sdsmt.edu:8000/kteq",
