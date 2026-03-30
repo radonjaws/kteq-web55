@@ -31,6 +31,10 @@ const DAY_LABELS: Record<Day, string> = {
   sunday: 'Sun', monday: 'Mon', tuesday: 'Tue', wednesday: 'Wed',
   thursday: 'Thu', friday: 'Fri', saturday: 'Sat',
 }
+const DAY_LABELS_FULL: Record<Day, string> = {
+  sunday: 'Sunday', monday: 'Monday', tuesday: 'Tuesday', wednesday: 'Wednesday',
+  thursday: 'Thursday', friday: 'Friday', saturday: 'Saturday',
+}
 const DAY_PREFIX: Record<Day, string> = {
   sunday: 'sun', monday: 'mon', tuesday: 'tue', wednesday: 'wed',
   thursday: 'thu', friday: 'fri', saturday: 'sat',
@@ -43,17 +47,60 @@ const rawContent = ref<any>(null)
 const activeDay  = ref<Day>('monday')
 const showOptions = ref<ShowOption[]>([])
 
-// Days map: day → array of slot forms (mutable, not reactive object of arrays
-// because vue reactive() loses array identity on nested mutations)
+// Days map: day → array of slot forms
 const days = reactive<Record<Day, SlotForm[]>>({
   sunday: [], monday: [], tuesday: [], wednesday: [],
   thursday: [], friday: [], saturday: [],
 })
 
+// ── Time helpers ───────────────────────────────────────────────────────────────
+// Hours: 00-23 with friendly AM/PM labels
+const HOURS = Array.from({ length: 24 }, (_, i) => ({
+  value: String(i).padStart(2, '0'),
+  label: i === 0 ? '12 AM' : i < 12 ? `${i} AM` : i === 12 ? '12 PM' : `${i - 12} PM`,
+}))
+
+// Standard minute increments; non-standard values are added dynamically per field
+const STD_MINUTES = ['00', '15', '30', '45']
+
+function parseTime(time: string): { h: string; m: string } {
+  const [h = '00', m = '00'] = (time || '00:00').split(':')
+  return { h: h.padStart(2, '0'), m: m.padStart(2, '0') }
+}
+
+function minuteOptions(currentMinute: string): string[] {
+  if (!STD_MINUTES.includes(currentMinute)) {
+    return [...STD_MINUTES, currentMinute].sort()
+  }
+  return STD_MINUTES
+}
+
+function updateHour(slot: SlotForm, field: 'startTime' | 'endTime', h: string) {
+  const { m } = parseTime(slot[field])
+  slot[field] = `${h}:${m}`
+}
+
+function updateMinute(slot: SlotForm, field: 'startTime' | 'endTime', m: string) {
+  const { h } = parseTime(slot[field])
+  slot[field] = `${h}:${m}`
+}
+
+// ── Copy-to-days ──────────────────────────────────────────────────────────────
+const showCopyPanel = ref(false)
+const copyTargetDays = ref<Day[]>([])
+
+function applyCopy() {
+  for (const day of copyTargetDays.value) {
+    // Deep-copy slots; reset IDs so they get regenerated on save
+    days[day] = days[activeDay.value].map(slot => ({ ...slot, id: '' }))
+  }
+  showCopyPanel.value = false
+  copyTargetDays.value = []
+}
+
 // ── Load ──────────────────────────────────────────────────────────────────────
 onMounted(async () => {
   try {
-    // Load schedule and shows in parallel
     const [schedRes, showsRes] = await Promise.all([
       getContent('content/schedule.json'),
       getContent('content/shows.json'),
@@ -62,12 +109,10 @@ onMounted(async () => {
     sha.value = schedRes.sha
     rawContent.value = schedRes.content
 
-    // Populate show options (active shows only)
     showOptions.value = (showsRes.content.shows ?? [])
       .filter((s: any) => s.isActive !== false)
       .map((s: any) => ({ slug: s.slug, name: s.name, isAutomation: !!s.isAutomation }))
 
-    // Populate slot forms from schedule data
     for (const day of DAYS) {
       const slots: any[] = schedRes.content.days?.[day] ?? []
       days[day] = slots.map(slotToForm)
@@ -95,7 +140,6 @@ function isAutomationShow(slug: string): boolean {
   return showOptions.value.find(s => s.slug === slug)?.isAutomation ?? false
 }
 
-// When the show changes on a slot, sync isAutomation automatically
 function onShowChange(slot: SlotForm) {
   slot.isAutomation = isAutomationShow(slot.showSlug)
 }
@@ -109,15 +153,9 @@ function addSlot(day: Day) {
   const slots = days[day]
   const lastEnd = slots.length ? slots[slots.length - 1].endTime : '00:00'
   const startTime = lastEnd === '00:00' ? '' : lastEnd
-  const newSlot: SlotForm = {
-    id:           '',   // assigned on save
-    startTime,
-    endTime:      '',
-    showSlug:     'automation',
-    isAutomation: true,
-    notes:        '',
-  }
-  slots.push(newSlot)
+  slots.push({
+    id: '', startTime, endTime: '', showSlug: 'automation', isAutomation: true, notes: '',
+  })
 }
 
 function removeSlot(day: Day, index: number) {
@@ -231,14 +269,13 @@ async function handleSave() {
             v-for="day in DAYS"
             :key="day"
             type="button"
-            @click="activeDay = day"
+            @click="activeDay = day; showCopyPanel = false; copyTargetDays = []"
             class="relative px-4 py-2.5 font-display text-sm font-medium transition-colors"
             :class="activeDay === day
               ? 'text-kteq-yellow after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:bg-kteq-yellow'
               : 'text-kteq-muted hover:text-kteq-light'"
           >
             {{ DAY_LABELS[day] }}
-            <!-- dot if day has non-automation slots -->
             <span
               v-if="days[day].some(s => !s.isAutomation)"
               class="ml-1 inline-block h-1.5 w-1.5 rounded-full bg-kteq-yellow/60"
@@ -250,7 +287,7 @@ async function handleSave() {
         <div class="mt-4">
 
           <!-- Column headers -->
-          <div class="mb-1 grid grid-cols-[90px_90px_1fr_auto_auto] items-center gap-3 px-3">
+          <div class="mb-1 grid grid-cols-[150px_150px_1fr_auto_auto] items-center gap-3 px-3">
             <span class="font-display text-[10px] uppercase tracking-wider text-kteq-muted">Start</span>
             <span class="font-display text-[10px] uppercase tracking-wider text-kteq-muted">End</span>
             <span class="font-display text-[10px] uppercase tracking-wider text-kteq-muted">Show</span>
@@ -263,24 +300,46 @@ async function handleSave() {
             <div
               v-for="(slot, i) in days[activeDay]"
               :key="slot.id || i"
-              class="grid grid-cols-[90px_90px_1fr_auto_auto] items-center gap-3 rounded-lg border px-3 py-2.5 transition-colors"
+              class="grid grid-cols-[150px_150px_1fr_auto_auto] items-center gap-3 rounded-lg border px-3 py-2.5 transition-colors"
               :class="slot.isAutomation
                 ? 'border-kteq-gray/20 bg-kteq-void'
                 : 'border-kteq-yellow/20 bg-kteq-dark'"
             >
               <!-- Start time -->
-              <input
-                type="time"
-                v-model="slot.startTime"
-                class="w-full rounded border border-kteq-gray/40 bg-kteq-black px-2 py-1 font-mono text-sm text-kteq-white focus:border-kteq-yellow/50 focus:outline-none"
-              />
+              <div class="flex items-center gap-1">
+                <select
+                  :value="parseTime(slot.startTime).h"
+                  @change="updateHour(slot, 'startTime', ($event.target as HTMLSelectElement).value)"
+                  class="flex-1 min-w-0 rounded border border-kteq-gray/40 bg-kteq-black px-1.5 py-1 font-mono text-xs text-kteq-white focus:border-kteq-yellow/50 focus:outline-none"
+                >
+                  <option v-for="hour in HOURS" :key="hour.value" :value="hour.value">{{ hour.label }}</option>
+                </select>
+                <select
+                  :value="parseTime(slot.startTime).m"
+                  @change="updateMinute(slot, 'startTime', ($event.target as HTMLSelectElement).value)"
+                  class="w-14 rounded border border-kteq-gray/40 bg-kteq-black px-1.5 py-1 font-mono text-xs text-kteq-white focus:border-kteq-yellow/50 focus:outline-none"
+                >
+                  <option v-for="m in minuteOptions(parseTime(slot.startTime).m)" :key="m" :value="m">:{{ m }}</option>
+                </select>
+              </div>
 
               <!-- End time -->
-              <input
-                type="time"
-                v-model="slot.endTime"
-                class="w-full rounded border border-kteq-gray/40 bg-kteq-black px-2 py-1 font-mono text-sm text-kteq-white focus:border-kteq-yellow/50 focus:outline-none"
-              />
+              <div class="flex items-center gap-1">
+                <select
+                  :value="parseTime(slot.endTime).h"
+                  @change="updateHour(slot, 'endTime', ($event.target as HTMLSelectElement).value)"
+                  class="flex-1 min-w-0 rounded border border-kteq-gray/40 bg-kteq-black px-1.5 py-1 font-mono text-xs text-kteq-white focus:border-kteq-yellow/50 focus:outline-none"
+                >
+                  <option v-for="hour in HOURS" :key="hour.value" :value="hour.value">{{ hour.label }}</option>
+                </select>
+                <select
+                  :value="parseTime(slot.endTime).m"
+                  @change="updateMinute(slot, 'endTime', ($event.target as HTMLSelectElement).value)"
+                  class="w-14 rounded border border-kteq-gray/40 bg-kteq-black px-1.5 py-1 font-mono text-xs text-kteq-white focus:border-kteq-yellow/50 focus:outline-none"
+                >
+                  <option v-for="m in minuteOptions(parseTime(slot.endTime).m)" :key="m" :value="m">:{{ m }}</option>
+                </select>
+              </div>
 
               <!-- Show dropdown -->
               <select
@@ -344,17 +403,72 @@ async function handleSave() {
             </div>
           </div>
 
-          <!-- Add slot -->
-          <button
-            type="button"
-            @click="addSlot(activeDay)"
-            class="mt-3 flex items-center gap-2 rounded-md border border-dashed border-kteq-gray/40 px-4 py-2 font-display text-sm text-kteq-muted transition-colors hover:border-kteq-yellow/30 hover:text-kteq-yellow"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4">
-              <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
-            </svg>
-            Add slot
-          </button>
+          <!-- Bottom actions row -->
+          <div class="mt-3 flex items-center gap-3">
+            <!-- Add slot -->
+            <button
+              type="button"
+              @click="addSlot(activeDay)"
+              class="flex items-center gap-2 rounded-md border border-dashed border-kteq-gray/40 px-4 py-2 font-display text-sm text-kteq-muted transition-colors hover:border-kteq-yellow/30 hover:text-kteq-yellow"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4">
+                <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
+              </svg>
+              Add slot
+            </button>
+
+            <!-- Copy to days -->
+            <button
+              v-if="days[activeDay].length > 0"
+              type="button"
+              @click="showCopyPanel = !showCopyPanel; copyTargetDays = []"
+              class="flex items-center gap-2 rounded-md border border-dashed border-kteq-gray/40 px-4 py-2 font-display text-sm text-kteq-muted transition-colors hover:border-kteq-yellow/30 hover:text-kteq-yellow"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4">
+                <path d="M7 3.5A1.5 1.5 0 018.5 2h3.879a1.5 1.5 0 011.06.44l3.122 3.12A1.5 1.5 0 0117 6.622V12.5a1.5 1.5 0 01-1.5 1.5h-1v-3.379a3 3 0 00-.879-2.121L10.5 5.379A3 3 0 008.379 4.5H7v-1z" />
+                <path d="M4.5 6A1.5 1.5 0 003 7.5v9A1.5 1.5 0 004.5 18h7a1.5 1.5 0 001.5-1.5v-5.879a1.5 1.5 0 00-.44-1.06L9.44 6.439A1.5 1.5 0 008.378 6H4.5z" />
+              </svg>
+              Copy to other days…
+            </button>
+          </div>
+
+          <!-- Copy-to panel -->
+          <div v-if="showCopyPanel" class="mt-3 rounded-lg border border-kteq-yellow/20 bg-kteq-dark p-4">
+            <p class="font-display text-sm font-semibold text-kteq-white">
+              Copy <span class="text-kteq-yellow">{{ DAY_LABELS_FULL[activeDay] }}</span>'s schedule to:
+            </p>
+            <p class="mt-0.5 text-xs text-kteq-muted">This will replace the selected days' slots entirely.</p>
+            <div class="mt-3 flex flex-wrap gap-2">
+              <label
+                v-for="day in DAYS.filter(d => d !== activeDay)"
+                :key="day"
+                class="flex cursor-pointer items-center gap-2 rounded-md border px-3 py-1.5 text-sm font-display transition-colors"
+                :class="copyTargetDays.includes(day)
+                  ? 'border-kteq-yellow/50 bg-kteq-yellow/10 text-kteq-yellow'
+                  : 'border-kteq-gray/30 text-kteq-muted hover:border-kteq-gray/50 hover:text-kteq-light'"
+              >
+                <input type="checkbox" :value="day" v-model="copyTargetDays" class="sr-only" />
+                {{ DAY_LABELS_FULL[day] }}
+              </label>
+            </div>
+            <div class="mt-4 flex items-center gap-2">
+              <button
+                type="button"
+                :disabled="copyTargetDays.length === 0"
+                @click="applyCopy"
+                class="rounded-md bg-kteq-yellow px-4 py-1.5 font-display text-sm font-semibold text-kteq-black transition-all hover:bg-kteq-yellow-bright disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                Copy to {{ copyTargetDays.length }} day{{ copyTargetDays.length !== 1 ? 's' : '' }}
+              </button>
+              <button
+                type="button"
+                @click="showCopyPanel = false; copyTargetDays = []"
+                class="rounded-md border border-kteq-gray/40 px-4 py-1.5 font-display text-sm text-kteq-muted transition-colors hover:text-kteq-light"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
 
           <!-- Day summary -->
           <p class="mt-4 text-xs text-kteq-muted">
