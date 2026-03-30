@@ -7,7 +7,7 @@
   --color-kteq-void: #111111;
   --color-kteq-dark: #1a1a1a;
   --color-kteq-gray: #2a2a2a;
-  --color-kteq-muted: #9a9a9a;
+  --color-kteq-muted: #b0b0b0;
   --color-kteq-light: #d4d4d4;
   --color-kteq-white: #f0f0f0;
   --color-kteq-yellow: #FCEB00;          /* KTEQ brand yellow — single source of truth */
@@ -96,6 +96,15 @@
   @keyframes pulse-on-air {
     0%, 100% { opacity: 1; box-shadow: 0 0 0 0 oklch(0.55 0.22 25 / 0.6); }
     50% { opacity: 0.7; box-shadow: 0 0 0 6px oklch(0.55 0.22 25 / 0); }
+  }
+
+  /* Respect reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    .on-air-dot { animation: none; }
+    .animate-ping { animation: none; }
+    .animate-spin { animation: none; }
+    .animate-fade-up { animation: none; }
+    .stagger-children > * { animation: none; }
   }
 
   /* Yellow glow for primary actions */

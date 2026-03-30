@@ -31,7 +31,7 @@ function showNav(key: string): boolean {
         <!-- Navigation -->
         <div>
           <div class="font-display text-xs font-semibold uppercase tracking-widest text-kteq-muted">Navigate</div>
-          <nav class="mt-3 flex flex-col gap-2">
+          <nav aria-label="Site navigation" class="mt-3 flex flex-col gap-2">
             <RouterLink v-if="showNav('schedule')" to="/schedule" class="text-sm text-kteq-light hover:text-kteq-yellow">Schedule</RouterLink>
             <RouterLink v-if="showNav('shows')"    to="/shows"    class="text-sm text-kteq-light hover:text-kteq-yellow">Shows</RouterLink>
             <RouterLink v-if="showNav('djs')"      to="/djs"      class="text-sm text-kteq-light hover:text-kteq-yellow">DJs</RouterLink>
@@ -58,9 +58,9 @@ function showNav(key: string): boolean {
         <div>
           <div class="font-display text-xs font-semibold uppercase tracking-widest text-kteq-muted">Connect</div>
           <div class="mt-3 flex flex-col gap-2 text-sm">
-            <a v-if="content.settings.socialLinks.facebook" :href="content.settings.socialLinks.facebook" target="_blank" rel="noopener" class="text-kteq-light hover:text-kteq-yellow">Facebook</a>
-            <a v-if="content.settings.socialLinks.instagram" :href="content.settings.socialLinks.instagram" target="_blank" rel="noopener" class="text-kteq-light hover:text-kteq-yellow">Instagram</a>
-            <a v-if="content.settings.socialLinks.tunein" :href="content.settings.socialLinks.tunein" target="_blank" rel="noopener" class="text-kteq-light hover:text-kteq-yellow">TuneIn</a>
+            <a v-if="content.settings.socialLinks.facebook" :href="content.settings.socialLinks.facebook" target="_blank" rel="noopener" aria-label="Facebook (opens in new window)" class="text-kteq-light hover:text-kteq-yellow">Facebook</a>
+            <a v-if="content.settings.socialLinks.instagram" :href="content.settings.socialLinks.instagram" target="_blank" rel="noopener" aria-label="Instagram (opens in new window)" class="text-kteq-light hover:text-kteq-yellow">Instagram</a>
+            <a v-if="content.settings.socialLinks.tunein" :href="content.settings.socialLinks.tunein" target="_blank" rel="noopener" aria-label="TuneIn (opens in new window)" class="text-kteq-light hover:text-kteq-yellow">TuneIn</a>
           </div>
         </div>
       </div>
@@ -70,7 +70,7 @@ function showNav(key: string): boolean {
       <div class="flex flex-col items-center justify-between gap-2 text-xs text-kteq-muted sm:flex-row">
         <span>&copy; {{ year }} KTEQ-FM / South Dakota Mines</span>
         <a href="https://publicfiles.fcc.gov/fm-profile/KTEQ-FM" target="_blank" rel="noopener" class="hover:text-kteq-yellow">
-          FCC Public File
+          FCC Public File<span class="sr-only"> (opens in new window)</span>
         </a>
       </div>
     </div>

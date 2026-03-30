@@ -23,26 +23,27 @@ const { currentShow } = useNowOnAir()
         <!-- Pulse ring when playing -->
         <span
           v-if="player.isPlaying"
+          aria-hidden="true"
           class="absolute inset-0 animate-ping rounded-full bg-kteq-yellow/10"
           style="animation-duration: 3s;"
         />
         <!-- Loading -->
-        <svg v-if="player.isLoading" class="h-12 w-12 animate-spin text-kteq-yellow" viewBox="0 0 24 24" fill="none">
+        <svg v-if="player.isLoading" aria-hidden="true" class="h-12 w-12 animate-spin text-kteq-yellow" viewBox="0 0 24 24" fill="none">
           <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" class="opacity-25" />
           <path d="M4 12a8 8 0 018-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
         </svg>
         <!-- Stop -->
-        <svg v-else-if="player.isPlaying" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-12 w-12 text-kteq-yellow">
+        <svg v-else-if="player.isPlaying" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-12 w-12 text-kteq-yellow">
           <path fill-rule="evenodd" d="M6.75 5.25a.75.75 0 01.75-.75H9a.75.75 0 01.75.75v13.5a.75.75 0 01-.75.75H7.5a.75.75 0 01-.75-.75V5.25zm7.5 0A.75.75 0 0115 4.5h1.5a.75.75 0 01.75.75v13.5a.75.75 0 01-.75.75H15a.75.75 0 01-.75-.75V5.25z" clip-rule="evenodd" />
         </svg>
         <!-- Play -->
-        <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-12 w-12 text-kteq-light transition-colors group-hover:text-kteq-yellow">
+        <svg v-else aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-12 w-12 text-kteq-light transition-colors group-hover:text-kteq-yellow">
           <path fill-rule="evenodd" d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z" clip-rule="evenodd" />
         </svg>
       </button>
 
       <!-- Status text -->
-      <div class="mt-6">
+      <div class="mt-6" aria-live="polite" aria-atomic="true">
         <h1 class="font-display text-2xl font-bold text-kteq-white sm:text-3xl">
           <template v-if="player.isPlaying">Listening Live</template>
           <template v-else-if="player.isLoading">Connecting...</template>
@@ -52,7 +53,7 @@ const { currentShow } = useNowOnAir()
       </div>
 
       <!-- Error message -->
-      <div v-if="player.hasError" class="mt-4 rounded-lg border border-kteq-red/30 bg-kteq-red/10 px-4 py-3 text-sm text-kteq-red">
+      <div v-if="player.hasError" role="alert" class="mt-4 rounded-lg border border-kteq-red/30 bg-kteq-red/10 px-4 py-3 text-sm text-kteq-red">
         {{ player.errorMessage }}
       </div>
     </div>
@@ -60,7 +61,7 @@ const { currentShow } = useNowOnAir()
     <!-- Now On Air -->
     <div class="mt-12 rounded-lg border border-kteq-gray/30 bg-kteq-dark p-6">
       <div class="flex items-center gap-2 mb-4">
-        <span class="on-air-dot" />
+        <span class="on-air-dot" aria-hidden="true" />
         <span class="font-display text-xs font-semibold uppercase tracking-widest text-kteq-muted">On Air Now</span>
       </div>
       <div v-if="currentShow">
@@ -92,6 +93,7 @@ const { currentShow } = useNowOnAir()
           :href="content.settings.socialLinks.tunein"
           target="_blank"
           rel="noopener"
+          aria-label="Listen on TuneIn (opens in new window)"
           class="rounded-md border border-kteq-gray/30 bg-kteq-void p-4 transition-colors hover:border-kteq-yellow/30"
         >
           <div class="font-display text-sm font-semibold text-kteq-white">TuneIn</div>

@@ -48,10 +48,14 @@ function formatTime(t: string): string {
     </p>
 
     <!-- Mobile: Day selector tabs -->
-    <div class="mt-8 flex gap-1 overflow-x-auto pb-2 md:hidden">
+    <div role="tablist" aria-label="Select day" class="mt-8 flex gap-1 overflow-x-auto pb-2 md:hidden">
       <button
         v-for="day in days"
         :key="day"
+        :id="`tab-${day}`"
+        role="tab"
+        :aria-selected="selectedDay === day"
+        :aria-controls="`panel-${day}`"
         @click="selectedDay = day"
         class="flex-shrink-0 rounded-md px-3 py-2 font-display text-xs font-medium transition-colors"
         :class="selectedDay === day
@@ -63,7 +67,12 @@ function formatTime(t: string): string {
     </div>
 
     <!-- Mobile: Single day view -->
-    <div class="mt-4 space-y-2 md:hidden">
+    <div
+      :id="`panel-${selectedDay}`"
+      role="tabpanel"
+      :aria-labelledby="`tab-${selectedDay}`"
+      class="mt-4 space-y-2 md:hidden"
+    >
       <h2 class="font-display text-lg font-semibold text-kteq-white">{{ dayLabelsFull[selectedDay] }}</h2>
       <div
         v-for="slot in content.getScheduleForDay(selectedDay)"
@@ -74,7 +83,8 @@ function formatTime(t: string): string {
           : 'border-kteq-gray/30 bg-kteq-dark'"
       >
         <div class="flex items-center gap-2">
-          <span v-if="isNow(selectedDay, slot.startTime, slot.endTime)" class="on-air-dot" />
+          <span v-if="isNow(selectedDay, slot.startTime, slot.endTime)" class="on-air-dot" aria-hidden="true" />
+          <span v-if="isNow(selectedDay, slot.startTime, slot.endTime)" class="sr-only">On air now — </span>
           <span class="font-mono text-xs text-kteq-muted">
             {{ formatTime(slot.startTime) }}–{{ formatTime(slot.endTime) }}
           </span>
@@ -92,12 +102,13 @@ function formatTime(t: string): string {
 
     <!-- Desktop: Full grid -->
     <div class="mt-8 hidden overflow-x-auto md:block">
-      <table class="w-full border-collapse">
+      <table class="w-full border-collapse" aria-label="Program schedule">
         <thead>
           <tr>
             <th
               v-for="day in days"
               :key="day"
+              scope="col"
               class="border-b border-kteq-gray/30 px-3 py-3 text-left font-display text-xs font-semibold uppercase tracking-widest text-kteq-muted"
               :class="{ '!text-kteq-yellow': days[today] === day }"
             >
@@ -121,7 +132,8 @@ function formatTime(t: string): string {
                   : 'border-kteq-gray/20 bg-kteq-dark hover:border-kteq-gray/40'"
               >
                 <div class="flex items-center gap-1.5">
-                  <span v-if="isNow(day, slot.startTime, slot.endTime)" class="on-air-dot" />
+                  <span v-if="isNow(day, slot.startTime, slot.endTime)" class="on-air-dot" aria-hidden="true" />
+                  <span v-if="isNow(day, slot.startTime, slot.endTime)" class="sr-only">On air now — </span>
                   <span class="font-mono text-[10px] text-kteq-muted">{{ formatTime(slot.startTime) }}</span>
                 </div>
                 <RouterLink
