@@ -101,11 +101,24 @@ const recentHistory = [...content.historyArticles]
             v-for="post in recentPosts"
             :key="post.slug"
             :to="`/blog/${post.slug}`"
-            class="group rounded-lg border border-kteq-gray/30 bg-kteq-dark p-5 transition-colors hover:border-kteq-gray"
+            class="group relative flex aspect-video items-end overflow-hidden rounded-lg border border-kteq-gray/30 transition-colors hover:border-kteq-yellow/30"
           >
-            <span class="font-mono text-xs text-kteq-muted">{{ new Date(post.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) }}</span>
-            <h3 class="mt-1 font-display text-base font-semibold text-kteq-white group-hover:text-kteq-yellow transition-colors">{{ post.title }}</h3>
-            <p v-if="post.excerpt" class="mt-2 text-sm text-kteq-muted line-clamp-2">{{ post.excerpt }}</p>
+            <!-- Background image -->
+            <div
+              v-if="post.featuredImage"
+              class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
+              :style="{ backgroundImage: `url(${post.featuredImage})` }"
+            />
+            <!-- Overlay -->
+            <div class="absolute inset-0 bg-black/60 transition-opacity duration-300 group-hover:bg-black/40" />
+            <!-- Fallback bg for posts without an image -->
+            <div v-if="!post.featuredImage" class="absolute inset-0 bg-kteq-dark" />
+            <!-- Text content -->
+            <div class="relative z-10 p-4">
+              <span class="font-mono text-xs text-kteq-muted">{{ new Date(post.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) }}</span>
+              <h3 class="mt-1 font-display text-base font-semibold text-kteq-white group-hover:text-kteq-yellow transition-colors">{{ post.title }}</h3>
+              <p v-if="post.excerpt" class="mt-1 text-sm text-kteq-muted line-clamp-2">{{ post.excerpt }}</p>
+            </div>
           </RouterLink>
         </div>
       </div>
