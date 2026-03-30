@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-03-23T02:02:42.941Z",
+  "lastUpdated": "2026-03-30T02:00:19.412Z",
   "shows": [
     {
       "slug": "solid-gold",
@@ -23,6 +23,18 @@
       "genre": "Freeform",
       "isActive": false,
       "isAutomation": false,
+      "socialLinks": {}
+    },
+    {
+      "slug": "the-digital-years",
+      "name": "The Digital Years",
+      "tagline": "Internet killed the radio star...",
+      "description": "It's probably a coincidence, but who knows?  KTEQ loses its broadcast license (whoops, for a decade+) and just few years later blogs suddenly rule? P4K is a tastemaker?  Vibes here cover artists who came of age during KTEQ's peak darkest (broadcast-wise) days. ",
+      "djSlugs": [],
+      "image": "",
+      "genre": "Alternative",
+      "isActive": true,
+      "isAutomation": true,
       "socialLinks": {}
     }
   ]
