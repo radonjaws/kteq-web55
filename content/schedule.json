@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-03-30T02:18:30.505Z",
+  "lastUpdated": "2026-03-30T02:26:06.200Z",
   "updatedBy": "Admin",
   "days": {
     "sunday": [
@@ -24,31 +24,31 @@
       {
         "id": "mon-1300",
         "startTime": "13:00",
-        "endTime": "15:03",
+        "endTime": "15:00",
         "showSlug": "the-digital-years",
         "isAutomation": true,
         "notes": ""
       },
       {
         "id": "mon-1503",
-        "startTime": "15:03",
-        "endTime": "19:07",
+        "startTime": "15:00",
+        "endTime": "19:00",
         "showSlug": "solid-gold",
         "isAutomation": true,
         "notes": ""
       },
       {
         "id": "mon-1919",
-        "startTime": "19:19",
-        "endTime": "14:21",
+        "startTime": "19:00",
+        "endTime": "21:00",
         "showSlug": "the-digital-years",
         "isAutomation": true,
         "notes": ""
       },
       {
         "id": "mon-2109",
-        "startTime": "21:09",
-        "endTime": "00:12",
+        "startTime": "21:00",
+        "endTime": "00:00",
         "showSlug": "solid-gold",
         "isAutomation": true,
         "notes": ""
