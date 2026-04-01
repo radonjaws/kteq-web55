@@ -10,9 +10,9 @@
   --color-kteq-muted: #b0b0b0;
   --color-kteq-light: #d4d4d4;
   --color-kteq-white: #f0f0f0;
-  --color-kteq-yellow: #ffc422 //#FCEB00;          /* KTEQ brand yellow — single source of truth */
-  --color-kteq-yellow-bright: #ffcf5b //#FDEF4D;   /* lighter hover state */
-  --color-kteq-yellow-dim: #be932d //#C4B800;      /* darker/muted variant */
+  --color-kteq-yellow: #ffc422;          /* KTEQ brand yellow — single source of truth (was #FCEB00) */
+  --color-kteq-yellow-bright: #ffcf5b;   /* lighter hover state (was #FDEF4D) */
+  --color-kteq-yellow-dim: #be932d;      /* darker/muted variant (was #C4B800) */
   --color-kteq-yellow-glow: oklch(0.92 0.18 100 / 0.15);
   --color-kteq-red: #e63946;
   --color-kteq-green: #2ec466;
