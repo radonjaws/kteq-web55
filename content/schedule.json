@@ -1,12 +1,44 @@
 {
-  "lastUpdated": "2026-03-30T02:26:06.200Z",
+  "lastUpdated": "2026-03-30T13:12:46.842Z",
   "updatedBy": "Admin",
   "days": {
     "sunday": [
       {
         "id": "sun-0000",
         "startTime": "00:00",
-        "endTime": "23:59",
+        "endTime": "13:00",
+        "showSlug": "solid-gold",
+        "isAutomation": true,
+        "notes": ""
+      },
+      {
+        "id": "sun-1300",
+        "startTime": "13:00",
+        "endTime": "15:00",
+        "showSlug": "the-digital-years",
+        "isAutomation": true,
+        "notes": ""
+      },
+      {
+        "id": "sun-1500",
+        "startTime": "15:00",
+        "endTime": "19:00",
+        "showSlug": "solid-gold",
+        "isAutomation": true,
+        "notes": ""
+      },
+      {
+        "id": "sun-1900",
+        "startTime": "19:00",
+        "endTime": "21:00",
+        "showSlug": "the-digital-years",
+        "isAutomation": true,
+        "notes": ""
+      },
+      {
+        "id": "sun-2100",
+        "startTime": "21:00",
+        "endTime": "00:00",
         "showSlug": "solid-gold",
         "isAutomation": true,
         "notes": ""
@@ -58,7 +90,39 @@
       {
         "id": "tue-0000",
         "startTime": "00:00",
-        "endTime": "23:59",
+        "endTime": "13:00",
+        "showSlug": "solid-gold",
+        "isAutomation": true,
+        "notes": ""
+      },
+      {
+        "id": "tue-1300",
+        "startTime": "13:00",
+        "endTime": "15:00",
+        "showSlug": "the-digital-years",
+        "isAutomation": true,
+        "notes": ""
+      },
+      {
+        "id": "tue-1500",
+        "startTime": "15:00",
+        "endTime": "19:00",
+        "showSlug": "solid-gold",
+        "isAutomation": true,
+        "notes": ""
+      },
+      {
+        "id": "tue-1900",
+        "startTime": "19:00",
+        "endTime": "21:00",
+        "showSlug": "the-digital-years",
+        "isAutomation": true,
+        "notes": ""
+      },
+      {
+        "id": "tue-2100",
+        "startTime": "21:00",
+        "endTime": "00:00",
         "showSlug": "solid-gold",
         "isAutomation": true,
         "notes": ""
@@ -68,7 +132,39 @@
       {
         "id": "wed-0000",
         "startTime": "00:00",
-        "endTime": "23:59",
+        "endTime": "13:00",
+        "showSlug": "solid-gold",
+        "isAutomation": true,
+        "notes": ""
+      },
+      {
+        "id": "wed-1300",
+        "startTime": "13:00",
+        "endTime": "15:00",
+        "showSlug": "the-digital-years",
+        "isAutomation": true,
+        "notes": ""
+      },
+      {
+        "id": "wed-1500",
+        "startTime": "15:00",
+        "endTime": "19:00",
+        "showSlug": "solid-gold",
+        "isAutomation": true,
+        "notes": ""
+      },
+      {
+        "id": "wed-1900",
+        "startTime": "19:00",
+        "endTime": "21:00",
+        "showSlug": "the-digital-years",
+        "isAutomation": true,
+        "notes": ""
+      },
+      {
+        "id": "wed-2100",
+        "startTime": "21:00",
+        "endTime": "00:00",
         "showSlug": "solid-gold",
         "isAutomation": true,
         "notes": ""
@@ -78,7 +174,39 @@
       {
         "id": "thu-0000",
         "startTime": "00:00",
-        "endTime": "23:59",
+        "endTime": "13:00",
+        "showSlug": "solid-gold",
+        "isAutomation": true,
+        "notes": ""
+      },
+      {
+        "id": "thu-1300",
+        "startTime": "13:00",
+        "endTime": "15:00",
+        "showSlug": "the-digital-years",
+        "isAutomation": true,
+        "notes": ""
+      },
+      {
+        "id": "thu-1500",
+        "startTime": "15:00",
+        "endTime": "19:00",
+        "showSlug": "solid-gold",
+        "isAutomation": true,
+        "notes": ""
+      },
+      {
+        "id": "thu-1900",
+        "startTime": "19:00",
+        "endTime": "21:00",
+        "showSlug": "the-digital-years",
+        "isAutomation": true,
+        "notes": ""
+      },
+      {
+        "id": "thu-2100",
+        "startTime": "21:00",
+        "endTime": "00:00",
         "showSlug": "solid-gold",
         "isAutomation": true,
         "notes": ""
@@ -88,7 +216,39 @@
       {
         "id": "fri-0000",
         "startTime": "00:00",
-        "endTime": "23:59",
+        "endTime": "13:00",
+        "showSlug": "solid-gold",
+        "isAutomation": true,
+        "notes": ""
+      },
+      {
+        "id": "fri-1300",
+        "startTime": "13:00",
+        "endTime": "15:00",
+        "showSlug": "the-digital-years",
+        "isAutomation": true,
+        "notes": ""
+      },
+      {
+        "id": "fri-1500",
+        "startTime": "15:00",
+        "endTime": "19:00",
+        "showSlug": "solid-gold",
+        "isAutomation": true,
+        "notes": ""
+      },
+      {
+        "id": "fri-1900",
+        "startTime": "19:00",
+        "endTime": "21:00",
+        "showSlug": "the-digital-years",
+        "isAutomation": true,
+        "notes": ""
+      },
+      {
+        "id": "fri-2100",
+        "startTime": "21:00",
+        "endTime": "00:00",
         "showSlug": "solid-gold",
         "isAutomation": true,
         "notes": ""
@@ -98,7 +258,39 @@
       {
         "id": "sat-0000",
         "startTime": "00:00",
-        "endTime": "23:59",
+        "endTime": "13:00",
+        "showSlug": "solid-gold",
+        "isAutomation": true,
+        "notes": ""
+      },
+      {
+        "id": "sat-1300",
+        "startTime": "13:00",
+        "endTime": "15:00",
+        "showSlug": "the-digital-years",
+        "isAutomation": true,
+        "notes": ""
+      },
+      {
+        "id": "sat-1500",
+        "startTime": "15:00",
+        "endTime": "19:00",
+        "showSlug": "solid-gold",
+        "isAutomation": true,
+        "notes": ""
+      },
+      {
+        "id": "sat-1900",
+        "startTime": "19:00",
+        "endTime": "21:00",
+        "showSlug": "the-digital-years",
+        "isAutomation": true,
+        "notes": ""
+      },
+      {
+        "id": "sat-2100",
+        "startTime": "21:00",
+        "endTime": "00:00",
         "showSlug": "solid-gold",
         "isAutomation": true,
         "notes": ""
