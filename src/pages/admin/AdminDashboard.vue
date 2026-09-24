@@ -8,8 +8,11 @@ const router = useRouter()
 const content = useContentStore()
 const { saving, error, lastSaved, save, getContent } = useGitHub()
 
+const adminUser = localStorage.getItem('kteq-admin-user') || ''
+
 function logout() {
   localStorage.removeItem('kteq-admin-token')
+  localStorage.removeItem('kteq-admin-user')
   router.push('/admin/login')
 }
 
@@ -170,6 +173,7 @@ function toggleHomepage(key: HomepageKey) {
         </div>
         <div class="flex items-center gap-4">
           <RouterLink to="/" class="font-display text-xs text-kteq-muted transition-colors hover:text-kteq-white">View Site</RouterLink>
+          <span v-if="adminUser" class="font-mono text-xs text-kteq-muted">@{{ adminUser }}</span>
           <button @click="logout" class="font-display text-xs text-kteq-muted transition-colors hover:text-kteq-white">Sign Out</button>
         </div>
       </div>

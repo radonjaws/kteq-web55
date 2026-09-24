@@ -6,23 +6,23 @@
 
 ## Who Are You?
 
-This manual covers three levels of access. Find yourself below and focus on the sections that matter to you.
+Everyone who edits the website has one of three access levels. Find yours below and focus on the sections that matter to you.
 
-### 🎧 DJ / Admin Panel User
+### 🎧 Contributor — DJs, show hosts, volunteers
 
-You have a login token for the admin panel at `kteq.org/#/admin`. You can update the schedule, edit shows, write blog posts, and manage the timeline using simple forms.
+You sign in to the admin panel at `kteq.org/#/admin` with your own GitHub account. You write blog posts and keep show listings and DJ profiles up to date.
 
 **Read:** Sections 1, 2, and 3
 
-### 🔧 Programming Director / GitHub Editor
+### 🔧 Editor — Programming Director, Station Manager, content leads
 
-You have a GitHub account with access to the `kteq/kteq-web55` repository. You can do everything an admin panel user can do, plus edit content files directly, upload images, and manage content that the admin panel doesn't cover yet.
+Everything a Contributor does, plus the weekly schedule, the History section (Yearbook and Timeline), and the site menu. You may also edit content files directly on GitHub and upload images.
 
 **Read:** Sections 1–6
 
-### 🛠️ Station Advisor / Station Leadership
+### 🛠️ Leadership — Station Advisor, General Manager
 
-You manage who has access, set up tokens, understand the campaign system, and can make strategic changes to the website's messaging and behavior.
+Everything an Editor does, plus site Settings and Campaigns. You add and remove people, approve their sign-in tokens, and assign access levels.
 
 **Read:** Everything, especially Sections 7 and 8
 
@@ -72,14 +72,36 @@ Both methods end up doing the same thing: updating files in the repository, whic
 
 ### Logging in
 
-1. Go to `kteq.org/#/admin` (or click any admin link)
-2. You'll see a login screen asking for a **GitHub token**
-3. Enter the station's admin token (get this from the programming director or station advisor)
-4. Click **Sign In**
+Each person signs in with their **own** GitHub token. There is no shared station password. Before your first sign-in you need three things:
 
-The token is stored in your browser. You won't need to enter it again on the same device unless you clear your browser data or the token expires.
+1. A GitHub account (free at [github.com/signup](https://github.com/signup))
+2. Membership in the **kteq** organization on GitHub. Station leadership sends the invite; accept it from the email or at [github.com/orgs/kteq/invitation](https://github.com/orgs/kteq/invitation)
+3. A personal token, made with the steps below
 
-If you see "Invalid token," the token may have expired. Ask the station advisor for a new one.
+#### Creating your token
+
+1. Sign in to GitHub and go to [github.com/settings/personal-access-tokens/new](https://github.com/settings/personal-access-tokens/new)
+   (the long way: profile picture → **Settings** → **Developer settings** → **Personal access tokens** → **Fine-grained tokens** → **Generate new token**)
+2. **Token name:** `KTEQ Admin Panel` plus the device you'll use it on, e.g. `KTEQ Admin Panel – studio iMac`
+3. **Resource owner:** choose **kteq**. If kteq isn't in the list, you haven't accepted the organization invite yet.
+4. **Expiration:** pick the last day of the current semester
+5. **Repository access:** choose **Only select repositories**, then select **kteq-web55**
+6. **Permissions:** find **Contents** under Repository permissions (in some layouts you click **Add permissions** and choose Contents first) and set it to **Read and write**. GitHub adds **Metadata: Read-only** on its own. Leave everything else at No access.
+7. Click **Generate token**
+8. Copy the token (it starts with `github_pat_`). GitHub shows it only once. If you lose it, make a new one.
+9. Your token now waits for approval from station leadership. You'll get an email from GitHub when it's approved.
+
+#### Signing in
+
+1. Go to `kteq.org/#/admin`
+2. Paste your token and click **Sign In**
+3. Your GitHub username appears in the top-right corner of the dashboard
+
+The token is stored in this browser only. You won't need to enter it again on this device until it expires or you click **Sign Out**. On a shared computer, always sign out when you're done.
+
+Treat the token like a password. Never post it in chat, email it, or put it in a file in the repository. If you think someone else has seen it, delete it at [github.com/settings/personal-access-tokens](https://github.com/settings/personal-access-tokens) and make a new one.
+
+If sign-in fails, the message tells you why. See **Admin panel won't let me sign in** in Section 10.
 
 ### The Dashboard
 
@@ -94,7 +116,7 @@ After logging in, you'll see the admin dashboard with links to each content area
 - **Menu** — logo image and nav link visibility (show/hide links for maintenance)
 - **Campaigns** — manage campaign configurations; set the active one, edit messaging, phases, and countdown
 
-Click into any section to start editing. Each section loads the current content from the repository, lets you make changes in a form, and saves your changes back with a single click.
+Section 7 lists which sections belong to each access level. Click into a section to start editing. Each section loads the current content from the repository, lets you make changes in a form, and saves your changes back with a single click.
 
 ### Saving changes
 
@@ -582,52 +604,87 @@ Key fields:
 
 ## 7. Managing Access
 
-There are two types of access to manage: GitHub repository access (for direct file editing) and admin panel tokens (for the web-based editors).
+### How access works
 
-### GitHub repository access
+The website repository belongs to the **kteq** organization on GitHub. Every person who edits the site has their own GitHub account, and access comes from four pieces:
 
-Students who need to edit content files directly, upload images, or manage the repository need a GitHub account added as a collaborator.
+1. **Organization membership** in kteq
+2. **The `web-editors` team**, which gives write access to the kteq-web55 repository
+3. **A personal token** each person creates for the admin panel (Section 2), approved by leadership
+4. **An access level** (Contributor, Editor, or Leadership) that sets which admin panel sections they use
 
-**To add a collaborator:**
+Removing someone from the organization cuts off all four at once.
 
-1. Go to [github.com/kteq/kteq-web55](https://github.com/kteq/kteq-web55) → **Settings** → **Collaborators**
-2. Click **Add people**
-3. Search for their GitHub username
-4. Select **Write** role (they need to be able to commit changes)
+### Access levels
 
-**When someone leaves the station:** Remove them from the collaborators list. Their past contributions remain in the commit history.
+| Admin panel section | Contributor | Editor | Leadership |
+|---------------------|:-----------:|:------:|:----------:|
+| Blog Posts | ✅ | ✅ | ✅ |
+| Shows | ✅ | ✅ | ✅ |
+| DJs | ✅ | ✅ | ✅ |
+| Schedule | — | ✅ | ✅ |
+| History (Yearbook, Timeline) | — | ✅ | ✅ |
+| Menu | — | ✅ | ✅ |
+| Settings | — | — | ✅ |
+| Campaigns | — | — | ✅ |
+| Edit files directly on GitHub | — | ✅ | ✅ |
+| Add/remove people, approve tokens | — | — | ✅ |
 
-GitHub editors are typically the programming director, station manager, and any students comfortable working with structured text files. Most DJs won't need this level of access.
+| Level | Typical roles | GitHub setup |
+|-------|---------------|--------------|
+| Contributor | DJs, show hosts, volunteers | Org member, `web-editors` team |
+| Editor | Programming Director, Station Manager, content leads | Org member, `web-editors` team |
+| Leadership | Station Advisor, General Manager | Org **Owner** (keep at least two, including one staff member) |
 
-### Admin panel tokens
+The admin panel is being updated to show each person only the sections for their level. Until that update ships, every signed-in user sees every section, so Contributors and Editors should stick to the sections listed for their level.
 
-The admin panel at `kteq.org/#/admin` uses a GitHub Personal Access Token (PAT) to authenticate. This is a single shared token for the station — anyone who has it can use the admin panel.
+Levels in the admin panel are guardrails, not locks. Anyone on the `web-editors` team can technically change any file through GitHub. Give access only to people you trust with the whole site, and use levels to keep everyday editing focused and mistakes small.
 
-**To create or regenerate a token:**
+### Adding a person
 
-1. Go to [github.com/settings/personal-access-tokens/new](https://github.com/settings/personal-access-tokens/new)
-   (You must be logged into an account that has access to the repository)
-2. **Token name:** `KTEQ Admin Panel` (or similar)
-3. **Expiration:** 90 days is a reasonable balance of security and convenience. You'll need to regenerate when it expires
-4. **Repository access:** Select **Only select repositories** → choose `kteq/kteq-web55`
-5. **Permissions → Repository permissions → Contents:** Set to **Read and write** (this is the only permission needed)
-6. Click **Generate token**
-7. Copy the `github_pat_...` string — this is the admin panel login
+1. Ask for their GitHub username. If they don't have an account, they make one at [github.com/signup](https://github.com/signup).
+2. Go to [github.com/orgs/kteq/people](https://github.com/orgs/kteq/people) → **Invite member** → enter their username
+3. Role in the organization: **Member** (choose **Owner** only for Leadership)
+4. On the next screen, add them to the **web-editors** team, then send the invite
+5. Record their username and level in the access list (`content/admins.json` once the panel update ships)
+6. Point them to Section 2 to accept the invite and create their token
+7. Approve their token when the request comes in (next section)
 
-**Distributing the token:** Share it with students who need admin panel access. They enter it once at `kteq.org/#/admin/login` and it's stored in their browser.
+### Approving token requests
 
-**When a student leaves on bad terms:** Regenerate the token. This instantly revokes access for anyone using the old token. Distribute the new token to remaining staff.
+Every new admin panel token needs a Leadership approval before it can save anything. GitHub emails organization owners when a request arrives.
 
-**When a token expires:** Regenerate it following the same steps and distribute the new one.
+1. Go to [github.com/organizations/kteq/settings/personal-access-token-requests](https://github.com/organizations/kteq/settings/personal-access-token-requests)
+   (the long way: kteq organization → **Settings** → **Personal access tokens** → **Pending requests**)
+2. Click the token name to review it. It should ask for **kteq-web55** only, with **Contents: Read and write** and **Metadata: Read-only**.
+3. Click **Approve**. If it asks for more repositories or more permissions, click **Deny** and tell the person which settings to change.
 
-### Who gets what access
+To see or revoke tokens that are already approved, use **Active tokens** in the same sidebar.
 
-| Role | Admin Panel | GitHub Repo | What they can do |
-|------|:-----------:|:-----------:|-----------------|
-| DJs | ✅ | — | Update schedule, edit their show/profile, write blog posts |
-| Programming Director | ✅ | ✅ | Everything above, plus upload images, edit JSON directly, manage content the admin panel doesn't cover |
-| Station Manager | ✅ | ✅ | Same as Programming Director |
-| Station Advisor | ✅ | ✅ | Everything above, plus manage collaborators, regenerate tokens, change campaign phases, make code changes via Claude Code |
+### When someone leaves the station
+
+1. Go to [github.com/orgs/kteq/people](https://github.com/orgs/kteq/people)
+2. Find the person → **⋯** → **Remove from organization**
+3. Remove them from the access list
+
+Their tokens stop working right away, and their past edits stay in the history. Nobody else's sign-in is affected.
+
+### When a token expires
+
+The person makes a new token (Section 2) and a Leadership member approves it. Expired tokens need no cleanup.
+
+### Organization token settings
+
+These are set once and rarely change. Find them under kteq organization → **Settings** → **Personal access tokens**.
+
+| Setting | Value |
+|---------|-------|
+| Fine-grained tokens | **Allow access via fine-grained personal access tokens** |
+| Approval | **Require administrator approval** |
+| Maximum lifetime (fine-grained) | 366 days or less |
+| Classic tokens | **Restrict access via personal access tokens (classic)** |
+
+Blocking classic tokens means every admin panel sign-in goes through the approval step above.
 
 ---
 
@@ -770,10 +827,22 @@ Two `\n\n` = paragraph break. One `\n` = line break.
 - Try the TuneIn link to verify
 - Contact the station advisor if the stream itself is working
 
-### Admin panel says "Invalid token"
+### Admin panel won't let me sign in
 
-- The token may have expired — ask the station advisor to regenerate it
-- Make sure the token was generated with **Contents: Read and write** permission for the correct repository
+The sign-in screen tells you which problem it found:
+
+- **"GitHub did not recognize this token"** — the token was pasted incompletely, has expired, or was deleted. Make a new one (Section 2).
+- **"This token can't see kteq/kteq-web55"** — the token was made with the wrong **Resource owner** or without the kteq-web55 repository selected. Make a new one and choose **kteq** and **kteq-web55**.
+- **"Doesn't have write access"** — your GitHub account isn't on the `web-editors` team yet. Ask station leadership.
+
+### Saving fails with "GitHub refused the save"
+
+- If you just made your token, it's probably still waiting for Leadership approval. You'll get an email when it's approved.
+- Otherwise the token is missing **Contents: Read and write**. Make a new one (Section 2).
+
+### Saving fails with "Someone else changed this file"
+
+Another person saved the same content while you were editing. Reload the page and make your edit again.
 
 ### I need to undo a change
 

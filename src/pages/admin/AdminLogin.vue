@@ -13,12 +13,13 @@ async function login() {
   loading.value = true
   error.value = ''
   
-  const valid = await verifyToken(token.value.trim())
-  if (valid) {
+  const result = await verifyToken(token.value.trim())
+  if (result.ok) {
     localStorage.setItem('kteq-admin-token', token.value.trim())
+    if (result.login) localStorage.setItem('kteq-admin-user', result.login)
     router.push('/admin')
   } else {
-    error.value = 'Invalid token or insufficient permissions. The PAT needs Contents access to kteq/kteq-web55.'
+    error.value = result.error || 'Sign-in failed.'
   }
   loading.value = false
 }
@@ -30,7 +31,7 @@ async function login() {
       <div class="text-center mb-8">
         <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-md bg-kteq-yellow font-display text-lg font-bold text-kteq-black">K</div>
         <h1 class="mt-4 font-display text-xl font-bold text-kteq-white">KTEQ Admin</h1>
-        <p class="mt-1 text-sm text-kteq-muted">Enter the station GitHub token to continue.</p>
+        <p class="mt-1 text-sm text-kteq-muted">Sign in with your personal GitHub token.</p>
       </div>
 
       <div class="space-y-4">
@@ -40,7 +41,7 @@ async function login() {
             id="token"
             v-model="token"
             type="password"
-            placeholder="ghp_..."
+            placeholder="github_pat_..."
             @keyup.enter="login"
             class="w-full rounded-md border border-kteq-gray bg-kteq-dark px-4 py-3 font-mono text-sm text-kteq-light placeholder-kteq-muted outline-none transition-colors focus:border-kteq-yellow"
           />
