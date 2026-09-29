@@ -322,7 +322,7 @@ async function handleDelete(slug: string) {
             </div>
             <div class="mt-6 flex items-center justify-end gap-3 border-t border-kteq-gray/20 pt-4">
               <span v-if="lastSaved && !error" class="text-xs text-kteq-green">Saved {{ lastSaved.toLocaleTimeString() }}</span>
-              <span v-if="error" class="max-w-xs truncate text-xs text-kteq-red">{{ error }}</span>
+              <span v-if="error" class="max-w-sm text-xs leading-snug text-kteq-red" role="alert">{{ error }}</span>
               <button type="button" @click="closeEdit" class="font-display text-xs text-kteq-muted transition-colors hover:text-kteq-white">Cancel</button>
               <button type="button" @click="handleSave" :disabled="saving || !formValid"
                 class="inline-flex items-center gap-2 rounded-md bg-kteq-yellow px-4 py-2 font-display text-sm font-semibold text-kteq-black transition-all hover:bg-kteq-yellow-bright disabled:cursor-not-allowed disabled:opacity-50">
@@ -476,7 +476,7 @@ async function handleDelete(slug: string) {
                 </div>
                 <div class="flex items-center gap-3">
                   <span v-if="lastSaved && !error" class="text-xs text-kteq-green">Saved {{ lastSaved.toLocaleTimeString() }}</span>
-                  <span v-if="error" class="max-w-xs truncate text-xs text-kteq-red">{{ error }}</span>
+                  <span v-if="error" class="max-w-sm text-xs leading-snug text-kteq-red" role="alert">{{ error }}</span>
                   <button type="button" @click="closeEdit" class="font-display text-xs text-kteq-muted transition-colors hover:text-kteq-white">Cancel</button>
                   <button type="button" @click="handleSave" :disabled="saving || !formValid"
                     class="inline-flex items-center gap-2 rounded-md bg-kteq-yellow px-4 py-2 font-display text-sm font-semibold text-kteq-black transition-all hover:bg-kteq-yellow-bright disabled:cursor-not-allowed disabled:opacity-50">

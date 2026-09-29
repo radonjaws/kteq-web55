@@ -189,7 +189,7 @@ function toggleHomepage(key: HomepageKey) {
         </div>
         <div class="flex items-center gap-3">
           <span v-if="lastSaved && !error" class="text-xs text-kteq-green">Saved {{ lastSaved.toLocaleTimeString() }}</span>
-          <span v-if="error" class="max-w-xs truncate text-xs text-kteq-red">{{ error }}</span>
+          <span v-if="error" class="max-w-sm text-xs leading-snug text-kteq-red" role="alert">{{ error }}</span>
           <button
             @click="handleSave"
             :disabled="saving || loading"
